@@ -1,0 +1,26 @@
+package components
+
+import "time"
+
+templ StatsPage(s StatsData, fetchedAt time.Time) {
+	@Layout("stats") {
+		<div class="flex items-center justify-between mb-6">
+			<h1 class="text-primary font-bold tracking-widest text-sm metric-label">system metrics</h1>
+			<div class="flex items-center gap-3">
+				<span id="fetched-at" class="text-xs text-base-content/30 font-mono">{ fetchedAt.Format("15:04:05") }</span>
+				<button
+					class="btn btn-primary btn-sm font-mono"
+					hx-get="/stats/data"
+					hx-target="#stats-grid"
+					hx-swap="outerHTML"
+					hx-indicator="#spinner"
+					_="on htmx:afterRequest set #fetched-at.innerText to (new Date()).toLocaleTimeString()"
+				>
+					<span id="spinner" class="loading loading-spinner loading-xs htmx-indicator"></span>
+					refresh
+				</button>
+			</div>
+		</div>
+		@StatsPartial(s)
+	}
+}

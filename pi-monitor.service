@@ -1,0 +1,15 @@
+[Unit]
+Description=Pi Monitor Web Server
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/pi-webpage
+EnvironmentFile=/home/ubuntu/pi-webpage/.env
+ExecStart=/home/ubuntu/pi-webpage/pi-webpage
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,42 @@
+package components
+
+templ LoginPage(errMsg string) {
+	<!DOCTYPE html>
+	<html lang="en" data-theme="forest">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>login | pi</title>
+			<link href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/full.min.css" rel="stylesheet"/>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<style>body { font-family: 'Courier New', monospace; }</style>
+		</head>
+		<body class="min-h-screen bg-base-300 flex items-center justify-center">
+			<div class="card bg-base-100 border border-base-content/10 w-full max-w-sm">
+				<div class="card-body gap-5">
+					<h1 class="text-primary font-bold text-xl tracking-widest text-center">[ PI ]</h1>
+					if errMsg != "" {
+						<div class="alert alert-error text-xs py-2">
+							<span>{ errMsg }</span>
+						</div>
+					}
+					<form method="POST" action="/login" class="flex flex-col gap-4">
+						<label class="form-control">
+							<div class="label pb-1">
+								<span class="label-text text-xs tracking-widest uppercase text-base-content/50">username</span>
+							</div>
+							<input type="text" name="username" class="input input-bordered input-sm font-mono" autocomplete="username" required/>
+						</label>
+						<label class="form-control">
+							<div class="label pb-1">
+								<span class="label-text text-xs tracking-widest uppercase text-base-content/50">password</span>
+							</div>
+							<input type="password" name="password" class="input input-bordered input-sm font-mono" autocomplete="current-password" required/>
+						</label>
+						<button type="submit" class="btn btn-primary btn-sm font-mono mt-1">login</button>
+					</form>
+				</div>
+			</div>
+		</body>
+	</html>
+}
