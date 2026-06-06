@@ -29,30 +29,30 @@ func LoginPage(errMsg string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\" data-theme=\"forest\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>login | pi</title><link href=\"https://cdn.jsdelivr.net/npm/daisyui@5/dist/full.min.css\" rel=\"stylesheet\"><script src=\"https://cdn.tailwindcss.com\"></script><style>body { font-family: 'Courier New', monospace; }</style></head><body class=\"min-h-screen bg-base-300 flex items-center justify-center\"><div class=\"card bg-base-100 border border-base-content/10 w-full max-w-sm\"><div class=\"card-body gap-5\"><h1 class=\"text-primary font-bold text-xl tracking-widest text-center\">[ PI ]</h1>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>login | pi</title><style>\n\t\t\t\t:root {\n\t\t\t\t\t--green: #00ff88;\n\t\t\t\t\t--green-dim: #00cc6a;\n\t\t\t\t\t--green-faint: rgba(0,255,136,0.08);\n\t\t\t\t\t--bg: #080c10;\n\t\t\t\t\t--bg2: #0d1117;\n\t\t\t\t\t--border: rgba(0,255,136,0.15);\n\t\t\t\t\t--text-muted: rgba(0,255,136,0.4);\n\t\t\t\t}\n\t\t\t\t* { box-sizing: border-box; margin: 0; padding: 0; }\n\t\t\t\tbody {\n\t\t\t\t\tbackground: var(--bg);\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-family: 'Courier New', Courier, monospace;\n\t\t\t\t\tmin-height: 100vh;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\talign-items: center;\n\t\t\t\t\tjustify-content: center;\n\t\t\t\t}\n\t\t\t\t.scanline {\n\t\t\t\t\tposition: fixed; top: 0; left: 0; right: 0; bottom: 0;\n\t\t\t\t\tbackground: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);\n\t\t\t\t\tpointer-events: none; z-index: 9999;\n\t\t\t\t}\n\t\t\t\t.login-box {\n\t\t\t\t\tbackground: var(--bg2);\n\t\t\t\t\tborder: 1px solid var(--border);\n\t\t\t\t\tborder-radius: 6px;\n\t\t\t\t\tbox-shadow: 0 0 40px rgba(0,255,136,0.06);\n\t\t\t\t\tpadding: 2rem 2.5rem;\n\t\t\t\t\twidth: 100%;\n\t\t\t\t\tmax-width: 360px;\n\t\t\t\t}\n\t\t\t\t.logo {\n\t\t\t\t\ttext-align: center;\n\t\t\t\t\tfont-size: 1.1rem;\n\t\t\t\t\tfont-weight: bold;\n\t\t\t\t\tletter-spacing: 0.4em;\n\t\t\t\t\tmargin-bottom: 2rem;\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t}\n\t\t\t\t.field { margin-bottom: 1.25rem; }\n\t\t\t\t.field label {\n\t\t\t\t\tdisplay: block;\n\t\t\t\t\tfont-size: 0.65rem;\n\t\t\t\t\tletter-spacing: 0.2em;\n\t\t\t\t\tcolor: var(--text-muted);\n\t\t\t\t\tmargin-bottom: 0.4rem;\n\t\t\t\t}\n\t\t\t\t.field input {\n\t\t\t\t\twidth: 100%;\n\t\t\t\t\tbackground: rgba(0,255,136,0.04);\n\t\t\t\t\tborder: 1px solid var(--border);\n\t\t\t\t\tborder-radius: 4px;\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-family: inherit;\n\t\t\t\t\tfont-size: 0.85rem;\n\t\t\t\t\tpadding: 0.5rem 0.75rem;\n\t\t\t\t\toutline: none;\n\t\t\t\t\ttransition: border-color 0.15s, box-shadow 0.15s;\n\t\t\t\t}\n\t\t\t\t.field input:focus {\n\t\t\t\t\tborder-color: var(--green-dim);\n\t\t\t\t\tbox-shadow: 0 0 8px rgba(0,255,136,0.15);\n\t\t\t\t}\n\t\t\t\t.btn-submit {\n\t\t\t\t\twidth: 100%;\n\t\t\t\t\tbackground: transparent;\n\t\t\t\t\tborder: 1px solid var(--green-dim);\n\t\t\t\t\tborder-radius: 4px;\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-family: inherit;\n\t\t\t\t\tfont-size: 0.8rem;\n\t\t\t\t\tletter-spacing: 0.15em;\n\t\t\t\t\tpadding: 0.6rem;\n\t\t\t\t\tcursor: pointer;\n\t\t\t\t\ttransition: all 0.15s;\n\t\t\t\t\tmargin-top: 0.5rem;\n\t\t\t\t}\n\t\t\t\t.btn-submit:hover {\n\t\t\t\t\tbackground: var(--green-faint);\n\t\t\t\t\tbox-shadow: 0 0 12px rgba(0,255,136,0.2);\n\t\t\t\t}\n\t\t\t\t.error {\n\t\t\t\t\tbackground: rgba(255,60,60,0.08);\n\t\t\t\t\tborder: 1px solid rgba(255,60,60,0.3);\n\t\t\t\t\tborder-radius: 4px;\n\t\t\t\t\tcolor: rgba(255,100,100,0.9);\n\t\t\t\t\tfont-size: 0.75rem;\n\t\t\t\t\tpadding: 0.5rem 0.75rem;\n\t\t\t\t\tmargin-bottom: 1rem;\n\t\t\t\t\tletter-spacing: 0.05em;\n\t\t\t\t}\n\t\t\t</style></head><body><div class=\"scanline\"></div><div class=\"login-box\"><div class=\"logo\">&#9632; PI</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if errMsg != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"alert alert-error text-xs py-2\"><span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"error\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(errMsg)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/login.templ`, Line: 20, Col: 21}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/login.templ`, Line: 111, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</span></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<form method=\"POST\" action=\"/login\" class=\"flex flex-col gap-4\"><label class=\"form-control\"><div class=\"label pb-1\"><span class=\"label-text text-xs tracking-widest uppercase text-base-content/50\">username</span></div><input type=\"text\" name=\"username\" class=\"input input-bordered input-sm font-mono\" autocomplete=\"username\" required></label> <label class=\"form-control\"><div class=\"label pb-1\"><span class=\"label-text text-xs tracking-widest uppercase text-base-content/50\">password</span></div><input type=\"password\" name=\"password\" class=\"input input-bordered input-sm font-mono\" autocomplete=\"current-password\" required></label> <button type=\"submit\" class=\"btn btn-primary btn-sm font-mono mt-1\">login</button></form></div></div></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<form method=\"POST\" action=\"/login\"><div class=\"field\"><label>USERNAME</label> <input type=\"text\" name=\"username\" autocomplete=\"username\" required autofocus></div><div class=\"field\"><label>PASSWORD</label> <input type=\"password\" name=\"password\" autocomplete=\"current-password\" required></div><button type=\"submit\" class=\"btn-submit\">LOGIN</button></form></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

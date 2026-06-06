@@ -2,39 +2,161 @@ package components
 
 templ Layout(title string) {
 	<!DOCTYPE html>
-	<html lang="en" data-theme="forest">
+	<html lang="en" data-theme="night">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ title } | pi</title>
-			<link href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/full.min.css" rel="stylesheet"/>
-			<script src="https://cdn.tailwindcss.com"></script>
+			<link href="https://cdn.jsdelivr.net/npm/daisyui@4/dist/full.min.css" rel="stylesheet"/>
+			<script src="https://cdn.jsdelivr.net/npm/tailwindcss-cdn@3.4.16/tailwindcss.min.js"></script>
 			<script src="https://unpkg.com/htmx.org@2.0.4"></script>
 			<script src="https://unpkg.com/hyperscript.org@0.9.14"></script>
 			<style>
-				body { font-family: 'Courier New', monospace; }
-				.metric-label { letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.7rem; }
+				:root {
+					--green: #00ff88;
+					--green-dim: #00cc6a;
+					--green-faint: rgba(0,255,136,0.08);
+					--bg: #080c10;
+					--bg2: #0d1117;
+					--bg3: #161b22;
+					--border: rgba(0,255,136,0.15);
+					--text-muted: rgba(0,255,136,0.4);
+				}
+				* { box-sizing: border-box; }
+				body {
+					background: var(--bg);
+					color: var(--green);
+					font-family: 'Courier New', Courier, monospace;
+					min-height: 100vh;
+				}
+				.card-terminal {
+					background: var(--bg2);
+					border: 1px solid var(--border);
+					border-radius: 6px;
+					box-shadow: 0 0 20px rgba(0,255,136,0.04), inset 0 0 20px rgba(0,0,0,0.3);
+				}
+				.card-terminal:hover {
+					border-color: rgba(0,255,136,0.3);
+					box-shadow: 0 0 30px rgba(0,255,136,0.08);
+					transition: all 0.2s ease;
+				}
+				.nav-bar {
+					background: var(--bg2);
+					border-bottom: 1px solid var(--border);
+					padding: 0.75rem 1.5rem;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+				}
+				.nav-logo {
+					color: var(--green);
+					font-weight: bold;
+					font-size: 1rem;
+					letter-spacing: 0.3em;
+				}
+				.nav-links { display: flex; gap: 0.25rem; align-items: center; }
+				.nav-link {
+					color: var(--text-muted);
+					text-decoration: none;
+					font-size: 0.8rem;
+					letter-spacing: 0.1em;
+					padding: 0.3rem 0.75rem;
+					border-radius: 4px;
+					border: 1px solid transparent;
+					transition: all 0.15s;
+				}
+				.nav-link:hover, .nav-link.active {
+					color: var(--green);
+					border-color: var(--border);
+					background: var(--green-faint);
+				}
+				.nav-link.disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
+				.nav-divider { width: 1px; height: 1rem; background: var(--border); margin: 0 0.5rem; }
+				.btn-terminal {
+					background: transparent;
+					border: 1px solid var(--green-dim);
+					color: var(--green);
+					font-family: inherit;
+					font-size: 0.75rem;
+					letter-spacing: 0.1em;
+					padding: 0.35rem 1rem;
+					border-radius: 4px;
+					cursor: pointer;
+					transition: all 0.15s;
+					display: inline-flex;
+					align-items: center;
+					gap: 0.4rem;
+				}
+				.btn-terminal:hover {
+					background: var(--green-faint);
+					box-shadow: 0 0 10px rgba(0,255,136,0.2);
+				}
+				.btn-logout {
+					border-color: rgba(255,80,80,0.3);
+					color: rgba(255,80,80,0.5);
+				}
+				.btn-logout:hover {
+					background: rgba(255,80,80,0.08);
+					color: rgba(255,80,80,0.9);
+					border-color: rgba(255,80,80,0.6);
+					box-shadow: 0 0 10px rgba(255,80,80,0.15);
+				}
+				.bar-track {
+					height: 4px;
+					background: rgba(0,255,136,0.1);
+					border-radius: 2px;
+					overflow: hidden;
+				}
+				.bar-fill {
+					height: 100%;
+					border-radius: 2px;
+					background: linear-gradient(90deg, var(--green-dim), var(--green));
+					box-shadow: 0 0 8px rgba(0,255,136,0.5);
+					transition: width 0.4s ease;
+				}
+				.bar-fill.warn { background: linear-gradient(90deg, #cc8800, #ffaa00); box-shadow: 0 0 8px rgba(255,170,0,0.5); }
+				.bar-fill.danger { background: linear-gradient(90deg, #cc2200, #ff4400); box-shadow: 0 0 8px rgba(255,68,0,0.5); }
+				.metric-value { font-size: 2rem; font-weight: bold; letter-spacing: -0.02em; line-height: 1; }
+				.metric-label { font-size: 0.65rem; letter-spacing: 0.2em; color: var(--text-muted); }
+				.metric-sub { font-size: 0.7rem; color: var(--text-muted); }
+				.spinner { display: none; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.6s linear infinite; }
+				.htmx-request .spinner { display: inline-block; }
+				.htmx-request .refresh-text { display: none; }
+				@keyframes spin { to { transform: rotate(360deg); } }
+				.temp-warn { color: #ffaa00; }
+				.temp-danger { color: #ff4422; }
+				.scanline {
+					position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+					background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+					pointer-events: none; z-index: 9999;
+				}
 			</style>
 		</head>
-		<body class="min-h-screen bg-base-300">
-			<div class="navbar bg-base-100 border-b border-base-content/10 px-6">
-				<div class="flex-1">
-					<span class="text-primary font-bold text-lg tracking-widest">[ PI ]</span>
-				</div>
-				<nav class="flex gap-2 items-center">
-					<a href="/" class="btn btn-ghost btn-sm font-mono">stats</a>
-					<a href="/health" class="btn btn-ghost btn-sm font-mono opacity-40 cursor-not-allowed" title="coming soon">health</a>
-					<a href="/calories" class="btn btn-ghost btn-sm font-mono opacity-40 cursor-not-allowed" title="coming soon">calories</a>
-					<a href="/workouts" class="btn btn-ghost btn-sm font-mono opacity-40 cursor-not-allowed" title="coming soon">workouts</a>
-					<div class="w-px h-4 bg-base-content/20 mx-1"></div>
-					<form method="POST" action="/logout">
-						<button type="submit" class="btn btn-ghost btn-sm font-mono text-base-content/40 hover:text-error">logout</button>
+		<body>
+			<div class="scanline"></div>
+			<div class="nav-bar">
+				<span class="nav-logo">&#9632; PI</span>
+				<nav class="nav-links">
+					<a href="/" class={ "nav-link", navActive(title, "stats") }>stats</a>
+					<a class="nav-link disabled">health</a>
+					<a class="nav-link disabled">calories</a>
+					<a class="nav-link disabled">workouts</a>
+					<div class="nav-divider"></div>
+					<form method="POST" action="/logout" style="margin:0">
+						<button type="submit" class="btn-terminal btn-logout">logout</button>
 					</form>
 				</nav>
 			</div>
-			<main class="p-6 max-w-5xl mx-auto">
+			<main style="padding: 1.5rem; max-width: 960px; margin: 0 auto;">
 				{ children... }
 			</main>
 		</body>
 	</html>
+}
+
+func navActive(title, page string) string {
+	if title == page {
+		return "active"
+	}
+	return ""
 }

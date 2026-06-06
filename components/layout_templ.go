@@ -29,7 +29,7 @@ func Layout(title string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\" data-theme=\"forest\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\" data-theme=\"night\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -42,7 +42,29 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " | pi</title><link href=\"https://cdn.jsdelivr.net/npm/daisyui@5/dist/full.min.css\" rel=\"stylesheet\"><script src=\"https://cdn.tailwindcss.com\"></script><script src=\"https://unpkg.com/htmx.org@2.0.4\"></script><script src=\"https://unpkg.com/hyperscript.org@0.9.14\"></script><style>\n\t\t\t\tbody { font-family: 'Courier New', monospace; }\n\t\t\t\t.metric-label { letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.7rem; }\n\t\t\t</style></head><body class=\"min-h-screen bg-base-300\"><div class=\"navbar bg-base-100 border-b border-base-content/10 px-6\"><div class=\"flex-1\"><span class=\"text-primary font-bold text-lg tracking-widest\">[ PI ]</span></div><nav class=\"flex gap-2 items-center\"><a href=\"/\" class=\"btn btn-ghost btn-sm font-mono\">stats</a> <a href=\"/health\" class=\"btn btn-ghost btn-sm font-mono opacity-40 cursor-not-allowed\" title=\"coming soon\">health</a> <a href=\"/calories\" class=\"btn btn-ghost btn-sm font-mono opacity-40 cursor-not-allowed\" title=\"coming soon\">calories</a> <a href=\"/workouts\" class=\"btn btn-ghost btn-sm font-mono opacity-40 cursor-not-allowed\" title=\"coming soon\">workouts</a><div class=\"w-px h-4 bg-base-content/20 mx-1\"></div><form method=\"POST\" action=\"/logout\"><button type=\"submit\" class=\"btn btn-ghost btn-sm font-mono text-base-content/40 hover:text-error\">logout</button></form></nav></div><main class=\"p-6 max-w-5xl mx-auto\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " | pi</title><link href=\"https://cdn.jsdelivr.net/npm/daisyui@4/dist/full.min.css\" rel=\"stylesheet\"><script src=\"https://cdn.jsdelivr.net/npm/tailwindcss-cdn@3.4.16/tailwindcss.min.js\"></script><script src=\"https://unpkg.com/htmx.org@2.0.4\"></script><script src=\"https://unpkg.com/hyperscript.org@0.9.14\"></script><style>\n\t\t\t\t:root {\n\t\t\t\t\t--green: #00ff88;\n\t\t\t\t\t--green-dim: #00cc6a;\n\t\t\t\t\t--green-faint: rgba(0,255,136,0.08);\n\t\t\t\t\t--bg: #080c10;\n\t\t\t\t\t--bg2: #0d1117;\n\t\t\t\t\t--bg3: #161b22;\n\t\t\t\t\t--border: rgba(0,255,136,0.15);\n\t\t\t\t\t--text-muted: rgba(0,255,136,0.4);\n\t\t\t\t}\n\t\t\t\t* { box-sizing: border-box; }\n\t\t\t\tbody {\n\t\t\t\t\tbackground: var(--bg);\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-family: 'Courier New', Courier, monospace;\n\t\t\t\t\tmin-height: 100vh;\n\t\t\t\t}\n\t\t\t\t.card-terminal {\n\t\t\t\t\tbackground: var(--bg2);\n\t\t\t\t\tborder: 1px solid var(--border);\n\t\t\t\t\tborder-radius: 6px;\n\t\t\t\t\tbox-shadow: 0 0 20px rgba(0,255,136,0.04), inset 0 0 20px rgba(0,0,0,0.3);\n\t\t\t\t}\n\t\t\t\t.card-terminal:hover {\n\t\t\t\t\tborder-color: rgba(0,255,136,0.3);\n\t\t\t\t\tbox-shadow: 0 0 30px rgba(0,255,136,0.08);\n\t\t\t\t\ttransition: all 0.2s ease;\n\t\t\t\t}\n\t\t\t\t.nav-bar {\n\t\t\t\t\tbackground: var(--bg2);\n\t\t\t\t\tborder-bottom: 1px solid var(--border);\n\t\t\t\t\tpadding: 0.75rem 1.5rem;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\talign-items: center;\n\t\t\t\t\tjustify-content: space-between;\n\t\t\t\t}\n\t\t\t\t.nav-logo {\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-weight: bold;\n\t\t\t\t\tfont-size: 1rem;\n\t\t\t\t\tletter-spacing: 0.3em;\n\t\t\t\t}\n\t\t\t\t.nav-links { display: flex; gap: 0.25rem; align-items: center; }\n\t\t\t\t.nav-link {\n\t\t\t\t\tcolor: var(--text-muted);\n\t\t\t\t\ttext-decoration: none;\n\t\t\t\t\tfont-size: 0.8rem;\n\t\t\t\t\tletter-spacing: 0.1em;\n\t\t\t\t\tpadding: 0.3rem 0.75rem;\n\t\t\t\t\tborder-radius: 4px;\n\t\t\t\t\tborder: 1px solid transparent;\n\t\t\t\t\ttransition: all 0.15s;\n\t\t\t\t}\n\t\t\t\t.nav-link:hover, .nav-link.active {\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tborder-color: var(--border);\n\t\t\t\t\tbackground: var(--green-faint);\n\t\t\t\t}\n\t\t\t\t.nav-link.disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }\n\t\t\t\t.nav-divider { width: 1px; height: 1rem; background: var(--border); margin: 0 0.5rem; }\n\t\t\t\t.btn-terminal {\n\t\t\t\t\tbackground: transparent;\n\t\t\t\t\tborder: 1px solid var(--green-dim);\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-family: inherit;\n\t\t\t\t\tfont-size: 0.75rem;\n\t\t\t\t\tletter-spacing: 0.1em;\n\t\t\t\t\tpadding: 0.35rem 1rem;\n\t\t\t\t\tborder-radius: 4px;\n\t\t\t\t\tcursor: pointer;\n\t\t\t\t\ttransition: all 0.15s;\n\t\t\t\t\tdisplay: inline-flex;\n\t\t\t\t\talign-items: center;\n\t\t\t\t\tgap: 0.4rem;\n\t\t\t\t}\n\t\t\t\t.btn-terminal:hover {\n\t\t\t\t\tbackground: var(--green-faint);\n\t\t\t\t\tbox-shadow: 0 0 10px rgba(0,255,136,0.2);\n\t\t\t\t}\n\t\t\t\t.btn-logout {\n\t\t\t\t\tborder-color: rgba(255,80,80,0.3);\n\t\t\t\t\tcolor: rgba(255,80,80,0.5);\n\t\t\t\t}\n\t\t\t\t.btn-logout:hover {\n\t\t\t\t\tbackground: rgba(255,80,80,0.08);\n\t\t\t\t\tcolor: rgba(255,80,80,0.9);\n\t\t\t\t\tborder-color: rgba(255,80,80,0.6);\n\t\t\t\t\tbox-shadow: 0 0 10px rgba(255,80,80,0.15);\n\t\t\t\t}\n\t\t\t\t.bar-track {\n\t\t\t\t\theight: 4px;\n\t\t\t\t\tbackground: rgba(0,255,136,0.1);\n\t\t\t\t\tborder-radius: 2px;\n\t\t\t\t\toverflow: hidden;\n\t\t\t\t}\n\t\t\t\t.bar-fill {\n\t\t\t\t\theight: 100%;\n\t\t\t\t\tborder-radius: 2px;\n\t\t\t\t\tbackground: linear-gradient(90deg, var(--green-dim), var(--green));\n\t\t\t\t\tbox-shadow: 0 0 8px rgba(0,255,136,0.5);\n\t\t\t\t\ttransition: width 0.4s ease;\n\t\t\t\t}\n\t\t\t\t.bar-fill.warn { background: linear-gradient(90deg, #cc8800, #ffaa00); box-shadow: 0 0 8px rgba(255,170,0,0.5); }\n\t\t\t\t.bar-fill.danger { background: linear-gradient(90deg, #cc2200, #ff4400); box-shadow: 0 0 8px rgba(255,68,0,0.5); }\n\t\t\t\t.metric-value { font-size: 2rem; font-weight: bold; letter-spacing: -0.02em; line-height: 1; }\n\t\t\t\t.metric-label { font-size: 0.65rem; letter-spacing: 0.2em; color: var(--text-muted); }\n\t\t\t\t.metric-sub { font-size: 0.7rem; color: var(--text-muted); }\n\t\t\t\t.spinner { display: none; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.6s linear infinite; }\n\t\t\t\t.htmx-request .spinner { display: inline-block; }\n\t\t\t\t.htmx-request .refresh-text { display: none; }\n\t\t\t\t@keyframes spin { to { transform: rotate(360deg); } }\n\t\t\t\t.temp-warn { color: #ffaa00; }\n\t\t\t\t.temp-danger { color: #ff4422; }\n\t\t\t\t.scanline {\n\t\t\t\t\tposition: fixed; top: 0; left: 0; right: 0; bottom: 0;\n\t\t\t\t\tbackground: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);\n\t\t\t\t\tpointer-events: none; z-index: 9999;\n\t\t\t\t}\n\t\t\t</style></head><body><div class=\"scanline\"></div><div class=\"nav-bar\"><span class=\"nav-logo\">&#9632; PI</span><nav class=\"nav-links\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var3 = []any{"nav-link", navActive(title, "stats")}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a href=\"/\" class=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var3).String())
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/layout.templ`, Line: 1, Col: 0}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\">stats</a> <a class=\"nav-link disabled\">health</a> <a class=\"nav-link disabled\">calories</a> <a class=\"nav-link disabled\">workouts</a><div class=\"nav-divider\"></div><form method=\"POST\" action=\"/logout\" style=\"margin:0\"><button type=\"submit\" class=\"btn-terminal btn-logout\">logout</button></form></nav></div><main style=\"padding: 1.5rem; max-width: 960px; margin: 0 auto;\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -50,12 +72,19 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</main></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</main></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		return nil
 	})
+}
+
+func navActive(title, page string) string {
+	if title == page {
+		return "active"
+	}
+	return ""
 }
 
 var _ = templruntime.GeneratedTemplate

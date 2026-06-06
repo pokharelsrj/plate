@@ -3,69 +3,95 @@ package components
 import "fmt"
 
 type StatsData struct {
-	CPUPercent    float64
-	MemPercent    float64
-	MemUsedGB     float64
-	MemTotalGB    float64
-	DiskPercent   float64
-	DiskUsedGB    float64
-	DiskTotalGB   float64
-	TempCelsius   float64
-	UptimeHours   float64
-	LoadAvg1      float64
-	LoadAvg5      float64
-	LoadAvg15     float64
+	CPUPercent  float64
+	MemPercent  float64
+	MemUsedGB   float64
+	MemTotalGB  float64
+	DiskPercent float64
+	DiskUsedGB  float64
+	DiskTotalGB float64
+	TempCelsius float64
+	UptimeHours float64
+	LoadAvg1    float64
+	LoadAvg5    float64
+	LoadAvg15   float64
 }
 
 templ StatsPartial(s StatsData) {
-	<div id="stats-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-		@metricCard("CPU", fmt.Sprintf("%.1f%%", s.CPUPercent), s.CPUPercent, fmt.Sprintf("load %.2f  %.2f  %.2f", s.LoadAvg1, s.LoadAvg5, s.LoadAvg15))
-		@metricCard("MEMORY", fmt.Sprintf("%.1f%%", s.MemPercent), s.MemPercent, fmt.Sprintf("%.1f GB / %.1f GB", s.MemUsedGB, s.MemTotalGB))
-		@metricCard("DISK", fmt.Sprintf("%.1f%%", s.DiskPercent), s.DiskPercent, fmt.Sprintf("%.1f GB / %.1f GB", s.DiskUsedGB, s.DiskTotalGB))
-		@tempCard(s.TempCelsius, s.UptimeHours)
+	<div
+		id="stats-grid"
+		style="display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1rem;"
+	>
+		@statCard("CPU_USAGE", fmt.Sprintf("%.1f%%", s.CPUPercent), s.CPUPercent,
+			fmt.Sprintf("load  1m %.2f  5m %.2f  15m %.2f", s.LoadAvg1, s.LoadAvg5, s.LoadAvg15))
+		@statCard("MEMORY", fmt.Sprintf("%.1f%%", s.MemPercent), s.MemPercent,
+			fmt.Sprintf("%.1f GB used  /  %.1f GB total", s.MemUsedGB, s.MemTotalGB))
+		@statCard("DISK_/", fmt.Sprintf("%.1f%%", s.DiskPercent), s.DiskPercent,
+			fmt.Sprintf("%.1f GB used  /  %.1f GB total", s.DiskUsedGB, s.DiskTotalGB))
+		@tempStatCard(s.TempCelsius, s.UptimeHours)
 	</div>
 }
 
-templ metricCard(label string, value string, percent float64, sub string) {
-	<div class="card bg-base-100 border border-base-content/10">
-		<div class="card-body p-4 gap-3">
-			<div class="flex justify-between items-baseline">
-				<span class="metric-label text-base-content/50">{ label }</span>
-				<span class="text-2xl font-bold text-primary">{ value }</span>
-			</div>
-			<progress class="progress progress-primary w-full" value={ fmt.Sprintf("%.0f", percent) } max="100"></progress>
-			<span class="text-xs text-base-content/40 font-mono">{ sub }</span>
+templ statCard(label string, value string, percent float64, sub string) {
+	<div class="card-terminal" style="padding: 1.25rem 1.5rem;">
+		<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
+			<span class="metric-label">{ label }</span>
+			<span class="metric-value">{ value }</span>
+		</div>
+		<div class="bar-track">
+			<div class={ "bar-fill", barColor(percent) } style={ fmt.Sprintf("width:%.1f%%", percent) }></div>
+		</div>
+		<div style="margin-top:0.6rem;">
+			<span class="metric-sub">{ sub }</span>
 		</div>
 	</div>
 }
 
-templ tempCard(temp float64, uptimeHours float64) {
-	<div class="card bg-base-100 border border-base-content/10">
-		<div class="card-body p-4 gap-3">
-			<div class="flex justify-between items-baseline">
-				<span class="metric-label text-base-content/50">TEMP</span>
-				<span class={ "text-2xl font-bold", tempColor(temp) }>{ fmt.Sprintf("%.1f°C", temp) }</span>
-			</div>
-			<progress class={ "progress w-full", tempProgressColor(temp) } value={ fmt.Sprintf("%.0f", temp) } max="85"></progress>
-			<span class="text-xs text-base-content/40 font-mono">uptime { fmt.Sprintf("%.1fh", uptimeHours) }</span>
+templ tempStatCard(temp float64, uptimeHours float64) {
+	<div class="card-terminal" style="padding: 1.25rem 1.5rem;">
+		<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
+			<span class="metric-label">TEMPERATURE</span>
+			<span class={ "metric-value", tempColor(temp) }>{ fmt.Sprintf("%.1f°C", temp) }</span>
+		</div>
+		<div class="bar-track">
+			<div class={ "bar-fill", tempBarColor(temp) } style={ fmt.Sprintf("width:%.1f%%", min(temp/85*100, 100)) }></div>
+		</div>
+		<div style="margin-top:0.6rem;">
+			<span class="metric-sub">uptime  { fmt.Sprintf("%.0fh %02.0fm", uptimeHours, (uptimeHours-float64(int(uptimeHours)))*60) }</span>
 		</div>
 	</div>
+}
+
+func barColor(p float64) string {
+	if p >= 85 {
+		return "danger"
+	} else if p >= 65 {
+		return "warn"
+	}
+	return ""
 }
 
 func tempColor(t float64) string {
 	if t >= 70 {
-		return "text-error"
+		return "temp-danger"
 	} else if t >= 55 {
-		return "text-warning"
+		return "temp-warn"
 	}
-	return "text-primary"
+	return ""
 }
 
-func tempProgressColor(t float64) string {
+func tempBarColor(t float64) string {
 	if t >= 70 {
-		return "progress-error"
+		return "danger"
 	} else if t >= 55 {
-		return "progress-warning"
+		return "warn"
 	}
-	return "progress-primary"
+	return ""
+}
+
+func min(a, b float64) float64 {
+	if a < b {
+		return a
+	}
+	return b
 }

@@ -43,20 +43,20 @@ func StatsPage(s StatsData, fetchedAt time.Time) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex items-center justify-between mb-6\"><h1 class=\"text-primary font-bold tracking-widest text-sm metric-label\">system metrics</h1><div class=\"flex items-center gap-3\"><span id=\"fetched-at\" class=\"text-xs text-base-content/30 font-mono\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem;\"><div><div class=\"metric-label\" style=\"margin-bottom:0.2rem;\">system metrics</div><div class=\"metric-sub\">raspberry pi 5</div></div><div style=\"display:flex; align-items:center; gap:0.75rem;\"><span id=\"fetched-at\" class=\"metric-sub\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fetchedAt.Format("15:04:05"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/stats.templ`, Line: 10, Col: 103}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/stats.templ`, Line: 13, Col: 75}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</span> <button class=\"btn btn-primary btn-sm font-mono\" hx-get=\"/stats/data\" hx-target=\"#stats-grid\" hx-swap=\"outerHTML\" hx-indicator=\"#spinner\" _=\"on htmx:afterRequest set #fetched-at.innerText to (new Date()).toLocaleTimeString()\"><span id=\"spinner\" class=\"loading loading-spinner loading-xs htmx-indicator\"></span> refresh</button></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</span> <button class=\"btn-terminal\" hx-get=\"/stats/data\" hx-target=\"#stats-grid\" hx-swap=\"outerHTML\" _=\"on htmx:afterRequest set #fetched-at.innerText to (new Date()).toLocaleTimeString()\"><span class=\"spinner\"></span> <span class=\"refresh-text\">&#8635; refresh</span></button></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
