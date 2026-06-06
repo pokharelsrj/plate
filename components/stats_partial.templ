@@ -20,7 +20,7 @@ type StatsData struct {
 templ StatsPartial(s StatsData) {
 	<div
 		id="stats-grid"
-		style="display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1rem;"
+		style="display:grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 1rem;"
 	>
 		@statCard("CPU_USAGE", fmt.Sprintf("%.1f%%", s.CPUPercent), s.CPUPercent,
 			fmt.Sprintf("load  1m %.2f  5m %.2f  15m %.2f", s.LoadAvg1, s.LoadAvg5, s.LoadAvg15))

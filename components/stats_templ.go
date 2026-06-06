@@ -43,7 +43,7 @@ func StatsPage(s StatsData, fetchedAt time.Time) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem;\"><div><div class=\"metric-label\" style=\"margin-bottom:0.2rem;\">system metrics</div><div class=\"metric-sub\">raspberry pi 5</div></div><div style=\"display:flex; align-items:center; gap:0.75rem;\"><span id=\"fetched-at\" class=\"metric-sub\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div style=\"display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; gap:0.75rem; flex-wrap:wrap;\"><div><div class=\"metric-label\" style=\"margin-bottom:0.2rem;\">system metrics</div><div class=\"metric-sub\">raspberry pi 5</div></div><div style=\"display:flex; align-items:center; gap:0.75rem;\"><span id=\"fetched-at\" class=\"metric-sub\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
