@@ -1,0 +1,209 @@
+package components
+
+import (
+	"fmt"
+	"time"
+
+	"pi-webpage/db"
+)
+
+type SyncSourceStatus struct {
+	Name    string
+	Last    *db.SyncRun
+	Running bool
+}
+
+type SyncStatusModel struct {
+	Sources []SyncSourceStatus
+	Runs    []db.SyncRun
+}
+
+templ SyncStatusPage(m SyncStatusModel) {
+	@Layout("sync") {
+		<div class="page-header">
+			<div>
+				<div class="metric-label">sync status</div>
+				<div class="metric-sub">external data ingestion</div>
+			</div>
+			<button
+				class="btn-terminal"
+				hx-get="/sync/status/fragment"
+				hx-target="#sync-fragment"
+				hx-swap="outerHTML"
+			>refresh</button>
+		</div>
+
+		@SyncStatusFragment(m)
+
+		<style>
+			.src-grid {
+				display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: 0.75rem; margin-bottom: 1.25rem;
+			}
+			.src-card {
+				background: var(--bg2); border: 1px solid var(--border);
+				border-radius: 6px; padding: 1rem 1.25rem;
+				display: flex; flex-direction: column; gap: 0.5rem;
+			}
+			.src-name {
+				color: var(--green); font-size: 0.95rem; font-weight: bold;
+				letter-spacing: 0.1em; text-transform: uppercase;
+			}
+			.src-meta { display:flex; flex-direction: column; gap: 0.25rem; }
+			.src-row { display:flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+			.src-key { font-size: 0.6rem; color: var(--text-muted); letter-spacing: 0.15em; }
+			.src-val { font-size: 0.75rem; color: var(--green); }
+			.src-val.muted { color: var(--text-muted); }
+			.status-pill {
+				display:inline-block; padding: 0.15rem 0.5rem;
+				font-size: 0.6rem; letter-spacing: 0.15em;
+				border-radius: 3px; border: 1px solid var(--border);
+				text-transform: uppercase;
+			}
+			.status-pill.success { color: var(--green); border-color: var(--green-dim); background: var(--green-faint); }
+			.status-pill.failure { color: #ff7766; border-color: rgba(255,80,80,0.4); background: rgba(255,80,80,0.08); }
+			.status-pill.running { color: #ffaa00; border-color: rgba(255,170,0,0.4); background: rgba(255,170,0,0.08); }
+			.status-pill.never { color: var(--text-muted); }
+			.src-actions { display:flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap; }
+			.btn-mini {
+				background: transparent; border: 1px solid var(--border);
+				color: var(--text-muted); font-family: inherit;
+				font-size: 0.65rem; padding: 0.3rem 0.6rem;
+				border-radius: 3px; cursor: pointer; letter-spacing: 0.1em;
+				transition: all 0.15s;
+			}
+			.btn-mini:hover { color: var(--green); border-color: var(--green-dim); }
+			.btn-mini:disabled { opacity: 0.4; cursor: not-allowed; }
+
+			.runs-table {
+				background: var(--bg2); border: 1px solid var(--border);
+				border-radius: 6px; padding: 0.5rem; overflow-x: auto;
+			}
+			.runs-table table { width: 100%; border-collapse: collapse; }
+			.runs-table th, .runs-table td {
+				padding: 0.5rem 0.75rem; text-align: left;
+				font-size: 0.7rem; border-bottom: 1px solid var(--border);
+			}
+			.runs-table th {
+				color: var(--text-muted); letter-spacing: 0.15em;
+				text-transform: uppercase; font-weight: normal; font-size: 0.6rem;
+			}
+			.runs-table td { color: var(--green); }
+			.runs-table tr:last-child td { border-bottom: none; }
+			.err-cell { color: #ff7766 !important; max-width: 280px;
+				overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+		</style>
+	}
+}
+
+templ SyncStatusFragment(m SyncStatusModel) {
+	<div id="sync-fragment">
+		<div class="src-grid">
+			for _, s := range m.Sources {
+				@sourceCard(s)
+			}
+		</div>
+
+		<div class="metric-label" style="margin-bottom:0.5rem;">RECENT RUNS</div>
+		<div class="runs-table">
+			<table>
+				<thead>
+					<tr>
+						<th>SOURCE</th>
+						<th>STARTED</th>
+						<th>DURATION</th>
+						<th>STATUS</th>
+						<th>RECORDS</th>
+						<th>ERROR</th>
+					</tr>
+				</thead>
+				<tbody>
+					if len(m.Runs) == 0 {
+						<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:1.5rem 0;">no runs yet</td></tr>
+					}
+					for _, r := range m.Runs {
+						<tr>
+							<td>{ r.Source }</td>
+							<td>{ formatTimeLocal(r.StartedAt) }</td>
+							<td>{ formatDuration(r) }</td>
+							<td><span class={ "status-pill", r.Status }>{ r.Status }</span></td>
+							<td>{ fmt.Sprintf("%d", r.RecordsSynced) }</td>
+							<td class="err-cell" title={ r.ErrorMessage.String }>
+								if r.ErrorMessage.Valid {
+									{ r.ErrorMessage.String }
+								} else {
+									—
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+}
+
+templ sourceCard(s SyncSourceStatus) {
+	<div class="src-card">
+		<div class="src-row">
+			<span class="src-name">{ s.Name }</span>
+			if s.Running {
+				<span class="status-pill running">running</span>
+			} else if s.Last != nil {
+				<span class="status-pill success">last ok</span>
+			} else {
+				<span class="status-pill never">no sync yet</span>
+			}
+		</div>
+		<div class="src-meta">
+			<div class="src-row">
+				<span class="src-key">LAST SUCCESS</span>
+				if s.Last != nil {
+					<span class="src-val">{ formatTimeLocal(s.Last.StartedAt) }</span>
+				} else {
+					<span class="src-val muted">never</span>
+				}
+			</div>
+			<div class="src-row">
+				<span class="src-key">RECORDS</span>
+				if s.Last != nil {
+					<span class="src-val">{ fmt.Sprintf("%d", s.Last.RecordsSynced) }</span>
+				} else {
+					<span class="src-val muted">—</span>
+				}
+			</div>
+		</div>
+		<div class="src-actions">
+			<button
+				class="btn-mini"
+				disabled?={ s.Running }
+				hx-post={ fmt.Sprintf("/sync/trigger?source=%s", s.Name) }
+				hx-target="#sync-fragment"
+				hx-swap="outerHTML"
+			>sync now</button>
+			<button
+				class="btn-mini"
+				disabled?={ s.Running }
+				hx-post={ fmt.Sprintf("/sync/trigger?source=%s&days=60", s.Name) }
+				hx-target="#sync-fragment"
+				hx-swap="outerHTML"
+			>backfill 60d</button>
+		</div>
+	</div>
+}
+
+func formatTimeLocal(t time.Time) string {
+	return t.Local().Format("Jan 2, 15:04:05")
+}
+
+func formatDuration(r db.SyncRun) string {
+	if !r.CompletedAt.Valid {
+		return "—"
+	}
+	d := r.CompletedAt.Time.Sub(r.StartedAt)
+	if d < time.Second {
+		return fmt.Sprintf("%dms", d.Milliseconds())
+	}
+	return fmt.Sprintf("%.1fs", d.Seconds())
+}
+

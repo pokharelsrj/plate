@@ -146,9 +146,9 @@ templ Layout(title string) {
 				<span class="nav-logo">&#9632; PI</span>
 				<nav class="nav-links">
 					<a href="/" class={ "nav-link", navActive(title, "stats") }>stats</a>
-					<a class="nav-link disabled">health</a>
-					<a class="nav-link disabled">calories</a>
-					<a class="nav-link disabled">workouts</a>
+					<a href="/fitness" class={ "nav-link", navActive(title, "fitness") }>fitness</a>
+					<a href="/trends" class={ "nav-link", navActive(title, "trends") }>trends</a>
+					<a href="/sync" class={ "nav-link", navActive(title, "sync") }>sync</a>
 					<div class="nav-divider"></div>
 					<form method="POST" action="/logout" style="margin:0">
 						<button type="submit" class="btn-terminal btn-logout">logout</button>

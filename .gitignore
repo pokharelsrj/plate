@@ -1,3 +1,7 @@
 .claude
 .idea
 pi-webpage
+*.db
+*.db-shm
+*.db-wal
+.env
