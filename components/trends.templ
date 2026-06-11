@@ -24,7 +24,31 @@ templ TrendsPage(rangeDays int) {
 				</div>
 				<div class="summary-card">
 					<div class="metric-label">gym sessions</div>
-					<div class="summary-value" id="sum-gym">—</div>
+					<div class="summary-value sum-gym" id="sum-gym">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">avg steps</div>
+					<div class="summary-value sum-steps" id="sum-steps">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">avg sleep</div>
+					<div class="summary-value sum-sleep" id="sum-sleep">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">latest weight</div>
+					<div class="summary-value sum-weight" id="sum-weight">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">latest bf %</div>
+					<div class="summary-value sum-bf" id="sum-bf">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">workouts</div>
+					<div class="summary-value sum-workouts" id="sum-workouts">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">total volume</div>
+					<div class="summary-value sum-volume" id="sum-volume">—</div>
 				</div>
 				<div class="summary-card">
 					<div class="metric-label">range</div>
@@ -44,6 +68,34 @@ templ TrendsPage(rangeDays int) {
 				<div class="chart-title">GYM &middot; weekly frequency</div>
 				<div class="chart-wrap"><canvas id="gym-chart"></canvas></div>
 			</div>
+			<div class="chart-card">
+				<div class="chart-title">STEPS &middot; daily total</div>
+				<div class="chart-wrap"><canvas id="steps-chart"></canvas></div>
+			</div>
+			<div class="chart-card">
+				<div class="chart-title">SLEEP &middot; stages (deep / rem / core / awake)</div>
+				<div class="chart-wrap"><canvas id="sleep-chart"></canvas></div>
+			</div>
+			<div class="chart-card">
+				<div class="chart-title">RESTING HEART RATE</div>
+				<div class="chart-wrap"><canvas id="hr-chart"></canvas></div>
+			</div>
+			<div class="chart-card">
+				<div class="chart-title">WEIGHT (LBS)</div>
+				<div class="chart-wrap"><canvas id="weight-chart"></canvas></div>
+			</div>
+			<div class="chart-card">
+				<div class="chart-title">BODY FAT %</div>
+				<div class="chart-wrap"><canvas id="bf-chart"></canvas></div>
+			</div>
+			<div class="chart-card">
+				<div class="chart-title">WORKOUT VOLUME &middot; lbs lifted per day</div>
+				<div class="chart-wrap"><canvas id="vol-chart"></canvas></div>
+			</div>
+			<div class="chart-card">
+				<div class="chart-title">SETS BY BODY PART</div>
+				<div class="chart-wrap"><canvas id="bodypart-chart"></canvas></div>
+			</div>
 		</div>
 
 		<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
@@ -55,7 +107,7 @@ templ TrendsPage(rangeDays int) {
 				Chart.defaults.font.family = "'Courier New', Courier, monospace";
 				Chart.defaults.font.size = 10;
 
-				let calChart, macroChart, gymChart;
+				let calChart, macroChart, gymChart, stepsChart, sleepChart, hrChart, weightChart, bfChart, volChart, bodyPartChart;
 
 				function fmtDate(s) {
 					const d = new Date(s + 'T00:00:00');
@@ -102,6 +154,17 @@ templ TrendsPage(rangeDays int) {
 					document.getElementById('sum-cal').textContent =
 						data.avg_calories ? Math.round(data.avg_calories) : '—';
 					document.getElementById('sum-gym').textContent = data.gym_days;
+					document.getElementById('sum-steps').textContent =
+						data.avg_steps ? Math.round(data.avg_steps).toLocaleString() : '—';
+					document.getElementById('sum-sleep').textContent =
+						data.avg_sleep ? data.avg_sleep.toFixed(1) + 'h' : '—';
+					document.getElementById('sum-weight').textContent =
+						data.latest_weight ? data.latest_weight.toFixed(1) + ' lb' : '—';
+					document.getElementById('sum-bf').textContent =
+						data.latest_bf ? data.latest_bf.toFixed(1) + '%' : '—';
+					document.getElementById('sum-workouts').textContent = data.workout_days || 0;
+					document.getElementById('sum-volume').textContent =
+						data.total_volume ? Math.round(data.total_volume).toLocaleString() + ' lb' : '—';
 					document.getElementById('sum-range').textContent = data.range_days + ' days';
 
 					const commonScale = {
@@ -168,12 +231,168 @@ templ TrendsPage(rangeDays int) {
 							datasets: [{
 								label: 'Sessions',
 								data: weekVals,
-								backgroundColor: 'rgba(0,255,136,0.4)',
-								borderColor: GREEN,
+								backgroundColor: 'rgba(0,212,255,0.4)',
+								borderColor: '#00d4ff',
 								borderWidth: 1,
 							}],
 						},
 						options: chartOptions(commonScale),
+					});
+
+					// Steps
+					if (stepsChart) stepsChart.destroy();
+					stepsChart = new Chart(document.getElementById('steps-chart'), {
+						type: 'bar',
+						data: {
+							labels,
+							datasets: [{
+								label: 'Steps',
+								data: data.points.map(p => p.steps),
+								backgroundColor: 'rgba(255,149,0,0.5)',
+								borderColor: '#ff9500',
+								borderWidth: 1,
+							}],
+						},
+						options: chartOptions(commonScale),
+					});
+
+					// Sleep stages stacked bar
+					if (sleepChart) sleepChart.destroy();
+					sleepChart = new Chart(document.getElementById('sleep-chart'), {
+						type: 'bar',
+						data: {
+							labels,
+							datasets: [
+								{ label:'Deep',  data: data.points.map(p=>p.sleep_deep),  backgroundColor:'#5e34a8', stack:'s' },
+								{ label:'REM',   data: data.points.map(p=>p.sleep_rem),   backgroundColor:'#af52de', stack:'s' },
+								{ label:'Core',  data: data.points.map(p=>p.sleep_core),  backgroundColor:'#c896e6', stack:'s' },
+								{ label:'Awake', data: data.points.map(p=>p.sleep_awake), backgroundColor:'#6b6b6b', stack:'s' },
+							],
+						},
+						options: {
+							responsive: true, maintainAspectRatio: false,
+							interaction: { mode: 'index', intersect: false },
+							plugins: {
+								legend: { labels: { color: MUTED, boxWidth: 10 } },
+								tooltip: {
+									backgroundColor: '#0d1117', borderColor: GREEN_DIM, borderWidth: 1,
+									titleColor: GREEN, bodyColor: GREEN,
+								},
+							},
+							scales: {
+								x: { ...commonScale, stacked: true },
+								y: { ...commonScale, stacked: true, title: { display: true, text: 'hours', color: MUTED } },
+							},
+						},
+					});
+
+					// Resting HR
+					if (hrChart) hrChart.destroy();
+					hrChart = new Chart(document.getElementById('hr-chart'), {
+						type: 'line',
+						data: {
+							labels,
+							datasets: [{
+								label: 'Resting HR',
+								data: data.points.map(p => p.resting_hr),
+								borderColor: '#ff4488',
+								backgroundColor: 'rgba(255,68,136,0.1)',
+								borderWidth: 2,
+								pointRadius: 2,
+								tension: 0.3,
+								spanGaps: true,
+								fill: true,
+							}],
+						},
+						options: chartOptions(commonScale),
+					});
+
+					// Weight
+					if (weightChart) weightChart.destroy();
+					weightChart = new Chart(document.getElementById('weight-chart'), {
+						type: 'line',
+						data: {
+							labels,
+							datasets: [{
+								label: 'Weight (lb)',
+								data: data.points.map(p => p.weight_lbs),
+								borderColor: '#5ce1e6',
+								backgroundColor: 'rgba(92,225,230,0.1)',
+								borderWidth: 2,
+								pointRadius: 3,
+								tension: 0.3,
+								spanGaps: true,
+								fill: true,
+							}],
+						},
+						options: chartOptions(commonScale),
+					});
+
+					// Body fat %
+					if (bfChart) bfChart.destroy();
+					bfChart = new Chart(document.getElementById('bf-chart'), {
+						type: 'line',
+						data: {
+							labels,
+							datasets: [{
+								label: 'BF %',
+								data: data.points.map(p => p.bf_percent),
+								borderColor: '#ff70b3',
+								backgroundColor: 'rgba(255,112,179,0.1)',
+								borderWidth: 2,
+								pointRadius: 3,
+								tension: 0.3,
+								spanGaps: true,
+								fill: true,
+							}],
+						},
+						options: chartOptions(commonScale),
+					});
+
+					// Workout volume
+					if (volChart) volChart.destroy();
+					volChart = new Chart(document.getElementById('vol-chart'), {
+						type: 'bar',
+						data: {
+							labels,
+							datasets: [{
+								label: 'Volume (lb)',
+								data: data.points.map(p => p.workout_volume),
+								backgroundColor: 'rgba(255,209,102,0.5)',
+								borderColor: '#ffd166',
+								borderWidth: 1,
+							}],
+						},
+						options: chartOptions(commonScale),
+					});
+
+					// Sets by body part (doughnut)
+					if (bodyPartChart) bodyPartChart.destroy();
+					const bpData = data.sets_by_body_part || {};
+					const bpLabels = Object.keys(bpData);
+					const bpValues = bpLabels.map(k => bpData[k]);
+					const bpColors = ['#ffd166','#06d6a0','#118ab2','#ef476f','#073b4c','#ab47bc','#ff9800','#90a4ae'];
+					bodyPartChart = new Chart(document.getElementById('bodypart-chart'), {
+						type: 'doughnut',
+						data: {
+							labels: bpLabels,
+							datasets: [{
+								data: bpValues,
+								backgroundColor: bpLabels.map((_, i) => bpColors[i % bpColors.length]),
+								borderColor: '#0d1117',
+								borderWidth: 2,
+							}],
+						},
+						options: {
+							responsive: true, maintainAspectRatio: false,
+							plugins: {
+								legend: { position: 'right', labels: { color: MUTED, boxWidth: 10, font: { size: 10 } } },
+								tooltip: {
+									backgroundColor: '#0d1117', borderColor: GREEN_DIM, borderWidth: 1,
+									titleColor: GREEN, bodyColor: GREEN,
+								},
+							},
+						},
 					});
 				}
 
@@ -214,6 +433,13 @@ templ TrendsPage(rangeDays int) {
 				color: var(--green); font-size: 1.4rem; font-weight: bold;
 				margin-top: 0.25rem; line-height: 1;
 			}
+			.summary-value.sum-gym { color: #00d4ff; }
+			.summary-value.sum-steps { color: #ff9500; }
+			.summary-value.sum-sleep { color: #af52de; }
+			.summary-value.sum-weight { color: #5ce1e6; }
+			.summary-value.sum-bf { color: #ff70b3; }
+			.summary-value.sum-workouts { color: #ffd166; }
+			.summary-value.sum-volume { color: #ffd166; }
 			.chart-card {
 				background: var(--bg2); border: 1px solid var(--border);
 				border-radius: 6px; padding: 1rem 1.25rem; margin-bottom: 1rem;

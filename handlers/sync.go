@@ -41,5 +41,13 @@ func buildSyncModel() components.SyncStatusModel {
 			Running: sync.IsRunning(s.Name),
 		})
 	}
+	// Apple Health: push-based, no manual trigger
+	latestHealth, _ := db.LastSuccessfulSync("apple_health")
+	m.Sources = append(m.Sources, components.SyncSourceStatus{
+		Name:      "apple_health",
+		Last:      latestHealth,
+		Running:   false,
+		PushBased: true,
+	})
 	return m
 }

@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"net/http"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -40,7 +41,7 @@ func validSession(r *http.Request) bool {
 
 func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/login" {
+		if r.URL.Path == "/login" || strings.HasPrefix(r.URL.Path, "/api/") {
 			next.ServeHTTP(w, r)
 			return
 		}

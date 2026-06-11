@@ -74,11 +74,42 @@ templ Layout(title string) {
 				}
 				.nav-link.disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
 				.nav-divider { width: 1px; height: 1rem; background: var(--border); margin: 0 0.5rem; }
+
+				.nav-group { position: relative; }
+				.nav-group-summary {
+					cursor: pointer; list-style: none;
+					display: inline-block;
+				}
+				.nav-group-summary::-webkit-details-marker { display: none; }
+				.nav-group[open] > .nav-group-summary { color: var(--green); }
+				.nav-dropdown {
+					position: absolute; top: 100%; right: 0;
+					margin-top: 0.4rem;
+					background: var(--bg2); border: 1px solid var(--border);
+					border-radius: 6px; padding: 0.3rem;
+					display: flex; flex-direction: column; gap: 0.15rem;
+					min-width: 160px;
+					box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 8px rgba(0,255,136,0.04);
+					z-index: 100;
+				}
+				.nav-dropdown-item {
+					color: var(--text-muted); text-decoration: none;
+					font-size: 0.8rem; letter-spacing: 0.1em;
+					padding: 0.4rem 0.75rem; border-radius: 4px;
+					background: transparent; border: none; font-family: inherit;
+					text-align: left; cursor: pointer; transition: all 0.15s;
+				}
+				.nav-dropdown-item:hover { color: var(--green); background: var(--green-faint); }
+				.nav-dropdown-item.active { color: var(--green); background: var(--green-faint); }
+				.nav-dropdown-logout { color: rgba(255,80,80,0.5); }
+				.nav-dropdown-logout:hover { color: rgba(255,80,80,0.9); background: rgba(255,80,80,0.08); }
+
 				@media (max-width: 600px) {
 					.nav-bar { padding: 0.6rem 1rem; }
 					.nav-divider { display: none; }
 					.nav-link { font-size: 0.7rem; padding: 0.25rem 0.5rem; }
 					.nav-link.disabled { display: none; }
+					.nav-dropdown { right: auto; left: 0; }
 				}
 				.btn-terminal {
 					background: transparent;
@@ -145,14 +176,29 @@ templ Layout(title string) {
 			<div class="nav-bar">
 				<span class="nav-logo">&#9632; PI</span>
 				<nav class="nav-links">
-					<a href="/" class={ "nav-link", navActive(title, "stats") }>stats</a>
-					<a href="/fitness" class={ "nav-link", navActive(title, "fitness") }>fitness</a>
+					<a href="/" class={ "nav-link", navActive(title, "stats") }>pi</a>
+
+					<details class="nav-group" open?={ inHealthGroup(title) }>
+						<summary class={ "nav-link", "nav-group-summary", templ.KV("active", inHealthGroup(title)) }>health &#9662;</summary>
+						<div class="nav-dropdown">
+							<a href="/fitness" class={ "nav-dropdown-item", navActive(title, "fitness") }>calendar</a>
+							<a href="/workout" class={ "nav-dropdown-item", navActive(title, "workout") }>workout</a>
+							<a href="/exercises" class={ "nav-dropdown-item", navActive(title, "exercises") }>exercises</a>
+							<a href="/body" class={ "nav-dropdown-item", navActive(title, "body") }>body</a>
+						</div>
+					</details>
+
 					<a href="/trends" class={ "nav-link", navActive(title, "trends") }>trends</a>
-					<a href="/sync" class={ "nav-link", navActive(title, "sync") }>sync</a>
-					<div class="nav-divider"></div>
-					<form method="POST" action="/logout" style="margin:0">
-						<button type="submit" class="btn-terminal btn-logout">logout</button>
-					</form>
+
+					<details class="nav-group" open?={ inAdminGroup(title) }>
+						<summary class={ "nav-link", "nav-group-summary", templ.KV("active", inAdminGroup(title)) }>more &#9662;</summary>
+						<div class="nav-dropdown">
+							<a href="/sync" class={ "nav-dropdown-item", navActive(title, "sync") }>sync status</a>
+							<form method="POST" action="/logout" style="margin:0">
+								<button type="submit" class="nav-dropdown-item nav-dropdown-logout">logout</button>
+							</form>
+						</div>
+					</details>
 				</nav>
 			</div>
 			<main style="padding: 1rem; max-width: 960px; margin: 0 auto;">
@@ -167,4 +213,12 @@ func navActive(title, page string) string {
 		return "active"
 	}
 	return ""
+}
+
+func inHealthGroup(title string) bool {
+	return title == "fitness" || title == "workout" || title == "exercises" || title == "body"
+}
+
+func inAdminGroup(title string) bool {
+	return title == "sync"
 }

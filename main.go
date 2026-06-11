@@ -38,6 +38,24 @@ func main() {
 	mux.HandleFunc("GET /fitness/grid", handlers.FitnessGrid)
 	mux.HandleFunc("GET /fitness/day", handlers.FitnessDayDetail)
 
+	// Body metrics (weight, BF%)
+	mux.HandleFunc("GET /body", handlers.BodyPage)
+	mux.HandleFunc("POST /body", handlers.BodySubmit)
+
+	// Workout tracker
+	mux.HandleFunc("GET /workout", handlers.WorkoutPage)
+	mux.HandleFunc("POST /workout/set", handlers.WorkoutAddSet)
+	mux.HandleFunc("POST /workout/set/update", handlers.WorkoutUpdateSet)
+	mux.HandleFunc("POST /workout/set/delete", handlers.WorkoutDeleteSet)
+
+	// Exercise library
+	mux.HandleFunc("GET /exercises", handlers.ExercisesPage)
+	mux.HandleFunc("POST /exercises", handlers.ExerciseCreate)
+	mux.HandleFunc("POST /exercises/update", handlers.ExerciseUpdate)
+	mux.HandleFunc("POST /exercises/delete", handlers.ExerciseDelete)
+	mux.HandleFunc("POST /exercises/tag", handlers.BodyPartCreate)
+	mux.HandleFunc("POST /exercises/tag/delete", handlers.BodyPartDelete)
+
 	// Trends
 	mux.HandleFunc("GET /trends", handlers.TrendsPage)
 	mux.HandleFunc("GET /trends/data", handlers.TrendsData)
@@ -46,6 +64,9 @@ func main() {
 	mux.HandleFunc("GET /sync", handlers.SyncStatusPage)
 	mux.HandleFunc("GET /sync/status/fragment", handlers.SyncStatusFragment)
 	mux.HandleFunc("POST /sync/trigger", handlers.SyncTrigger)
+
+	// Apple Health ingestion (API key auth via X-Api-Key, bypasses cookie auth)
+	mux.HandleFunc("POST /api/health/ingest", handlers.HealthIngest)
 
 	log.Println("listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", handlers.AuthMiddleware(mux)))

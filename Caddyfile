@@ -1,0 +1,18 @@
+health.example.com {
+	# Public path: only the health ingest endpoint
+	handle /api/* {
+		reverse_proxy localhost:8080 {
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	# Block everything else — UI stays VPN-only
+	handle {
+		respond "Not Found" 404
+	}
+
+	log {
+		output file /var/log/caddy/health-api.log
+		format json
+	}
+}

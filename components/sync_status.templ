@@ -8,9 +8,10 @@ import (
 )
 
 type SyncSourceStatus struct {
-	Name    string
-	Last    *db.SyncRun
-	Running bool
+	Name      string
+	Last      *db.SyncRun
+	Running   bool
+	PushBased bool // true for sources that don't have a manual sync (pushed in by external clients)
 }
 
 type SyncStatusModel struct {
@@ -173,22 +174,28 @@ templ sourceCard(s SyncSourceStatus) {
 				}
 			</div>
 		</div>
-		<div class="src-actions">
-			<button
-				class="btn-mini"
-				disabled?={ s.Running }
-				hx-post={ fmt.Sprintf("/sync/trigger?source=%s", s.Name) }
-				hx-target="#sync-fragment"
-				hx-swap="outerHTML"
-			>sync now</button>
-			<button
-				class="btn-mini"
-				disabled?={ s.Running }
-				hx-post={ fmt.Sprintf("/sync/trigger?source=%s&days=60", s.Name) }
-				hx-target="#sync-fragment"
-				hx-swap="outerHTML"
-			>backfill 60d</button>
-		</div>
+		if s.PushBased {
+			<div class="src-actions">
+				<span class="src-key" style="text-transform:none;">pushed via /api/health/ingest</span>
+			</div>
+		} else {
+			<div class="src-actions">
+				<button
+					class="btn-mini"
+					disabled?={ s.Running }
+					hx-post={ fmt.Sprintf("/sync/trigger?source=%s", s.Name) }
+					hx-target="#sync-fragment"
+					hx-swap="outerHTML"
+				>sync now</button>
+				<button
+					class="btn-mini"
+					disabled?={ s.Running }
+					hx-post={ fmt.Sprintf("/sync/trigger?source=%s&days=60", s.Name) }
+					hx-target="#sync-fragment"
+					hx-swap="outerHTML"
+				>backfill 60d</button>
+			</div>
+		}
 	</div>
 }
 

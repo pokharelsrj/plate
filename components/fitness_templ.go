@@ -26,23 +26,38 @@ type DayCell struct {
 	HasCalories   bool
 	Calories      float64
 	CalorieBudget float64
+	HasSteps      bool
+	Steps         int64
+	HasSleep      bool
+	SleepHours    float64
+	HasWeight     bool
+	Weight        float64
+	HasWorkout    bool
 }
 
 type FitnessModel struct {
-	View      string // "month" | "week"
-	Anchor    time.Time
-	AnchorStr string
-	Label     string
-	PrevStr   string
-	NextStr   string
-	TodayStr  string
-	Cells     []DayCell
+	View        string // "month" | "week"
+	Anchor      time.Time
+	AnchorStr   string
+	Label       string
+	PrevStr     string
+	NextStr     string
+	TodayStr    string
+	Cells       []DayCell
+	GymDays     int     // gym checkins within the visible period
+	AvgCalories float64 // average daily calories within the visible period
+	AvgSteps    float64 // average daily steps within the visible period
+	AvgSleep    float64 // average daily sleep hours within the visible period
+	PeriodLabel string  // "MONTH" | "WEEK"
 }
 
 type DayDetail struct {
-	Date      time.Time
-	Checkins  []time.Time
-	Nutrition *db.NutritionDay
+	Date        time.Time
+	Checkins    []time.Time
+	Nutrition   *db.NutritionDay
+	Health      *db.HealthDay
+	Body        *db.BodyMetric
+	WorkoutSets []db.WorkoutSet
 }
 
 func FitnessPage(m FitnessModel) templ.Component {
@@ -94,7 +109,7 @@ func FitnessPage(m FitnessModel) templ.Component {
 			var templ_7745c5c3_Var4 templ.SafeURL
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/fitness?view=month&date=%s", m.AnchorStr)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 49, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 64, Col: 82}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -129,7 +144,7 @@ func FitnessPage(m FitnessModel) templ.Component {
 			var templ_7745c5c3_Var7 templ.SafeURL
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/fitness?view=week&date=%s", m.AnchorStr)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 53, Col: 81}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 68, Col: 81}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -156,7 +171,132 @@ func FitnessPage(m FitnessModel) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, " <div id=\"day-detail\" style=\"margin-top: 1.25rem;\"></div><style>\n\t\t\t.page-header {\n\t\t\t\tdisplay:flex; align-items:center; justify-content:space-between;\n\t\t\t\tmargin-bottom:1rem; gap:0.75rem; flex-wrap:wrap;\n\t\t\t}\n\t\t\t.view-toggle { display:flex; gap:0.25rem; }\n\t\t\t.toggle-btn {\n\t\t\t\tcolor: var(--text-muted); text-decoration:none;\n\t\t\t\tfont-size:0.7rem; letter-spacing:0.15em;\n\t\t\t\tpadding:0.3rem 0.75rem; border:1px solid var(--border);\n\t\t\t\tborder-radius:4px; transition: all 0.15s;\n\t\t\t}\n\t\t\t.toggle-btn:hover { color: var(--green); }\n\t\t\t.toggle-btn.active { color: var(--green); background: var(--green-faint); border-color: var(--green-dim); }\n\n\t\t\t.cal-nav {\n\t\t\t\tdisplay:flex; align-items:center; justify-content:space-between;\n\t\t\t\tmargin-bottom: 0.75rem;\n\t\t\t}\n\t\t\t.cal-nav-label {\n\t\t\t\tcolor: var(--green); font-size: 0.85rem; letter-spacing: 0.15em;\n\t\t\t\tfont-weight: bold; text-transform: uppercase;\n\t\t\t}\n\t\t\t.cal-nav-btn {\n\t\t\t\tcolor: var(--text-muted); text-decoration:none;\n\t\t\t\tborder: 1px solid var(--border); border-radius: 4px;\n\t\t\t\tpadding: 0.2rem 0.6rem; font-size: 0.85rem;\n\t\t\t\ttransition: all 0.15s;\n\t\t\t}\n\t\t\t.cal-nav-btn:hover { color: var(--green); background: var(--green-faint); }\n\n\t\t\t.cal-grid {\n\t\t\t\tdisplay:grid; grid-template-columns: repeat(7, 1fr);\n\t\t\t\tgap: 4px;\n\t\t\t\tbackground: var(--bg2);\n\t\t\t\tborder: 1px solid var(--border);\n\t\t\t\tborder-radius: 6px;\n\t\t\t\tpadding: 6px;\n\t\t\t}\n\t\t\t.cal-head {\n\t\t\t\tfont-size: 0.55rem; letter-spacing: 0.2em;\n\t\t\t\tcolor: var(--text-muted); text-align: center;\n\t\t\t\tpadding: 0.3rem 0;\n\t\t\t}\n\t\t\t.cal-day {\n\t\t\t\tbackground: var(--bg);\n\t\t\t\tborder-radius: 4px;\n\t\t\t\tmin-height: 70px;\n\t\t\t\tpadding: 0.4rem 0.5rem;\n\t\t\t\tcursor: pointer;\n\t\t\t\tdisplay: flex; flex-direction: column;\n\t\t\t\tgap: 0.3rem;\n\t\t\t\tborder: 1px solid transparent;\n\t\t\t\ttransition: all 0.15s;\n\t\t\t\tposition: relative;\n\t\t\t}\n\t\t\t.cal-day:hover {\n\t\t\t\tborder-color: var(--green-dim);\n\t\t\t\tbox-shadow: 0 0 8px rgba(0,255,136,0.15);\n\t\t\t}\n\t\t\t.cal-day.out-month { opacity: 0.3; }\n\t\t\t.cal-day.today {\n\t\t\t\tborder-color: var(--green);\n\t\t\t\tbox-shadow: inset 0 0 0 1px var(--green), 0 0 12px rgba(0,255,136,0.2);\n\t\t\t}\n\t\t\t.cal-day.selected {\n\t\t\t\tbackground: var(--green-faint);\n\t\t\t\tborder-color: var(--green);\n\t\t\t}\n\t\t\t.cal-day-num {\n\t\t\t\tfont-size: 0.75rem; font-weight: bold;\n\t\t\t\tcolor: var(--green); line-height: 1;\n\t\t\t}\n\t\t\t.out-month .cal-day-num { color: var(--text-muted); }\n\t\t\t.cal-indicators {\n\t\t\t\tdisplay:flex; gap: 0.25rem; margin-top: auto;\n\t\t\t\tflex-wrap: wrap; align-items: center;\n\t\t\t}\n\t\t\t.dot {\n\t\t\t\twidth: 6px; height: 6px; border-radius: 50%;\n\t\t\t\tdisplay: inline-block;\n\t\t\t}\n\t\t\t.dot.gym { background: #00ff88; box-shadow: 0 0 4px rgba(0,255,136,0.6); }\n\t\t\t.dot.cal-good { background: #00ff88; box-shadow: 0 0 4px rgba(0,255,136,0.5); }\n\t\t\t.dot.cal-low { background: #ffaa00; box-shadow: 0 0 4px rgba(255,170,0,0.5); }\n\t\t\t.dot.cal-over { background: #ff4422; box-shadow: 0 0 4px rgba(255,68,34,0.5); }\n\t\t\t.cal-cal-num {\n\t\t\t\tfont-size: 0.55rem; color: var(--text-muted);\n\t\t\t\tletter-spacing: 0.05em;\n\t\t\t}\n\t\t\t@media (max-width: 600px) {\n\t\t\t\t.cal-day { min-height: 50px; padding: 0.25rem 0.3rem; gap: 0.2rem; }\n\t\t\t\t.cal-day-num { font-size: 0.65rem; }\n\t\t\t\t.cal-head { font-size: 0.5rem; }\n\t\t\t\t.cal-cal-num { display:none; }\n\t\t\t\t.dot { width: 5px; height: 5px; }\n\t\t\t}\n\n\t\t\t.detail-card {\n\t\t\t\tbackground: var(--bg2); border: 1px solid var(--border);\n\t\t\t\tborder-radius: 6px; padding: 1.25rem;\n\t\t\t}\n\t\t\t.detail-head {\n\t\t\t\tdisplay:flex; justify-content:space-between; align-items:baseline;\n\t\t\t\tmargin-bottom: 1rem; padding-bottom: 0.75rem;\n\t\t\t\tborder-bottom: 1px solid var(--border);\n\t\t\t}\n\t\t\t.detail-date {\n\t\t\t\tcolor: var(--green); font-size: 1rem; font-weight: bold;\n\t\t\t\tletter-spacing: 0.1em;\n\t\t\t}\n\t\t\t.macro-row {\n\t\t\t\tdisplay:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));\n\t\t\t\tgap: 0.75rem; margin-top: 0.75rem;\n\t\t\t}\n\t\t\t.macro-item {\n\t\t\t\tbackground: var(--bg); border-radius: 4px; padding: 0.6rem 0.75rem;\n\t\t\t\tborder: 1px solid var(--border);\n\t\t\t}\n\t\t\t.macro-name { font-size: 0.55rem; letter-spacing: 0.2em; color: var(--text-muted); }\n\t\t\t.macro-value { font-size: 1rem; color: var(--green); font-weight: bold; margin-top: 0.2rem; }\n\t\t\t.macro-bar { height: 3px; background: rgba(0,255,136,0.1); border-radius: 2px; margin-top: 0.4rem; overflow: hidden; }\n\t\t\t.macro-bar-fill { height: 100%; background: var(--green); border-radius: 2px; box-shadow: 0 0 6px rgba(0,255,136,0.4); }\n\t\t\t.macro-bar-fill.over { background: #ff4422; box-shadow: 0 0 6px rgba(255,68,34,0.4); }\n\t\t\t.macro-budget { font-size: 0.55rem; color: var(--text-muted); margin-top: 0.3rem; }\n\n\t\t\t.checkin-list { margin-top: 0.5rem; }\n\t\t\t.checkin-time {\n\t\t\t\tdisplay: inline-block; padding: 0.25rem 0.6rem;\n\t\t\t\tbackground: var(--green-faint); border: 1px solid var(--green-dim);\n\t\t\t\tborder-radius: 4px; color: var(--green); font-size: 0.7rem;\n\t\t\t\tletter-spacing: 0.1em; margin-right: 0.5rem; margin-bottom: 0.4rem;\n\t\t\t}\n\t\t\t.detail-empty {\n\t\t\t\tcolor: var(--text-muted); font-size: 0.75rem;\n\t\t\t\ttext-align: center; padding: 1.5rem 0;\n\t\t\t\tletter-spacing: 0.05em;\n\t\t\t}\n\t\t</style>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, " <div class=\"legend\"><div class=\"legend-item\"><span class=\"dot gym\"></span> gym</div><div class=\"legend-item\"><span class=\"dot cal-good\"></span> cal: on budget</div><div class=\"legend-item\"><span class=\"dot cal-low\"></span> cal: under</div><div class=\"legend-item\"><span class=\"dot cal-over\"></span> cal: over</div><div class=\"legend-item\"><span class=\"dot steps-good\"></span> 10k+ steps</div><div class=\"legend-item\"><span class=\"dot sleep-good\"></span> 7h+ sleep</div><div class=\"legend-item\"><span class=\"dot weight\"></span> weight logged</div><div class=\"legend-item\"><span class=\"dot workout\"></span> workout</div></div><div class=\"period-stats\"><div class=\"stat-box\"><div class=\"stat-label\">GYM DAYS / ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var9 string
+			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(m.PeriodLabel)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 89, Col: 54}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div><div class=\"stat-value gym-color\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var10 string
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", m.GymDays))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 90, Col: 68}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</div></div><div class=\"stat-box\"><div class=\"stat-label\">AVG CALORIES / ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var11 string
+			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(m.PeriodLabel)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 93, Col: 58}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div><div class=\"stat-value\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if m.AvgCalories > 0 {
+				var templ_7745c5c3_Var12 string
+				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.0f", m.AvgCalories))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 96, Col: 42}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			} else {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "—")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</div></div><div class=\"stat-box\"><div class=\"stat-label\">AVG STEPS / ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var13 string
+			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(m.PeriodLabel)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 103, Col: 55}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</div><div class=\"stat-value steps-color\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if m.AvgSteps > 0 {
+				var templ_7745c5c3_Var14 string
+				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.0f", m.AvgSteps))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 106, Col: 39}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			} else {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "—")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</div></div><div class=\"stat-box\"><div class=\"stat-label\">AVG SLEEP / ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var15 string
+			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(m.PeriodLabel)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 113, Col: 55}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "</div><div class=\"stat-value sleep-color\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if m.AvgSleep > 0 {
+				var templ_7745c5c3_Var16 string
+				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.1fh", m.AvgSleep))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 116, Col: 40}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			} else {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "—")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</div></div></div><div id=\"day-detail\" style=\"margin-top: 1.25rem;\"></div><style>\n\t\t\t.page-header {\n\t\t\t\tdisplay:flex; align-items:center; justify-content:space-between;\n\t\t\t\tmargin-bottom:1rem; gap:0.75rem; flex-wrap:wrap;\n\t\t\t}\n\t\t\t.view-toggle { display:flex; gap:0.25rem; }\n\t\t\t.toggle-btn {\n\t\t\t\tcolor: var(--text-muted); text-decoration:none;\n\t\t\t\tfont-size:0.7rem; letter-spacing:0.15em;\n\t\t\t\tpadding:0.3rem 0.75rem; border:1px solid var(--border);\n\t\t\t\tborder-radius:4px; transition: all 0.15s;\n\t\t\t}\n\t\t\t.toggle-btn:hover { color: var(--green); }\n\t\t\t.toggle-btn.active { color: var(--green); background: var(--green-faint); border-color: var(--green-dim); }\n\n\t\t\t.cal-nav {\n\t\t\t\tdisplay:flex; align-items:center; justify-content:space-between;\n\t\t\t\tmargin-bottom: 0.75rem;\n\t\t\t}\n\t\t\t.cal-nav-label {\n\t\t\t\tcolor: var(--green); font-size: 0.85rem; letter-spacing: 0.15em;\n\t\t\t\tfont-weight: bold; text-transform: uppercase;\n\t\t\t}\n\t\t\t.cal-nav-btn {\n\t\t\t\tcolor: var(--text-muted); text-decoration:none;\n\t\t\t\tborder: 1px solid var(--border); border-radius: 4px;\n\t\t\t\tpadding: 0.2rem 0.6rem; font-size: 0.85rem;\n\t\t\t\ttransition: all 0.15s;\n\t\t\t}\n\t\t\t.cal-nav-btn:hover { color: var(--green); background: var(--green-faint); }\n\n\t\t\t.cal-grid {\n\t\t\t\tdisplay:grid; grid-template-columns: repeat(7, 1fr);\n\t\t\t\tgap: 4px;\n\t\t\t\tbackground: var(--bg2);\n\t\t\t\tborder: 1px solid var(--border);\n\t\t\t\tborder-radius: 6px;\n\t\t\t\tpadding: 6px;\n\t\t\t}\n\t\t\t.cal-head {\n\t\t\t\tfont-size: 0.55rem; letter-spacing: 0.2em;\n\t\t\t\tcolor: var(--text-muted); text-align: center;\n\t\t\t\tpadding: 0.3rem 0;\n\t\t\t}\n\t\t\t.cal-day {\n\t\t\t\tbackground: var(--bg);\n\t\t\t\tborder-radius: 4px;\n\t\t\t\tmin-height: 70px;\n\t\t\t\tpadding: 0.4rem 0.5rem;\n\t\t\t\tcursor: pointer;\n\t\t\t\tdisplay: flex; flex-direction: column;\n\t\t\t\tgap: 0.3rem;\n\t\t\t\tborder: 1px solid transparent;\n\t\t\t\ttransition: all 0.15s;\n\t\t\t\tposition: relative;\n\t\t\t}\n\t\t\t.cal-day:hover {\n\t\t\t\tborder-color: var(--green-dim);\n\t\t\t\tbox-shadow: 0 0 8px rgba(0,255,136,0.15);\n\t\t\t}\n\t\t\t.cal-day.out-month { opacity: 0.3; }\n\t\t\t.cal-day.today {\n\t\t\t\tborder-color: var(--green);\n\t\t\t\tbox-shadow: inset 0 0 0 1px var(--green), 0 0 12px rgba(0,255,136,0.2);\n\t\t\t}\n\t\t\t.cal-day.selected {\n\t\t\t\tbackground: var(--green-faint);\n\t\t\t\tborder-color: var(--green);\n\t\t\t}\n\t\t\t.cal-day-num {\n\t\t\t\tfont-size: 0.75rem; font-weight: bold;\n\t\t\t\tcolor: var(--green); line-height: 1;\n\t\t\t}\n\t\t\t.out-month .cal-day-num { color: var(--text-muted); }\n\t\t\t.cal-indicators {\n\t\t\t\tdisplay:flex; gap: 0.25rem; margin-top: auto;\n\t\t\t\tflex-wrap: wrap; align-items: center;\n\t\t\t}\n\t\t\t.dot {\n\t\t\t\twidth: 6px; height: 6px; border-radius: 50%;\n\t\t\t\tdisplay: inline-block;\n\t\t\t}\n\t\t\t.dot.gym { background: #00d4ff; box-shadow: 0 0 4px rgba(0,212,255,0.7); }\n\t\t\t.dot.cal-good { background: #00ff88; box-shadow: 0 0 4px rgba(0,255,136,0.6); }\n\t\t\t.dot.cal-low { background: #ffaa00; box-shadow: 0 0 4px rgba(255,170,0,0.6); }\n\t\t\t.dot.cal-over { background: #ff4422; box-shadow: 0 0 4px rgba(255,68,34,0.6); }\n\t\t\t.dot.steps-good { background: #ff9500; box-shadow: 0 0 4px rgba(255,149,0,0.7); }\n\t\t\t.dot.steps-low { background: #b06200; box-shadow: 0 0 4px rgba(176,98,0,0.5); }\n\t\t\t.dot.sleep-good { background: #af52de; box-shadow: 0 0 4px rgba(175,82,222,0.7); }\n\t\t\t.dot.sleep-ok { background: #7e3ca8; box-shadow: 0 0 4px rgba(126,60,168,0.6); }\n\t\t\t.dot.sleep-low { background: #4d2466; box-shadow: 0 0 4px rgba(77,36,102,0.5); }\n\t\t\t.dot.weight { background: #5ce1e6; box-shadow: 0 0 4px rgba(92,225,230,0.7); }\n\t\t\t.dot.workout { background: #ffd166; box-shadow: 0 0 4px rgba(255,209,102,0.7); }\n\t\t\t.cal-cal-num {\n\t\t\t\tfont-size: 0.55rem; color: var(--text-muted);\n\t\t\t\tletter-spacing: 0.05em;\n\t\t\t}\n\t\t\t.legend {\n\t\t\t\tdisplay:flex; gap: 1rem; flex-wrap: wrap;\n\t\t\t\tmargin-top: 0.75rem; padding: 0.5rem 0.25rem;\n\t\t\t}\n\t\t\t.legend-item {\n\t\t\t\tdisplay:flex; align-items:center; gap: 0.4rem;\n\t\t\t\tfont-size: 0.6rem; letter-spacing: 0.15em;\n\t\t\t\tcolor: var(--text-muted); text-transform: uppercase;\n\t\t\t}\n\t\t\t.legend-item .dot { width: 8px; height: 8px; }\n\t\t\t.period-stats {\n\t\t\t\tdisplay:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));\n\t\t\t\tgap: 0.75rem; margin-top: 0.75rem;\n\t\t\t}\n\t\t\t.stat-box {\n\t\t\t\tbackground: var(--bg2); border: 1px solid var(--border);\n\t\t\t\tborder-radius: 6px; padding: 0.85rem 1rem;\n\t\t\t}\n\t\t\t.stat-label {\n\t\t\t\tfont-size: 0.6rem; letter-spacing: 0.2em;\n\t\t\t\tcolor: var(--text-muted);\n\t\t\t}\n\t\t\t.stat-value {\n\t\t\t\tcolor: var(--green); font-size: 1.4rem; font-weight: bold;\n\t\t\t\tmargin-top: 0.3rem; line-height: 1;\n\t\t\t}\n\t\t\t.stat-value.gym-color { color: #00d4ff; }\n\t\t\t.stat-value.steps-color { color: #ff9500; }\n\t\t\t.stat-value.sleep-color { color: #af52de; }\n\t\t\t@media (max-width: 600px) {\n\t\t\t\t.cal-day { min-height: 50px; padding: 0.25rem 0.3rem; gap: 0.2rem; }\n\t\t\t\t.cal-day-num { font-size: 0.65rem; }\n\t\t\t\t.cal-head { font-size: 0.5rem; }\n\t\t\t\t.cal-cal-num { display:none; }\n\t\t\t\t.dot { width: 5px; height: 5px; }\n\t\t\t}\n\n\t\t\t.detail-card {\n\t\t\t\tbackground: var(--bg2); border: 1px solid var(--border);\n\t\t\t\tborder-radius: 6px; padding: 1.25rem;\n\t\t\t}\n\t\t\t.detail-head {\n\t\t\t\tdisplay:flex; justify-content:space-between; align-items:baseline;\n\t\t\t\tmargin-bottom: 1rem; padding-bottom: 0.75rem;\n\t\t\t\tborder-bottom: 1px solid var(--border);\n\t\t\t}\n\t\t\t.detail-date {\n\t\t\t\tcolor: var(--green); font-size: 1rem; font-weight: bold;\n\t\t\t\tletter-spacing: 0.1em;\n\t\t\t}\n\t\t\t.macro-row {\n\t\t\t\tdisplay:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));\n\t\t\t\tgap: 0.75rem; margin-top: 0.75rem;\n\t\t\t}\n\t\t\t.macro-item {\n\t\t\t\tbackground: var(--bg); border-radius: 4px; padding: 0.6rem 0.75rem;\n\t\t\t\tborder: 1px solid var(--border);\n\t\t\t}\n\t\t\t.macro-name { font-size: 0.55rem; letter-spacing: 0.2em; color: var(--text-muted); }\n\t\t\t.macro-value { font-size: 1rem; color: var(--green); font-weight: bold; margin-top: 0.2rem; }\n\t\t\t.macro-bar { height: 3px; background: rgba(0,255,136,0.1); border-radius: 2px; margin-top: 0.4rem; overflow: hidden; }\n\t\t\t.macro-bar-fill { height: 100%; background: var(--green); border-radius: 2px; box-shadow: 0 0 6px rgba(0,255,136,0.4); }\n\t\t\t.macro-bar-fill.over { background: #ff4422; box-shadow: 0 0 6px rgba(255,68,34,0.4); }\n\t\t\t.macro-budget { font-size: 0.55rem; color: var(--text-muted); margin-top: 0.3rem; }\n\t\t\t.macro-value.steps-color { color: #ff9500; }\n\n\t\t\t.sleep-total {\n\t\t\t\tdisplay:flex; align-items:baseline; gap: 0.6rem;\n\t\t\t\tmargin-bottom: 0.6rem;\n\t\t\t}\n\t\t\t.sleep-total-value { font-size: 1.4rem; font-weight: bold; }\n\t\t\t.sleep-color { color: #af52de; }\n\n\t\t\t.sleep-bar {\n\t\t\t\tdisplay:flex; height: 14px; background: var(--bg);\n\t\t\t\tborder: 1px solid var(--border); border-radius: 4px;\n\t\t\t\toverflow: hidden;\n\t\t\t}\n\t\t\t.sleep-seg { height: 100%; }\n\t\t\t.seg-deep  { background: #5e34a8; }\n\t\t\t.seg-rem   { background: #af52de; }\n\t\t\t.seg-core  { background: #c896e6; }\n\t\t\t.seg-awake { background: #6b6b6b; }\n\n\t\t\t.sleep-legend {\n\t\t\t\tdisplay:flex; gap: 0.9rem; flex-wrap: wrap;\n\t\t\t\tmargin-top: 0.5rem;\n\t\t\t}\n\t\t\t.sleep-leg-item {\n\t\t\t\tdisplay:inline-flex; align-items:center; gap: 0.35rem;\n\t\t\t\tfont-size: 0.65rem; color: var(--text-muted);\n\t\t\t\tletter-spacing: 0.1em; text-transform: uppercase;\n\t\t\t}\n\t\t\t.sleep-leg-dot {\n\t\t\t\twidth: 8px; height: 8px; border-radius: 2px;\n\t\t\t\tdisplay: inline-block;\n\t\t\t}\n\n\t\t\t.checkin-list { margin-top: 0.5rem; }\n\t\t\t.checkin-time {\n\t\t\t\tdisplay: inline-block; padding: 0.25rem 0.6rem;\n\t\t\t\tbackground: var(--green-faint); border: 1px solid var(--green-dim);\n\t\t\t\tborder-radius: 4px; color: var(--green); font-size: 0.7rem;\n\t\t\t\tletter-spacing: 0.1em; margin-right: 0.5rem; margin-bottom: 0.4rem;\n\t\t\t}\n\t\t\t.detail-empty {\n\t\t\t\tcolor: var(--text-muted); font-size: 0.75rem;\n\t\t\t\ttext-align: center; padding: 1.5rem 0;\n\t\t\t\tletter-spacing: 0.05em;\n\t\t\t}\n\t\t</style>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -186,51 +326,51 @@ func FitnessGrid(m FitnessModel) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var9 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var9 == nil {
-			templ_7745c5c3_Var9 = templ.NopComponent
+		templ_7745c5c3_Var17 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var17 == nil {
+			templ_7745c5c3_Var17 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div id=\"fitness-grid\"><div class=\"cal-nav\"><a class=\"cal-nav-btn\" href=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div id=\"fitness-grid\"><div class=\"cal-nav\"><a class=\"cal-nav-btn\" href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var10 templ.SafeURL
-		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/fitness?view=%s&date=%s", m.View, m.PrevStr)))
+		var templ_7745c5c3_Var18 templ.SafeURL
+		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/fitness?view=%s&date=%s", m.View, m.PrevStr)))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 208, Col: 106}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 340, Col: 106}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\">&lt;</a> <span class=\"cal-nav-label\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var11 string
-		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(m.Label)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 209, Col: 40}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\">&lt;</a> <span class=\"cal-nav-label\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</span> <a class=\"cal-nav-btn\" href=\"")
+		var templ_7745c5c3_Var19 string
+		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(m.Label)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 341, Col: 40}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var12 templ.SafeURL
-		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/fitness?view=%s&date=%s", m.View, m.NextStr)))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 210, Col: 106}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</span> <a class=\"cal-nav-btn\" href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\">&gt;</a></div><div class=\"cal-grid\"><div class=\"cal-head\">SUN</div><div class=\"cal-head\">MON</div><div class=\"cal-head\">TUE</div><div class=\"cal-head\">WED</div><div class=\"cal-head\">THU</div><div class=\"cal-head\">FRI</div><div class=\"cal-head\">SAT</div>")
+		var templ_7745c5c3_Var20 templ.SafeURL
+		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/fitness?view=%s&date=%s", m.View, m.NextStr)))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 342, Col: 106}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\">&gt;</a></div><div class=\"cal-grid\"><div class=\"cal-head\">SUN</div><div class=\"cal-head\">MON</div><div class=\"cal-head\">TUE</div><div class=\"cal-head\">WED</div><div class=\"cal-head\">THU</div><div class=\"cal-head\">FRI</div><div class=\"cal-head\">SAT</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -240,7 +380,7 @@ func FitnessGrid(m FitnessModel) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -264,108 +404,172 @@ func dayCell(c DayCell) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var13 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var13 == nil {
-			templ_7745c5c3_Var13 = templ.NopComponent
+		templ_7745c5c3_Var21 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var21 == nil {
+			templ_7745c5c3_Var21 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var14 = []any{"cal-day", templ.KV("out-month", !c.InMonth), templ.KV("today", c.IsToday)}
-		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var14...)
+		var templ_7745c5c3_Var22 = []any{"cal-day", templ.KV("out-month", !c.InMonth), templ.KV("today", c.IsToday)}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var22...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<div class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var15 string
-		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var14).String())
+		var templ_7745c5c3_Var23 string
+		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var22).String())
 		if templ_7745c5c3_Err != nil {
 			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 1, Col: 0}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var23)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\" hx-get=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\" hx-get=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var16 string
-		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/fitness/day?date=%s", c.Key))
+		var templ_7745c5c3_Var24 string
+		templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("/fitness/day?date=%s", c.Key))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 230, Col: 53}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 362, Col: 53}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\" hx-target=\"#day-detail\" hx-swap=\"innerHTML\" _=\"on click take .selected for me from .cal-day\"><span class=\"cal-day-num\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var24)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var17 string
-		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", c.Day))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 235, Col: 54}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\" hx-target=\"#day-detail\" hx-swap=\"innerHTML\" _=\"on click take .selected for me from .cal-day\"><span class=\"cal-day-num\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "</span><div class=\"cal-indicators\">")
+		var templ_7745c5c3_Var25 string
+		templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", c.Day))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 367, Col: 54}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</span><div class=\"cal-indicators\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if c.HasGym {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<span class=\"dot gym\" title=\"gym checkin\"></span> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<span class=\"dot gym\" title=\"gym checkin\"></span> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
 		if c.HasCalories {
-			var templ_7745c5c3_Var18 = []any{"dot", calorieClass(c.Calories, c.CalorieBudget)}
-			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var18...)
+			var templ_7745c5c3_Var26 = []any{"dot", calorieClass(c.Calories, c.CalorieBudget)}
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var26...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<span class=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<span class=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var19 string
-			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var18).String())
+			var templ_7745c5c3_Var27 string
+			templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var26).String())
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 1, Col: 0}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var27)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\" title=\"calories logged\"></span> <span class=\"cal-cal-num\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var20 string
-			templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.0f", c.Calories))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 242, Col: 63}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "</span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\" title=\"calories logged\"></span> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div></div>")
+		if c.HasSteps {
+			var templ_7745c5c3_Var28 = []any{"dot", stepsClass(c.Steps)}
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var28...)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<span class=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var29 string
+			templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var28).String())
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 1, Col: 0}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var29)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "\" title=\"steps\"></span> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if c.HasSleep {
+			var templ_7745c5c3_Var30 = []any{"dot", sleepClass(c.SleepHours)}
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var30...)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "<span class=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var31 string
+			templ_7745c5c3_Var31, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var30).String())
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 1, Col: 0}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var31)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "\" title=\"sleep\"></span> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if c.HasWeight {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "<span class=\"dot weight\" title=\"weight logged\"></span> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if c.HasWorkout {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "<span class=\"dot workout\" title=\"workout\"></span>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		return nil
 	})
+}
+
+func stepsClass(s int64) string {
+	if s >= 10000 {
+		return "steps-good"
+	}
+	return "steps-low"
+}
+
+func sleepClass(h float64) string {
+	if h >= 7 {
+		return "sleep-good"
+	}
+	if h >= 5.5 {
+		return "sleep-ok"
+	}
+	return "sleep-low"
 }
 
 func calorieClass(cal, budget float64) string {
@@ -397,81 +601,96 @@ func DayDetailCard(d DayDetail) templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var21 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var21 == nil {
-			templ_7745c5c3_Var21 = templ.NopComponent
+		templ_7745c5c3_Var32 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var32 == nil {
+			templ_7745c5c3_Var32 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"detail-card\"><div class=\"detail-head\"><span class=\"detail-date\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "<div class=\"detail-card\"><div class=\"detail-head\"><span class=\"detail-date\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var22 string
-		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(d.Date.Format("Monday, Jan 2"))
+		var templ_7745c5c3_Var33 string
+		templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(d.Date.Format("Monday, Jan 2"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 264, Col: 61}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 424, Col: 61}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</span> <span class=\"metric-sub\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var23 string
-		templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(d.Date.Format("2006"))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 265, Col: 51}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "</span> <span class=\"metric-sub\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</span></div><div><div class=\"metric-label\" style=\"margin-bottom:0.5rem;\">GYM</div>")
+		var templ_7745c5c3_Var34 string
+		templ_7745c5c3_Var34, templ_7745c5c3_Err = templ.JoinStringErrs(d.Date.Format("2006"))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 425, Col: 51}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var34))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "</span></div><div><div class=\"metric-label\" style=\"margin-bottom:0.5rem;\">GYM</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if len(d.Checkins) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<div class=\"checkin-list\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "<div class=\"checkin-list\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, t := range d.Checkins {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<span class=\"checkin-time\">&#9632; ")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "<span class=\"checkin-time\">&#9632; ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var24 string
-				templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(t.Format("3:04 PM"))
+				var templ_7745c5c3_Var35 string
+				templ_7745c5c3_Var35, templ_7745c5c3_Err = templ.JoinStringErrs(t.Format("3:04 PM"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 273, Col: 62}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 433, Col: 62}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var35))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</span>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, "</span>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<div class=\"detail-empty\">no checkin</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, "<div class=\"detail-empty\">no checkin</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "</div><div style=\"margin-top: 1rem;\"><div class=\"metric-label\" style=\"margin-bottom:0.5rem;\">NUTRITION</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 47, "</div><div style=\"margin-top: 1rem;\"><div class=\"metric-label\" style=\"margin-bottom:0.5rem;\">WORKOUT</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if len(d.WorkoutSets) > 0 {
+			templ_7745c5c3_Err = detailWorkoutList(d.WorkoutSets).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "<div class=\"detail-empty\">no workout logged</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 49, "</div><div style=\"margin-top: 1rem;\"><div class=\"metric-label\" style=\"margin-bottom:0.5rem;\">NUTRITION</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if d.Nutrition != nil && d.Nutrition.Calories.Valid {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<div class=\"macro-row\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 50, "<div class=\"macro-row\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -495,22 +714,585 @@ func DayDetailCard(d DayDetail) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 51, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "<div class=\"detail-empty\">no nutrition data</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 52, "<div class=\"detail-empty\">no nutrition data</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "</div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 53, "</div><div style=\"margin-top: 1rem;\"><div class=\"metric-label\" style=\"margin-bottom:0.5rem;\">ACTIVITY</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if d.Health != nil && (d.Health.Steps.Valid || d.Health.ActiveCalories.Valid || d.Health.RestingHR.Valid) {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 54, "<div class=\"macro-row\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if d.Health.Steps.Valid {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 55, "<div class=\"macro-item\"><div class=\"macro-name\">STEPS</div><div class=\"macro-value steps-color\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var36 string
+				templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", d.Health.Steps.Int64))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 472, Col: 85}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var36))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 56, "</div></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			if d.Health.ActiveCalories.Valid {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 57, "<div class=\"macro-item\"><div class=\"macro-name\">ACTIVE CAL</div><div class=\"macro-value\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var37 string
+				templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.0f kcal", d.Health.ActiveCalories.Float64))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 478, Col: 91}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var37))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 58, "</div></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			if d.Health.RestingHR.Valid {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 59, "<div class=\"macro-item\"><div class=\"macro-name\">RESTING HR</div><div class=\"macro-value\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var38 string
+				templ_7745c5c3_Var38, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.0f bpm", d.Health.RestingHR.Float64))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 484, Col: 85}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var38))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 60, "</div></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 61, "</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 62, "<div class=\"detail-empty\">no activity data</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 63, "</div><div style=\"margin-top: 1rem;\"><div class=\"metric-label\" style=\"margin-bottom:0.5rem;\">BODY</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if d.Body != nil && (d.Body.WeightLbs.Valid || d.Body.BfPercent.Valid) {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 64, "<div class=\"macro-row\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if d.Body.WeightLbs.Valid {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 65, "<div class=\"macro-item\"><div class=\"macro-name\">WEIGHT</div><div class=\"macro-value\" style=\"color: #5ce1e6;\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var39 string
+				templ_7745c5c3_Var39, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.1f lb", d.Body.WeightLbs.Float64))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 500, Col: 106}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var39))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 66, "</div></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			if d.Body.BfPercent.Valid {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 67, "<div class=\"macro-item\"><div class=\"macro-name\">BODY FAT</div><div class=\"macro-value\" style=\"color: #ff70b3;\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var40 string
+				templ_7745c5c3_Var40, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.1f%%", d.Body.BfPercent.Float64))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 506, Col: 105}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var40))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 68, "</div></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 69, "</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 70, "<div class=\"detail-empty\">no body metrics</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 71, "</div><div style=\"margin-top: 1rem;\"><div class=\"metric-label\" style=\"margin-bottom:0.5rem;\">SLEEP</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if d.Health != nil && d.Health.SleepAsleepH.Valid && d.Health.SleepAsleepH.Float64 > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 72, "<div class=\"sleep-total\"><span class=\"sleep-total-value sleep-color\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var41 string
+			templ_7745c5c3_Var41, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.1fh", d.Health.SleepAsleepH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 519, Col: 102}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var41))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 73, "</span> <span class=\"metric-sub\">total asleep</span></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = sleepStages(d.Health).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 74, "<div class=\"detail-empty\">no sleep data</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 75, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		return nil
 	})
+}
+
+func sleepStages(h *db.HealthDay) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var42 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var42 == nil {
+			templ_7745c5c3_Var42 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 76, "<div class=\"sleep-bar\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if h.SleepDeepH.Valid && h.SleepDeepH.Float64 > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 77, "<div class=\"sleep-seg seg-deep\" style=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var43 string
+			templ_7745c5c3_Var43, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(sleepSegWidth(h, h.SleepDeepH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 533, Col: 81}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var43))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 78, "\" title=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var44 string
+			templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("deep %.1fh", h.SleepDeepH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 533, Col: 139}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var44)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 79, "\"></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if h.SleepRemH.Valid && h.SleepRemH.Float64 > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 80, "<div class=\"sleep-seg seg-rem\" style=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var45 string
+			templ_7745c5c3_Var45, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(sleepSegWidth(h, h.SleepRemH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 536, Col: 79}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var45))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 81, "\" title=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var46 string
+			templ_7745c5c3_Var46, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("rem %.1fh", h.SleepRemH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 536, Col: 135}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var46)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 82, "\"></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if h.SleepCoreH.Valid && h.SleepCoreH.Float64 > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 83, "<div class=\"sleep-seg seg-core\" style=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var47 string
+			templ_7745c5c3_Var47, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(sleepSegWidth(h, h.SleepCoreH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 539, Col: 81}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var47))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 84, "\" title=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var48 string
+			templ_7745c5c3_Var48, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("core %.1fh", h.SleepCoreH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 539, Col: 139}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var48)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 85, "\"></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if h.SleepAwakeH.Valid && h.SleepAwakeH.Float64 > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 86, "<div class=\"sleep-seg seg-awake\" style=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var49 string
+			templ_7745c5c3_Var49, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(sleepSegWidth(h, h.SleepAwakeH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 542, Col: 83}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var49))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 87, "\" title=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var50 string
+			templ_7745c5c3_Var50, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("awake %.1fh", h.SleepAwakeH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 542, Col: 143}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var50)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 88, "\"></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 89, "</div><div class=\"sleep-legend\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if h.SleepDeepH.Valid && h.SleepDeepH.Float64 > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 90, "<span class=\"sleep-leg-item\"><span class=\"sleep-leg-dot seg-deep\"></span>deep ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var51 string
+			templ_7745c5c3_Var51, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.1fh", h.SleepDeepH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 547, Col: 125}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var51))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 91, "</span> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if h.SleepRemH.Valid && h.SleepRemH.Float64 > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 92, "<span class=\"sleep-leg-item\"><span class=\"sleep-leg-dot seg-rem\"></span>rem ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var52 string
+			templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.1fh", h.SleepRemH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 550, Col: 122}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var52))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 93, "</span> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if h.SleepCoreH.Valid && h.SleepCoreH.Float64 > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 94, "<span class=\"sleep-leg-item\"><span class=\"sleep-leg-dot seg-core\"></span>core ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var53 string
+			templ_7745c5c3_Var53, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.1fh", h.SleepCoreH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 553, Col: 125}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var53))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 95, "</span> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		if h.SleepAwakeH.Valid && h.SleepAwakeH.Float64 > 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 96, "<span class=\"sleep-leg-item\"><span class=\"sleep-leg-dot seg-awake\"></span>awake ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var54 string
+			templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.1fh", h.SleepAwakeH.Float64))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 556, Col: 128}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var54))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 97, "</span>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 98, "</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func detailWorkoutList(sets []db.WorkoutSet) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var55 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var55 == nil {
+			templ_7745c5c3_Var55 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 99, "<div class=\"workout-mini-list\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for _, e := range groupWorkoutByExercise(sets) {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 100, "<div class=\"workout-mini-card\"><div class=\"workout-mini-head\"><span class=\"workout-mini-name\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var56 string
+			templ_7745c5c3_Var56, templ_7745c5c3_Err = templ.JoinStringErrs(e.ExerciseName)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 566, Col: 53}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var56))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 101, "</span> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if e.BodyPart != "" {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 102, "<span class=\"wg-bodypart\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var57 string
+				templ_7745c5c3_Var57, templ_7745c5c3_Err = templ.JoinStringErrs(e.BodyPart)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 568, Col: 44}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var57))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 103, "</span>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 104, "</div><div class=\"workout-mini-sets\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			for _, s := range e.Sets {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 105, "<span class=\"workout-mini-set\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var58 string
+				templ_7745c5c3_Var58, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", s.Reps))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 574, Col: 34}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var58))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 106, " ")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				if s.WeightLbs.Valid {
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 107, "&nbsp;@&nbsp;")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var59 string
+					templ_7745c5c3_Var59, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.0fL", s.WeightLbs.Float64))
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 576, Col: 64}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var59))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 108, "</span>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 109, "</div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 110, "</div><style>\n\t\t.workout-mini-list { display: flex; flex-direction: column; gap: 0.5rem; }\n\t\t.workout-mini-card { background: var(--bg); border-radius: 4px; padding: 0.5rem 0.75rem; }\n\t\t.workout-mini-head { display:flex; gap: 0.5rem; align-items: baseline; margin-bottom: 0.3rem; }\n\t\t.workout-mini-name { color: var(--green); font-size: 0.8rem; font-weight: bold; }\n\t\t.workout-mini-sets { display: flex; gap: 0.4rem; flex-wrap: wrap; }\n\t\t.workout-mini-set {\n\t\t\tpadding: 0.15rem 0.5rem; background: var(--bg2);\n\t\t\tborder: 1px solid var(--border); border-radius: 3px;\n\t\t\tfont-size: 0.7rem; color: var(--green);\n\t\t}\n\t</style>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func groupWorkoutByExercise(sets []db.WorkoutSet) []WorkoutGroup {
+	groupMap := map[int64]*WorkoutGroup{}
+	var order []int64
+	for _, s := range sets {
+		g, ok := groupMap[s.ExerciseID]
+		if !ok {
+			bp := ""
+			if s.BodyPart.Valid {
+				bp = s.BodyPart.String
+			}
+			g = &WorkoutGroup{
+				ExerciseID:   s.ExerciseID,
+				ExerciseName: s.ExerciseName,
+				BodyPart:     bp,
+			}
+			groupMap[s.ExerciseID] = g
+			order = append(order, s.ExerciseID)
+		}
+		g.Sets = append(g.Sets, s)
+	}
+	out := make([]WorkoutGroup, 0, len(order))
+	for _, id := range order {
+		out = append(out, *groupMap[id])
+	}
+	return out
+}
+
+func sleepSegWidth(h *db.HealthDay, segHours float64) string {
+	total := 0.0
+	for _, v := range []sql.NullFloat64{h.SleepDeepH, h.SleepRemH, h.SleepCoreH, h.SleepAwakeH} {
+		if v.Valid {
+			total += v.Float64
+		}
+	}
+	if total == 0 {
+		return "flex: 0"
+	}
+	return fmt.Sprintf("flex: %.4f", segHours/total)
 }
 
 func macroItem(label string, value float64, budget sql.NullFloat64, unit string) templ.Component {
@@ -529,102 +1311,102 @@ func macroItem(label string, value float64, budget sql.NullFloat64, unit string)
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var25 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var25 == nil {
-			templ_7745c5c3_Var25 = templ.NopComponent
+		templ_7745c5c3_Var60 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var60 == nil {
+			templ_7745c5c3_Var60 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "<div class=\"macro-item\"><div class=\"macro-name\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 111, "<div class=\"macro-item\"><div class=\"macro-name\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var26 string
-		templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(label)
+		var templ_7745c5c3_Var61 string
+		templ_7745c5c3_Var61, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 300, Col: 33}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 640, Col: 33}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "</div><div class=\"macro-value\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var61))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var27 string
-		templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.0f%s", value, unit))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 301, Col: 63}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 112, "</div><div class=\"macro-value\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</div><div class=\"macro-bar\">")
+		var templ_7745c5c3_Var62 string
+		templ_7745c5c3_Var62, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.0f%s", value, unit))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 641, Col: 63}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var62))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 113, "</div><div class=\"macro-bar\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if budget.Valid && budget.Float64 > 0 {
-			var templ_7745c5c3_Var28 = []any{"macro-bar-fill", templ.KV("over", value > budget.Float64*1.1)}
-			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var28...)
+			var templ_7745c5c3_Var63 = []any{"macro-bar-fill", templ.KV("over", value > budget.Float64*1.1)}
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var63...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "<div class=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 114, "<div class=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var29 string
-			templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var28).String())
+			var templ_7745c5c3_Var64 string
+			templ_7745c5c3_Var64, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var63).String())
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 1, Col: 0}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var29)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var64)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "\" style=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 115, "\" style=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var30 string
-			templ_7745c5c3_Var30, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(fmt.Sprintf("width: %.0f%%", clamp(value/budget.Float64*100, 0, 100)))
+			var templ_7745c5c3_Var65 string
+			templ_7745c5c3_Var65, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(fmt.Sprintf("width: %.0f%%", clamp(value/budget.Float64*100, 0, 100)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 306, Col: 82}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 646, Col: 82}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var65))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "\"></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 116, "\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 117, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if budget.Valid && budget.Float64 > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "<div class=\"macro-budget\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 118, "<div class=\"macro-budget\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var31 string
-			templ_7745c5c3_Var31, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("budget %.0f%s", budget.Float64, unit))
+			var templ_7745c5c3_Var66 string
+			templ_7745c5c3_Var66, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("budget %.0f%s", budget.Float64, unit))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 311, Col: 81}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/fitness.templ`, Line: 651, Col: 81}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var31))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var66))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, "</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 119, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 120, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
