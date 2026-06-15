@@ -47,7 +47,7 @@ func WorkoutAddSet(w http.ResponseWriter, r *http.Request) {
 	}
 	weight := parseNullFloat(r.FormValue("weight_lbs"))
 
-	if err := db.AddWorkoutSet(dateStr, exerciseID, reps, weight); err != nil {
+	if _, err := db.AddWorkoutSet(dateStr, exerciseID, reps, weight); err != nil {
 		renderWorkoutPage(w, r, "save failed: "+err.Error())
 		return
 	}

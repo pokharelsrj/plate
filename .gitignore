@@ -5,3 +5,5 @@ pi-webpage
 *.db-shm
 *.db-wal
 .env
+ios/Pi.xcodeproj/xcuserdata/
+ios/Pi.xcodeproj/project.xcworkspace/xcuserdata/

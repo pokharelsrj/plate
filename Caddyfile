@@ -1,12 +1,14 @@
 health.example.com {
-	# Public path: only the health ingest endpoint
-	handle /api/* {
+	# Public path: ONLY the Apple Health ingest endpoint (iOS Shortcut posts
+	# here from anywhere). Auth is via X-Api-Key on the Go server.
+	handle /api/health/ingest {
 		reverse_proxy localhost:8080 {
 			header_up X-Real-IP {remote_host}
 		}
 	}
 
-	# Block everything else — UI stays VPN-only
+	# Everything else — rest of the API + UI — is VPN/LAN-only:
+	# clients use http://pi.local:8080 directly.
 	handle {
 		respond "Not Found" 404
 	}

@@ -15,7 +15,16 @@ func TrendsPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func TrendsData(w http.ResponseWriter, r *http.Request) {
-	days := parseRange(r)
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(buildTrendsPayload(parseRange(r)))
+}
+
+// APITrends serves the same payload over the X-Api-Key API for the iOS app.
+func APITrends(w http.ResponseWriter, r *http.Request, _ *db.User) {
+	writeJSON(w, http.StatusOK, buildTrendsPayload(parseRange(r)))
+}
+
+func buildTrendsPayload(days int) map[string]any {
 	to := time.Now()
 	from := to.AddDate(0, 0, -days+1)
 
@@ -189,8 +198,7 @@ func TrendsData(w http.ResponseWriter, r *http.Request) {
 		avgSleep = sleepTotal / sleepCount
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(map[string]any{
+	return map[string]any{
 		"points":            pts,
 		"calorie_budget":    calBudget,
 		"avg_calories":      avgCal,
@@ -203,7 +211,7 @@ func TrendsData(w http.ResponseWriter, r *http.Request) {
 		"total_volume":      totalWorkoutVolume(volByDate),
 		"sets_by_body_part": setsByBodyPart,
 		"range_days":        days,
-	})
+	}
 }
 
 func totalWorkoutVolume(m map[string]float64) float64 {

@@ -27,14 +27,13 @@ type healthIngestReq struct {
 }
 
 func HealthIngest(w http.ResponseWriter, r *http.Request) {
-	key := os.Getenv("HEALTH_API_KEY")
-	if key == "" {
-		http.Error(w, "HEALTH_API_KEY not configured", http.StatusServiceUnavailable)
-		return
-	}
-	if r.Header.Get("X-Api-Key") != key {
-		http.Error(w, "unauthorized", http.StatusUnauthorized)
-		return
+	// Accept any active user's API key; falls back to the legacy HEALTH_API_KEY env match.
+	if apiUser(r) == nil {
+		legacy := os.Getenv("HEALTH_API_KEY")
+		if legacy == "" || r.Header.Get("X-Api-Key") != legacy {
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			return
+		}
 	}
 
 	var req healthIngestReq

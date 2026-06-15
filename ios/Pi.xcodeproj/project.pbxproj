@@ -1,0 +1,845 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		03803676527CEC358A2D576C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694D80DC32FA0FE20E564AFD /* SettingsView.swift */; };
+		0BE4940819DA797BFB4B03D7 /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EB781591A3D97D2650A47F /* WorkoutView.swift */; };
+		1007788DA94DF734CA5F45B8 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E2D88A1AE1EC09EFE96F21 /* Theme.swift */; };
+		1407A75CBA0D55D64DC5A962 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814299711B2FD4C642C5F145 /* Session.swift */; };
+		170370EC963255D17B26C794 /* DayCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1A4F36A02E3BE907DBC81B /* DayCards.swift */; };
+		20885804032EEA4C9159B789 /* TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6693E7B2239AB812B82F0 /* TrendsView.swift */; };
+		2E1984B68B3B24BDA32FCA25 /* PiWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C9319E2E676798657ED56794 /* PiWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3036D3C311814E51EAD06DD6 /* PiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B8E58E9DE569DA96694606 /* PiApp.swift */; };
+		403CE75693D328F3AEE3CFC1 /* GymStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB6585F1292AD76ADD57BE /* GymStepper.swift */; };
+		4404D802DE25488868A25B2A /* RestActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F09111521A6A858E38560E40 /* RestActivity.swift */; };
+		456A4210093C9D1A00D6D989 /* DayDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB44A3D5C26E9D6B28886611 /* DayDetailView.swift */; };
+		50CF3ABD8916D6FD9CB1BD0E /* Pi.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 871260723750A51D9872E725 /* Pi.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		59A2C38DDF9128FD938DDEFC /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FC9D89F97274D12DFAA79C /* LoginView.swift */; };
+		5CBB589920024CC6BFC38FE7 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EF9E2D65E4A043ADF09BCE /* ViewModifiers.swift */; };
+		626EC12F6026404E4BBCD768 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBD6FE26558C0809893C395 /* TodayView.swift */; };
+		65E00156C06544F42F833CB6 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DD01347D807BC80433478E /* Typography.swift */; };
+		6A252924BB1C43BC9698190D /* WorkoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6576B3C7FA43587E139202F /* WorkoutViewModel.swift */; };
+		70184B0D22D678A46FCAB10B /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478DF2B20C3447BDA0079215 /* RootView.swift */; };
+		708D9D1A7FA7EB70C4E321E2 /* MetricViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F3F3170427B78E449094D /* MetricViews.swift */; };
+		7679D312095CCF9AC51554BF /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBDED5EF96888039422E275 /* APIClient.swift */; };
+		7B33ACD0F9B848809D636BC2 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA304B4AA1D9713060AC251 /* Models.swift */; };
+		8CBE21BBFE7E6EBE184F505A /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA304B4AA1D9713060AC251 /* Models.swift */; };
+		8CE3E2A353CE1FE2C17DC2D0 /* RestTimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA7304912303491D1BD0FF77 /* RestTimerIntents.swift */; };
+		97E68723B646914ECA6256E5 /* ExercisesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED6248FAB50830A18737C6 /* ExercisesView.swift */; };
+		9C4CF86F911317EEA7FD76B7 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD762A22C5E5555A457A727 /* CalendarView.swift */; };
+		9FEF15C11D8D6A8C55CFC9E7 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F193AF47AE66ED1F4D6DC43 /* Toast.swift */; };
+		A01922E77455F72ED8B50A0A /* RestLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E998AE45F11CE163CE0E2A72 /* RestLiveActivity.swift */; };
+		A0ABCE08FF96F5BA99755AB1 /* WatchWorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A89B383DC3B3604CC24D642 /* WatchWorkoutView.swift */; };
+		A19731458B4C72AB8D9A20AF /* AdminUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D662F4FA928A9A6FF6539AF0 /* AdminUsersView.swift */; };
+		A30FC17B6F7513F9DFAD56B2 /* AppLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E7113DD21490820A8D4EB3 /* AppLock.swift */; };
+		A32676B7CFC3D20F481F2431 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA304B4AA1D9713060AC251 /* Models.swift */; };
+		A578D1F66F5BE9243E7B1EB5 /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2272F16B05F38669B26F7B4F /* HealthService.swift */; };
+		AE568672380C431DCDD442B6 /* WatchRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F22D5D0345AD7670DBC521 /* WatchRelay.swift */; };
+		B174921D18D125D6CDDF542F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78909B2BAB49BA2A6F5B2F2F /* Assets.xcassets */; };
+		B64B38E9F4A7E731B5F2D239 /* PiWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D4F7178C267B0E357D519B /* PiWidget.swift */; };
+		BB4ABEAC8538F0372B0F2187 /* WatchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E11FD00832ECD62AA2F2588 /* WatchAPI.swift */; };
+		C4121A2E27AF9BBA9BD1F69D /* BodyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1694135E7A681892C79CFF22 /* BodyView.swift */; };
+		C5D0B14BDB0B3A3FA899B67E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78909B2BAB49BA2A6F5B2F2F /* Assets.xcassets */; };
+		CA2292B53E53F4C32A6F9EE0 /* RestTimerAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD237C0131045D4A801C674 /* RestTimerAttributes.swift */; };
+		CC9C634C0C84DED091415B30 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8254A6090B975F72CE1F001D /* APIError.swift */; };
+		D119675595D76ABEF7B80ED4 /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4D9ECE28B756145423AFE7 /* SyncStatusView.swift */; };
+		D1F22A0161F21CDFF652AC89 /* PiWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C2F2EC77B3BE75450004A8 /* PiWatchApp.swift */; };
+		D285EE07BB970FC7F7C777EF /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FE8F63467D20FA04AED309 /* ProfileView.swift */; };
+		D3E923BD67CC68D08E6C48B2 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4FB976B61C49F9C47B7570 /* Keychain.swift */; };
+		DCCC0BBF3101CD480C0CFA8E /* RestTimerAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD237C0131045D4A801C674 /* RestTimerAttributes.swift */; };
+		EBACE10D925EA5D0CDEF5DB9 /* SharedCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016288F73586C2E6F1B8202A /* SharedCache.swift */; };
+		F75DD0C5A130E2541146A8BE /* SharedCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016288F73586C2E6F1B8202A /* SharedCache.swift */; };
+		FAAD21687965AEA5D10706A2 /* RestTimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA7304912303491D1BD0FF77 /* RestTimerIntents.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0DC4789254FCC20144054ED4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 919B83D8710B3468DD85C2AE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9DDCD1BB53FCF19984B24763;
+			remoteInfo = PiWidget;
+		};
+		9CB9E538C204E2C113958956 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 919B83D8710B3468DD85C2AE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D228CC10F31981A5838AA163;
+			remoteInfo = PiWatch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9EC873275FF2A54679A3F667 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2E1984B68B3B24BDA32FCA25 /* PiWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF0B486CA8EA3556ADA824F7 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				50CF3ABD8916D6FD9CB1BD0E /* Pi.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		016288F73586C2E6F1B8202A /* SharedCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedCache.swift; sourceTree = "<group>"; };
+		0626CBA767E8B1CDE2EFB42B /* Pi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0E11FD00832ECD62AA2F2588 /* WatchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAPI.swift; sourceTree = "<group>"; };
+		1694135E7A681892C79CFF22 /* BodyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyView.swift; sourceTree = "<group>"; };
+		1CEB6585F1292AD76ADD57BE /* GymStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymStepper.swift; sourceTree = "<group>"; };
+		1DD762A22C5E5555A457A727 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		2272F16B05F38669B26F7B4F /* HealthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthService.swift; sourceTree = "<group>"; };
+		2F4D9ECE28B756145423AFE7 /* SyncStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusView.swift; sourceTree = "<group>"; };
+		3C4FB976B61C49F9C47B7570 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		41FE8F63467D20FA04AED309 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		478DF2B20C3447BDA0079215 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		51D4F7178C267B0E357D519B /* PiWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiWidget.swift; sourceTree = "<group>"; };
+		54BD3277F0020DB2EF7E975D /* Pi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pi.entitlements; sourceTree = "<group>"; };
+		56606A9FEC81C4A1B71CAB5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5D1A4F36A02E3BE907DBC81B /* DayCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCards.swift; sourceTree = "<group>"; };
+		5FD237C0131045D4A801C674 /* RestTimerAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerAttributes.swift; sourceTree = "<group>"; };
+		66EF9E2D65E4A043ADF09BCE /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
+		69336377252C6EB92784D504 /* PiWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PiWidget.entitlements; sourceTree = "<group>"; };
+		694D80DC32FA0FE20E564AFD /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		732F3F3170427B78E449094D /* MetricViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricViews.swift; sourceTree = "<group>"; };
+		78909B2BAB49BA2A6F5B2F2F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7A89B383DC3B3604CC24D642 /* WatchWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWorkoutView.swift; sourceTree = "<group>"; };
+		814299711B2FD4C642C5F145 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		81EB781591A3D97D2650A47F /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
+		8254A6090B975F72CE1F001D /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		83F22D5D0345AD7670DBC521 /* WatchRelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRelay.swift; sourceTree = "<group>"; };
+		871260723750A51D9872E725 /* Pi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		87B627CD11531D1DEEAF94D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9F193AF47AE66ED1F4D6DC43 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		A3E7113DD21490820A8D4EB3 /* AppLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLock.swift; sourceTree = "<group>"; };
+		A5B8E58E9DE569DA96694606 /* PiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiApp.swift; sourceTree = "<group>"; };
+		ABED6248FAB50830A18737C6 /* ExercisesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExercisesView.swift; sourceTree = "<group>"; };
+		BB44A3D5C26E9D6B28886611 /* DayDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayDetailView.swift; sourceTree = "<group>"; };
+		BEA304B4AA1D9713060AC251 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		C3C2F2EC77B3BE75450004A8 /* PiWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiWatchApp.swift; sourceTree = "<group>"; };
+		C9319E2E676798657ED56794 /* PiWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PiWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA7304912303491D1BD0FF77 /* RestTimerIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerIntents.swift; sourceTree = "<group>"; };
+		D4DD01347D807BC80433478E /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
+		D5E2D88A1AE1EC09EFE96F21 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		D6576B3C7FA43587E139202F /* WorkoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutViewModel.swift; sourceTree = "<group>"; };
+		D662F4FA928A9A6FF6539AF0 /* AdminUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUsersView.swift; sourceTree = "<group>"; };
+		DDBDED5EF96888039422E275 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		E1C6693E7B2239AB812B82F0 /* TrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsView.swift; sourceTree = "<group>"; };
+		E998AE45F11CE163CE0E2A72 /* RestLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestLiveActivity.swift; sourceTree = "<group>"; };
+		F09111521A6A858E38560E40 /* RestActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestActivity.swift; sourceTree = "<group>"; };
+		F119A6A04562875BF2AEA8A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F4FC9D89F97274D12DFAA79C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		FCBD6FE26558C0809893C395 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		170389033D0DE9C30FA628A6 /* Today */ = {
+			isa = PBXGroup;
+			children = (
+				5D1A4F36A02E3BE907DBC81B /* DayCards.swift */,
+				FCBD6FE26558C0809893C395 /* TodayView.swift */,
+			);
+			path = Today;
+			sourceTree = "<group>";
+		};
+		283B9A93C49F934D3008DB68 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				5FD237C0131045D4A801C674 /* RestTimerAttributes.swift */,
+				CA7304912303491D1BD0FF77 /* RestTimerIntents.swift */,
+				016288F73586C2E6F1B8202A /* SharedCache.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		2FD4B333656D24740C4289DE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0626CBA767E8B1CDE2EFB42B /* Pi.app */,
+				871260723750A51D9872E725 /* Pi.app */,
+				C9319E2E676798657ED56794 /* PiWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		31CF39982B0F52E626AB6442 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				1DD762A22C5E5555A457A727 /* CalendarView.swift */,
+				BB44A3D5C26E9D6B28886611 /* DayDetailView.swift */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
+		33E7412DFD4D8C548DF7B6FE /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				A3E7113DD21490820A8D4EB3 /* AppLock.swift */,
+				3C4FB976B61C49F9C47B7570 /* Keychain.swift */,
+				814299711B2FD4C642C5F145 /* Session.swift */,
+				83F22D5D0345AD7670DBC521 /* WatchRelay.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		47FEDAB4FDE0BE663E21CA9D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BEA304B4AA1D9713060AC251 /* Models.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		751333B17085D134645D576B /* HealthKit */ = {
+			isa = PBXGroup;
+			children = (
+				2272F16B05F38669B26F7B4F /* HealthService.swift */,
+			);
+			path = HealthKit;
+			sourceTree = "<group>";
+		};
+		828FDA85E17E49FF003C724F /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				1CEB6585F1292AD76ADD57BE /* GymStepper.swift */,
+				732F3F3170427B78E449094D /* MetricViews.swift */,
+				9F193AF47AE66ED1F4D6DC43 /* Toast.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		8DD5CAAB59BEC07CA5C7CBBF = {
+			isa = PBXGroup;
+			children = (
+				A0AE1FD34DB73490A87A18D3 /* Pi */,
+				F43B3F433115ACDBD5F6A673 /* PiWatch */,
+				D4F3CA6ECBBFB95F111E2C16 /* PiWidget */,
+				283B9A93C49F934D3008DB68 /* Shared */,
+				2FD4B333656D24740C4289DE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8EEC2C74BCAF270BD6D34604 /* Body */ = {
+			isa = PBXGroup;
+			children = (
+				1694135E7A681892C79CFF22 /* BodyView.swift */,
+			);
+			path = Body;
+			sourceTree = "<group>";
+		};
+		94B9FB10EC69CF95E711E7C8 /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				2F4D9ECE28B756145423AFE7 /* SyncStatusView.swift */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
+		A0AE1FD34DB73490A87A18D3 /* Pi */ = {
+			isa = PBXGroup;
+			children = (
+				78909B2BAB49BA2A6F5B2F2F /* Assets.xcassets */,
+				56606A9FEC81C4A1B71CAB5A /* Info.plist */,
+				54BD3277F0020DB2EF7E975D /* Pi.entitlements */,
+				A5B8E58E9DE569DA96694606 /* PiApp.swift */,
+				828FDA85E17E49FF003C724F /* Components */,
+				33E7412DFD4D8C548DF7B6FE /* Config */,
+				751333B17085D134645D576B /* HealthKit */,
+				47FEDAB4FDE0BE663E21CA9D /* Models */,
+				C0FF96C013F053CA6F6A508E /* Networking */,
+				C035A85346C9AB5CB891C3FA /* Screens */,
+				B6E65AAB96B119DB3E618A17 /* Theme */,
+			);
+			path = Pi;
+			sourceTree = "<group>";
+		};
+		B6E65AAB96B119DB3E618A17 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				D5E2D88A1AE1EC09EFE96F21 /* Theme.swift */,
+				D4DD01347D807BC80433478E /* Typography.swift */,
+				66EF9E2D65E4A043ADF09BCE /* ViewModifiers.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		BC63E2BAC0ACC8F3A7AEAE2F /* Exercises */ = {
+			isa = PBXGroup;
+			children = (
+				ABED6248FAB50830A18737C6 /* ExercisesView.swift */,
+			);
+			path = Exercises;
+			sourceTree = "<group>";
+		};
+		C035A85346C9AB5CB891C3FA /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				478DF2B20C3447BDA0079215 /* RootView.swift */,
+				8EEC2C74BCAF270BD6D34604 /* Body */,
+				31CF39982B0F52E626AB6442 /* Calendar */,
+				BC63E2BAC0ACC8F3A7AEAE2F /* Exercises */,
+				DE8561CFC1D293F0F719E4E6 /* Login */,
+				E21D32F0E08C2ADF6F485A21 /* Settings */,
+				94B9FB10EC69CF95E711E7C8 /* Sync */,
+				170389033D0DE9C30FA628A6 /* Today */,
+				C7389F4D395CE6F97A2B8B4A /* Trends */,
+				C1595C9AA47EDDC7F2E4EB8F /* Workout */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		C0FF96C013F053CA6F6A508E /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				DDBDED5EF96888039422E275 /* APIClient.swift */,
+				8254A6090B975F72CE1F001D /* APIError.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		C1595C9AA47EDDC7F2E4EB8F /* Workout */ = {
+			isa = PBXGroup;
+			children = (
+				F09111521A6A858E38560E40 /* RestActivity.swift */,
+				81EB781591A3D97D2650A47F /* WorkoutView.swift */,
+				D6576B3C7FA43587E139202F /* WorkoutViewModel.swift */,
+			);
+			path = Workout;
+			sourceTree = "<group>";
+		};
+		C7389F4D395CE6F97A2B8B4A /* Trends */ = {
+			isa = PBXGroup;
+			children = (
+				E1C6693E7B2239AB812B82F0 /* TrendsView.swift */,
+			);
+			path = Trends;
+			sourceTree = "<group>";
+		};
+		D4F3CA6ECBBFB95F111E2C16 /* PiWidget */ = {
+			isa = PBXGroup;
+			children = (
+				87B627CD11531D1DEEAF94D8 /* Info.plist */,
+				69336377252C6EB92784D504 /* PiWidget.entitlements */,
+				51D4F7178C267B0E357D519B /* PiWidget.swift */,
+				E998AE45F11CE163CE0E2A72 /* RestLiveActivity.swift */,
+			);
+			path = PiWidget;
+			sourceTree = "<group>";
+		};
+		DE8561CFC1D293F0F719E4E6 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				F4FC9D89F97274D12DFAA79C /* LoginView.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		E21D32F0E08C2ADF6F485A21 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				D662F4FA928A9A6FF6539AF0 /* AdminUsersView.swift */,
+				41FE8F63467D20FA04AED309 /* ProfileView.swift */,
+				694D80DC32FA0FE20E564AFD /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		F43B3F433115ACDBD5F6A673 /* PiWatch */ = {
+			isa = PBXGroup;
+			children = (
+				F119A6A04562875BF2AEA8A2 /* Info.plist */,
+				C3C2F2EC77B3BE75450004A8 /* PiWatchApp.swift */,
+				0E11FD00832ECD62AA2F2588 /* WatchAPI.swift */,
+				7A89B383DC3B3604CC24D642 /* WatchWorkoutView.swift */,
+			);
+			path = PiWatch;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		72416FE8D69F2AFDE682D02F /* Pi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01215ABE1D7CDA3F6C83B3CB /* Build configuration list for PBXNativeTarget "Pi" */;
+			buildPhases = (
+				DD079AD6BBD3F0D1D106490E /* Sources */,
+				6765EB0D9B3468FF3356330E /* Resources */,
+				9EC873275FF2A54679A3F667 /* Embed Foundation Extensions */,
+				CF0B486CA8EA3556ADA824F7 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CB1B57A8F94304DE41F8ED1B /* PBXTargetDependency */,
+				DE2FDF58ED45B255AB3AD248 /* PBXTargetDependency */,
+			);
+			name = Pi;
+			packageProductDependencies = (
+			);
+			productName = Pi;
+			productReference = 0626CBA767E8B1CDE2EFB42B /* Pi.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9DDCD1BB53FCF19984B24763 /* PiWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 51FABA292902CC09FF6CEFD0 /* Build configuration list for PBXNativeTarget "PiWidget" */;
+			buildPhases = (
+				214D4F63EBFB5680E1F914C0 /* Sources */,
+				6AD6FB5C5311200CB9005D86 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PiWidget;
+			packageProductDependencies = (
+			);
+			productName = PiWidget;
+			productReference = C9319E2E676798657ED56794 /* PiWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		D228CC10F31981A5838AA163 /* PiWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 36512C91A77183E00AB1D88E /* Build configuration list for PBXNativeTarget "PiWatch" */;
+			buildPhases = (
+				D4C61FC0CEDAEF886F70CFF8 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PiWatch;
+			packageProductDependencies = (
+			);
+			productName = PiWatch;
+			productReference = 871260723750A51D9872E725 /* Pi.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		919B83D8710B3468DD85C2AE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					D228CC10F31981A5838AA163 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 4A089C015F77D2D8F9E1C524 /* Build configuration list for PBXProject "Pi" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 8DD5CAAB59BEC07CA5C7CBBF;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 2FD4B333656D24740C4289DE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				72416FE8D69F2AFDE682D02F /* Pi */,
+				D228CC10F31981A5838AA163 /* PiWatch */,
+				9DDCD1BB53FCF19984B24763 /* PiWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6765EB0D9B3468FF3356330E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C5D0B14BDB0B3A3FA899B67E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6AD6FB5C5311200CB9005D86 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B174921D18D125D6CDDF542F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		214D4F63EBFB5680E1F914C0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CBE21BBFE7E6EBE184F505A /* Models.swift in Sources */,
+				B64B38E9F4A7E731B5F2D239 /* PiWidget.swift in Sources */,
+				A01922E77455F72ED8B50A0A /* RestLiveActivity.swift in Sources */,
+				DCCC0BBF3101CD480C0CFA8E /* RestTimerAttributes.swift in Sources */,
+				8CE3E2A353CE1FE2C17DC2D0 /* RestTimerIntents.swift in Sources */,
+				EBACE10D925EA5D0CDEF5DB9 /* SharedCache.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4C61FC0CEDAEF886F70CFF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A32676B7CFC3D20F481F2431 /* Models.swift in Sources */,
+				D1F22A0161F21CDFF652AC89 /* PiWatchApp.swift in Sources */,
+				BB4ABEAC8538F0372B0F2187 /* WatchAPI.swift in Sources */,
+				A0ABCE08FF96F5BA99755AB1 /* WatchWorkoutView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DD079AD6BBD3F0D1D106490E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7679D312095CCF9AC51554BF /* APIClient.swift in Sources */,
+				CC9C634C0C84DED091415B30 /* APIError.swift in Sources */,
+				A19731458B4C72AB8D9A20AF /* AdminUsersView.swift in Sources */,
+				A30FC17B6F7513F9DFAD56B2 /* AppLock.swift in Sources */,
+				C4121A2E27AF9BBA9BD1F69D /* BodyView.swift in Sources */,
+				9C4CF86F911317EEA7FD76B7 /* CalendarView.swift in Sources */,
+				170370EC963255D17B26C794 /* DayCards.swift in Sources */,
+				456A4210093C9D1A00D6D989 /* DayDetailView.swift in Sources */,
+				97E68723B646914ECA6256E5 /* ExercisesView.swift in Sources */,
+				403CE75693D328F3AEE3CFC1 /* GymStepper.swift in Sources */,
+				A578D1F66F5BE9243E7B1EB5 /* HealthService.swift in Sources */,
+				D3E923BD67CC68D08E6C48B2 /* Keychain.swift in Sources */,
+				59A2C38DDF9128FD938DDEFC /* LoginView.swift in Sources */,
+				708D9D1A7FA7EB70C4E321E2 /* MetricViews.swift in Sources */,
+				7B33ACD0F9B848809D636BC2 /* Models.swift in Sources */,
+				3036D3C311814E51EAD06DD6 /* PiApp.swift in Sources */,
+				D285EE07BB970FC7F7C777EF /* ProfileView.swift in Sources */,
+				4404D802DE25488868A25B2A /* RestActivity.swift in Sources */,
+				CA2292B53E53F4C32A6F9EE0 /* RestTimerAttributes.swift in Sources */,
+				FAAD21687965AEA5D10706A2 /* RestTimerIntents.swift in Sources */,
+				70184B0D22D678A46FCAB10B /* RootView.swift in Sources */,
+				1407A75CBA0D55D64DC5A962 /* Session.swift in Sources */,
+				03803676527CEC358A2D576C /* SettingsView.swift in Sources */,
+				F75DD0C5A130E2541146A8BE /* SharedCache.swift in Sources */,
+				D119675595D76ABEF7B80ED4 /* SyncStatusView.swift in Sources */,
+				1007788DA94DF734CA5F45B8 /* Theme.swift in Sources */,
+				9FEF15C11D8D6A8C55CFC9E7 /* Toast.swift in Sources */,
+				626EC12F6026404E4BBCD768 /* TodayView.swift in Sources */,
+				20885804032EEA4C9159B789 /* TrendsView.swift in Sources */,
+				65E00156C06544F42F833CB6 /* Typography.swift in Sources */,
+				5CBB589920024CC6BFC38FE7 /* ViewModifiers.swift in Sources */,
+				AE568672380C431DCDD442B6 /* WatchRelay.swift in Sources */,
+				0BE4940819DA797BFB4B03D7 /* WorkoutView.swift in Sources */,
+				6A252924BB1C43BC9698190D /* WorkoutViewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CB1B57A8F94304DE41F8ED1B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9DDCD1BB53FCF19984B24763 /* PiWidget */;
+			targetProxy = 0DC4789254FCC20144054ED4 /* PBXContainerItemProxy */;
+		};
+		DE2FDF58ED45B255AB3AD248 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D228CC10F31981A5838AA163 /* PiWatch */;
+			targetProxy = 9CB9E538C204E2C113958956 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1718A03C9B0F1B1DA3406554 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = PiPrimary;
+				CODE_SIGN_ENTITLEMENTS = Pi/Pi.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = Q5L4RXB888;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Pi/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.srijanpokharel.pi;
+				PRODUCT_NAME = Pi;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		5FBCB014050D31761BF688DB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		8E676E76C8A0A7B0B7D99D80 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PiWidget/PiWidget.entitlements;
+				DEVELOPMENT_TEAM = Q5L4RXB888;
+				INFOPLIST_FILE = PiWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.srijanpokharel.pi.PiWidget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		962EFDC756185892E708EA32 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PiWidget/PiWidget.entitlements;
+				DEVELOPMENT_TEAM = Q5L4RXB888;
+				INFOPLIST_FILE = PiWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.srijanpokharel.pi.PiWidget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		B25A90FEB16F30950B662578 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q5L4RXB888;
+				INFOPLIST_FILE = PiWatch/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.srijanpokharel.pi.watchkitapp;
+				PRODUCT_NAME = Pi;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Release;
+		};
+		B6BCB6CF4F17FEA0B98EC8BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = PiPrimary;
+				CODE_SIGN_ENTITLEMENTS = Pi/Pi.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = Q5L4RXB888;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Pi/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.srijanpokharel.pi;
+				PRODUCT_NAME = Pi;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		C3CE5687EA6598210B2AA7CA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		E31C9B68F15BC3B86230ABA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Q5L4RXB888;
+				INFOPLIST_FILE = PiWatch/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.srijanpokharel.pi.watchkitapp;
+				PRODUCT_NAME = Pi;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		01215ABE1D7CDA3F6C83B3CB /* Build configuration list for PBXNativeTarget "Pi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B6BCB6CF4F17FEA0B98EC8BD /* Debug */,
+				1718A03C9B0F1B1DA3406554 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		36512C91A77183E00AB1D88E /* Build configuration list for PBXNativeTarget "PiWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E31C9B68F15BC3B86230ABA8 /* Debug */,
+				B25A90FEB16F30950B662578 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4A089C015F77D2D8F9E1C524 /* Build configuration list for PBXProject "Pi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3CE5687EA6598210B2AA7CA /* Debug */,
+				5FBCB014050D31761BF688DB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		51FABA292902CC09FF6CEFD0 /* Build configuration list for PBXNativeTarget "PiWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E676E76C8A0A7B0B7D99D80 /* Debug */,
+				962EFDC756185892E708EA32 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 919B83D8710B3468DD85C2AE /* Project object */;
+}

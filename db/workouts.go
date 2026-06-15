@@ -55,13 +55,37 @@ func CreateExercise(name, bodyPart string) (int64, error) {
 	return res.LastInsertId()
 }
 
-// AddWorkoutSet inserts a new set.
-func AddWorkoutSet(date string, exerciseID int64, reps int, weightLbs sql.NullFloat64) error {
-	_, err := DB.Exec(`
+// AddWorkoutSet inserts a new set and returns its id.
+func AddWorkoutSet(date string, exerciseID int64, reps int, weightLbs sql.NullFloat64) (int64, error) {
+	res, err := DB.Exec(`
 		INSERT INTO workout_sets (date, exercise_id, reps, weight_lbs)
 		VALUES (?, ?, ?, ?)
 	`, date, exerciseID, reps, weightLbs)
-	return err
+	if err != nil {
+		return 0, err
+	}
+	return res.LastInsertId()
+}
+
+// GetWorkoutSet returns one set by id with exercise info joined, or nil if missing.
+func GetWorkoutSet(id int64) (*WorkoutSet, error) {
+	row := DB.QueryRow(`
+		SELECT ws.id, ws.date, ws.exercise_id, ws.reps, ws.weight_lbs, ws.created_at,
+		       e.name, e.body_part
+		FROM workout_sets ws
+		JOIN exercises e ON e.id = ws.exercise_id
+		WHERE ws.id = ?
+	`, id)
+	var s WorkoutSet
+	err := row.Scan(&s.ID, &s.Date, &s.ExerciseID, &s.Reps, &s.WeightLbs, &s.CreatedAt,
+		&s.ExerciseName, &s.BodyPart)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &s, nil
 }
 
 // DeleteWorkoutSet removes a set by id.
@@ -219,6 +243,35 @@ func LastSessionForExercise(exerciseID int64, excludeDate string) ([]WorkoutSet,
 			return nil, err
 		}
 		out = append(out, s)
+	}
+	return out, rows.Err()
+}
+
+// ExercisePR holds the all-time personal record for one exercise.
+type ExercisePR struct {
+	ExerciseID   int64
+	MaxWeightLbs sql.NullFloat64
+	MaxReps      int
+}
+
+// ExercisePRsAll returns the all-time PR (max weight + max reps) for every exercise that has sets.
+func ExercisePRsAll() (map[int64]ExercisePR, error) {
+	rows, err := DB.Query(`
+		SELECT exercise_id, MAX(weight_lbs), MAX(reps)
+		FROM workout_sets
+		GROUP BY exercise_id
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := map[int64]ExercisePR{}
+	for rows.Next() {
+		var pr ExercisePR
+		if err := rows.Scan(&pr.ExerciseID, &pr.MaxWeightLbs, &pr.MaxReps); err != nil {
+			return nil, err
+		}
+		out[pr.ExerciseID] = pr
 	}
 	return out, rows.Err()
 }

@@ -92,6 +92,20 @@ CREATE TABLE IF NOT EXISTS sync_runs (
 	error_message   TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_sync_runs_source_started ON sync_runs(source, started_at DESC);
+
+CREATE TABLE IF NOT EXISTS users (
+	id              INTEGER PRIMARY KEY AUTOINCREMENT,
+	email           TEXT UNIQUE NOT NULL COLLATE NOCASE,
+	display_name    TEXT,
+	password_hash   TEXT NOT NULL,
+	api_key         TEXT UNIQUE NOT NULL,
+	role            TEXT NOT NULL DEFAULT 'user',
+	date_of_birth   TEXT,
+	sex             TEXT,
+	is_active       INTEGER NOT NULL DEFAULT 1,
+	created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_users_api_key ON users(api_key);
 `
 
 func Open(path string) error {
