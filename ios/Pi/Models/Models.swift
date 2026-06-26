@@ -74,8 +74,6 @@ struct WorkoutSet: Codable, Identifiable, Hashable {
     let exerciseId: Int64
     var reps: Int
     var weightLbs: Double?
-
-    var volume: Double { (weightLbs ?? 0) * Double(reps) }
 }
 
 struct WorkoutGroup: Codable, Identifiable, Hashable {
@@ -83,7 +81,6 @@ struct WorkoutGroup: Codable, Identifiable, Hashable {
     let exerciseId: Int64
     let exerciseName: String
     let bodyPart: String?
-    let totalVolumeLbs: Double
     let sets: [WorkoutSet]
 }
 
@@ -94,7 +91,6 @@ struct WorkoutActive: Codable, Hashable {
     let prefillReps: Int
     let prefillWeightLbs: Double?
     let todaySets: [WorkoutSet]
-    let todayVolumeLbs: Double
     let lastSessionDate: String?
     let lastSessionSets: [WorkoutSet]
 }
@@ -102,7 +98,6 @@ struct WorkoutActive: Codable, Hashable {
 struct WorkoutResponse: Codable {
     let date: String
     let totalSets: Int
-    let totalVolumeLbs: Double
     let exerciseCount: Int
     let groups: [WorkoutGroup]
     let active: WorkoutActive?
@@ -164,7 +159,6 @@ struct TodaySnapshot: Codable {
     }
     struct WorkoutSummary: Codable {
         let totalSets: Int
-        let totalVolumeLbs: Double
         let exerciseCount: Int
         let groups: [WorkoutGroup]
     }
@@ -203,7 +197,7 @@ struct CalendarResponse: Codable {
         let avgSteps: Double
         let avgSleepH: Double
         let workoutDays: Int
-        let totalVolumeLbs: Double
+        let totalSets: Int
     }
 }
 
@@ -241,7 +235,7 @@ struct TrendsResponse: Codable {
     let avgSleep: Double?
     let gymDays: Double?
     let workoutDays: Int?
-    let totalVolume: Double?
+    let totalSets: Int?
 
     struct TrendPoint: Codable, Identifiable, Hashable {
         var id: String { date }
@@ -252,7 +246,6 @@ struct TrendsResponse: Codable {
         let steps: Int?
         let sleepAsleep: Double?
         let restingHr: Double?
-        let workoutVolume: Double?
         let gym: Bool
         let hasWorkout: Bool
     }
@@ -265,6 +258,64 @@ struct AdminUsersResponse: Codable {
 struct AdminCreatedUser: Codable {
     let user: User
     let apiKey: String
+}
+
+// MARK: - Workout Stats
+
+struct WorkoutStats: Codable {
+    let rangeDays: Int
+    let frequency: Frequency
+    let prs: [PR]
+    let weeklySets: [WeeklySets]
+    let setsByBodyPart: [String: Int]
+    let progressions: [Progression]
+
+    struct Frequency: Codable {
+        let totalSessions: Int
+        let totalSets: Int
+        let avgSetsPerSession: Double
+        let sessionsPerWeek: Double
+        let daysSinceLast: Int
+        let weekStreak: Int
+    }
+
+    struct PR: Codable, Identifiable, Hashable {
+        var id: Int64 { exerciseId }
+        let exerciseId: Int64
+        let exercise: String
+        let bodyPart: String
+        let sets: Int
+        let isBodyweight: Bool
+        let bestWeightLbs: Double?
+        let bestWeightReps: Int
+        let estOneRm: Double?
+        let bestReps: Int
+        let lastDate: String
+    }
+
+    struct WeeklySets: Codable, Identifiable, Hashable {
+        var id: String { week }
+        let week: String
+        let label: String
+        let byBodyPart: [String: Int]
+        let total: Int
+    }
+
+    struct Progression: Codable, Identifiable, Hashable {
+        var id: Int64 { exerciseId }
+        let exerciseId: Int64
+        let exercise: String
+        let bodyPart: String
+        let isBodyweight: Bool
+        let points: [Point]
+
+        struct Point: Codable, Hashable {
+            let date: String
+            let estOneRm: Double?
+            let topWeight: Double?
+            let bestReps: Int
+        }
+    }
 }
 
 // MARK: - Date helpers

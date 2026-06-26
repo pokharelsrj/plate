@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		03803676527CEC358A2D576C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694D80DC32FA0FE20E564AFD /* SettingsView.swift */; };
 		0BE4940819DA797BFB4B03D7 /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EB781591A3D97D2650A47F /* WorkoutView.swift */; };
+		D17A55B9C0E14F2A3B4C5D6E /* WorkoutStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28B66C0D1F25A3B4C5D6E7F /* WorkoutStatsView.swift */; };
 		1007788DA94DF734CA5F45B8 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E2D88A1AE1EC09EFE96F21 /* Theme.swift */; };
 		1407A75CBA0D55D64DC5A962 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814299711B2FD4C642C5F145 /* Session.swift */; };
 		170370EC963255D17B26C794 /* DayCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1A4F36A02E3BE907DBC81B /* DayCards.swift */; };
@@ -39,6 +40,7 @@
 		A30FC17B6F7513F9DFAD56B2 /* AppLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E7113DD21490820A8D4EB3 /* AppLock.swift */; };
 		A32676B7CFC3D20F481F2431 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA304B4AA1D9713060AC251 /* Models.swift */; };
 		A578D1F66F5BE9243E7B1EB5 /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2272F16B05F38669B26F7B4F /* HealthService.swift */; };
+		B2D3F40516273849506B7C8D /* HealthBackgroundTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C2E3F405162738495A6B7C /* HealthBackgroundTasks.swift */; };
 		AE568672380C431DCDD442B6 /* WatchRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F22D5D0345AD7670DBC521 /* WatchRelay.swift */; };
 		B174921D18D125D6CDDF542F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78909B2BAB49BA2A6F5B2F2F /* Assets.xcassets */; };
 		B64B38E9F4A7E731B5F2D239 /* PiWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D4F7178C267B0E357D519B /* PiWidget.swift */; };
@@ -107,6 +109,7 @@
 		1CEB6585F1292AD76ADD57BE /* GymStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymStepper.swift; sourceTree = "<group>"; };
 		1DD762A22C5E5555A457A727 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		2272F16B05F38669B26F7B4F /* HealthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthService.swift; sourceTree = "<group>"; };
+		A1C2E3F405162738495A6B7C /* HealthBackgroundTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthBackgroundTasks.swift; sourceTree = "<group>"; };
 		2F4D9ECE28B756145423AFE7 /* SyncStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusView.swift; sourceTree = "<group>"; };
 		3C4FB976B61C49F9C47B7570 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		41FE8F63467D20FA04AED309 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -124,6 +127,7 @@
 		7A89B383DC3B3604CC24D642 /* WatchWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWorkoutView.swift; sourceTree = "<group>"; };
 		814299711B2FD4C642C5F145 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		81EB781591A3D97D2650A47F /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
+		E28B66C0D1F25A3B4C5D6E7F /* WorkoutStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutStatsView.swift; sourceTree = "<group>"; };
 		8254A6090B975F72CE1F001D /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		83F22D5D0345AD7670DBC521 /* WatchRelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRelay.swift; sourceTree = "<group>"; };
 		871260723750A51D9872E725 /* Pi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -211,6 +215,7 @@
 		751333B17085D134645D576B /* HealthKit */ = {
 			isa = PBXGroup;
 			children = (
+				A1C2E3F405162738495A6B7C /* HealthBackgroundTasks.swift */,
 				2272F16B05F38669B26F7B4F /* HealthService.swift */,
 			);
 			path = HealthKit;
@@ -320,6 +325,7 @@
 			children = (
 				F09111521A6A858E38560E40 /* RestActivity.swift */,
 				81EB781591A3D97D2650A47F /* WorkoutView.swift */,
+				E28B66C0D1F25A3B4C5D6E7F /* WorkoutStatsView.swift */,
 				D6576B3C7FA43587E139202F /* WorkoutViewModel.swift */,
 			);
 			path = Workout;
@@ -527,6 +533,7 @@
 				97E68723B646914ECA6256E5 /* ExercisesView.swift in Sources */,
 				403CE75693D328F3AEE3CFC1 /* GymStepper.swift in Sources */,
 				A578D1F66F5BE9243E7B1EB5 /* HealthService.swift in Sources */,
+				B2D3F40516273849506B7C8D /* HealthBackgroundTasks.swift in Sources */,
 				D3E923BD67CC68D08E6C48B2 /* Keychain.swift in Sources */,
 				59A2C38DDF9128FD938DDEFC /* LoginView.swift in Sources */,
 				708D9D1A7FA7EB70C4E321E2 /* MetricViews.swift in Sources */,
@@ -549,6 +556,7 @@
 				5CBB589920024CC6BFC38FE7 /* ViewModifiers.swift in Sources */,
 				AE568672380C431DCDD442B6 /* WatchRelay.swift in Sources */,
 				0BE4940819DA797BFB4B03D7 /* WorkoutView.swift in Sources */,
+				D17A55B9C0E14F2A3B4C5D6E /* WorkoutStatsView.swift in Sources */,
 				6A252924BB1C43BC9698190D /* WorkoutViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,6 +1,10 @@
 import Foundation
 import WatchConnectivity
 
+extension Notification.Name {
+    static let watchDidAddSet = Notification.Name("WatchDidAddSet")
+}
+
 /// Relays watch requests to the Pi API. The watch never talks to the server
 /// directly — the phone owns the credentials and the VPN/LAN path, so the
 /// watch works anywhere the phone does. Also mirrors the watch's rest timer
@@ -46,6 +50,9 @@ final class WatchRelay: NSObject, WCSessionDelegate {
                 let weight = (message["weightLbs"] as? NSNumber)?.doubleValue
                 let set = try await client.addSet(date: date, exerciseId: eid, reps: reps,
                                                   weightLbs: (weight ?? 0) > 0 ? weight : nil)
+                NotificationCenter.default.post(name: .watchDidAddSet,
+                                                object: nil,
+                                                userInfo: ["date": date, "exerciseId": eid])
                 return try encodeReply(set)
             default:
                 return ["error": "unknown action"]

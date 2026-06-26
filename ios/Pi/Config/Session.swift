@@ -28,6 +28,15 @@ final class Session {
         APIClient(baseURL: baseURL, apiKey: apiKey)
     }
 
+    /// Builds a client from persisted credentials for background work (health
+    /// sync) that runs without a live Session. Returns nil if not signed in.
+    static func backgroundClient() -> APIClient? {
+        guard let key = Keychain.apiKey else { return nil }
+        let urlStr = UserDefaults.standard.string(forKey: baseURLKey)
+        let url = urlStr.flatMap { URL(string: $0) } ?? defaultBaseURL
+        return APIClient(baseURL: url, apiKey: key)
+    }
+
     var lastEmail: String {
         get { UserDefaults.standard.string(forKey: Self.lastEmailKey) ?? "" }
         set { UserDefaults.standard.set(newValue, forKey: Self.lastEmailKey) }

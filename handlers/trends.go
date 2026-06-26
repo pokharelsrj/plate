@@ -37,15 +37,11 @@ func buildTrendsPayload(days int) map[string]any {
 	body, _ := db.BodyBetween(from, to)
 	workoutSets, _ := db.WorkoutSetsBetween(from, to)
 
-	// Group workout volume by date and by body part
-	volByDate := map[string]float64{}
+	// Group workout sets by date and by body part
 	setsByBodyPart := map[string]int{}
 	workoutDates := map[string]bool{}
 	for _, s := range workoutSets {
 		workoutDates[s.Date] = true
-		if s.WeightLbs.Valid {
-			volByDate[s.Date] += s.WeightLbs.Float64 * float64(s.Reps)
-		}
 		bp := "other"
 		if s.BodyPart.Valid && s.BodyPart.String != "" {
 			bp = s.BodyPart.String
@@ -71,7 +67,6 @@ func buildTrendsPayload(days int) map[string]any {
 		SleepAwake     *float64 `json:"sleep_awake"`
 		WeightLbs      *float64 `json:"weight_lbs"`
 		BfPercent      *float64 `json:"bf_percent"`
-		WorkoutVolume  *float64 `json:"workout_volume"`
 		HasWorkout     bool     `json:"has_workout"`
 	}
 	var pts []point
@@ -148,9 +143,6 @@ func buildTrendsPayload(days int) map[string]any {
 				p.BfPercent = &v
 			}
 		}
-		if v, ok := volByDate[key]; ok {
-			p.WorkoutVolume = &v
-		}
 		if workoutDates[key] {
 			p.HasWorkout = true
 		}
@@ -208,18 +200,10 @@ func buildTrendsPayload(days int) map[string]any {
 		"latest_weight":     latestWeight,
 		"latest_bf":         latestBF,
 		"workout_days":      len(workoutDates),
-		"total_volume":      totalWorkoutVolume(volByDate),
+		"total_sets":        len(workoutSets),
 		"sets_by_body_part": setsByBodyPart,
 		"range_days":        days,
 	}
-}
-
-func totalWorkoutVolume(m map[string]float64) float64 {
-	var t float64
-	for _, v := range m {
-		t += v
-	}
-	return t
 }
 
 func parseRange(r *http.Request) int {

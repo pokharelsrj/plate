@@ -11,6 +11,11 @@ final class HealthService: ObservableObject {
     @Published private(set) var isSyncing = false
     @Published private(set) var lastSyncAt: Date? = UserDefaults.standard.object(forKey: "health.lastSyncAt") as? Date
 
+    /// Days pushed by the scheduled full sync — roughly a year of history.
+    static let fullSyncDays = 365
+    /// Days pushed by every background catch-up so recent edits are never missed.
+    static let backgroundSyncDays = 2
+
     static var isAvailable: Bool { HKHealthStore.isHealthDataAvailable() }
 
     private var readTypes: Set<HKObjectType> {
@@ -26,8 +31,39 @@ final class HealthService: ObservableObject {
         try await store.requestAuthorization(toShare: [], read: readTypes)
     }
 
+    // MARK: - Serialized sync entry points
+
+    /// Tail of the serial sync chain — guarantees background and foreground syncs
+    /// run one at a time. The ingest endpoint upserts by date, so overlapping
+    /// ranges only ever refresh the same rows (overlaps are harmless).
+    private var syncChain: Task<Void, Never> = Task {}
+
+    @discardableResult
+    private func enqueue(_ op: @escaping () async throws -> Void) -> Task<Void, Error> {
+        let previous = syncChain
+        let work = Task { () async throws -> Void in
+            await previous.value
+            try await op()
+        }
+        syncChain = Task { _ = try? await work.value }
+        return work
+    }
+
     /// Push the last `daysBack` days of HealthKit data to the Pi.
     func sync(daysBack: Int = 7, client: APIClient) async throws {
+        try await enqueue { [weak self] in
+            try await self?.performSync(daysBack: daysBack, client: client)
+        }.value
+    }
+
+    /// Push a single day's HealthKit data to the Pi.
+    func syncDay(_ date: Date, client: APIClient) async throws {
+        try await enqueue { [weak self] in
+            try await self?.performSyncDay(date, client: client)
+        }.value
+    }
+
+    private func performSync(daysBack: Int, client: APIClient) async throws {
         guard Self.isAvailable else { return }
         isSyncing = true
         defer { isSyncing = false }
@@ -46,8 +82,7 @@ final class HealthService: ObservableObject {
         UserDefaults.standard.set(lastSyncAt, forKey: "health.lastSyncAt")
     }
 
-    /// Push a single day's HealthKit data to the Pi.
-    func syncDay(_ date: Date, client: APIClient) async throws {
+    private func performSyncDay(_ date: Date, client: APIClient) async throws {
         guard Self.isAvailable else { return }
         isSyncing = true
         defer { isSyncing = false }
@@ -55,6 +90,33 @@ final class HealthService: ObservableObject {
         try await client.ingestHealth(days: [payload])
         lastSyncAt = Date()
         UserDefaults.standard.set(lastSyncAt, forKey: "health.lastSyncAt")
+    }
+
+    // MARK: - Background delivery
+
+    private var backgroundStarted = false
+    private var observerQueries: [HKObserverQuery] = []
+
+    /// Registers HealthKit background delivery so the system wakes the app when
+    /// new samples are written; each wake pushes the last couple of days. Safe to
+    /// call repeatedly — it only wires up once per launch.
+    func startBackgroundDelivery() {
+        guard Self.isAvailable, !backgroundStarted else { return }
+        backgroundStarted = true
+
+        for type in readTypes.compactMap({ $0 as? HKSampleType }) {
+            store.enableBackgroundDelivery(for: type, frequency: .hourly) { _, _ in }
+            let query = HKObserverQuery(sampleType: type, predicate: nil) { [weak self] _, completion, _ in
+                Task { @MainActor in
+                    if let client = Session.backgroundClient() {
+                        try? await self?.sync(daysBack: Self.backgroundSyncDays, client: client)
+                    }
+                    completion()
+                }
+            }
+            store.execute(query)
+            observerQueries.append(query)
+        }
     }
 
     /// Read one calendar day's metrics.

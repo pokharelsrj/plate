@@ -8,35 +8,33 @@ import (
 )
 
 type workoutSetJSON struct {
-	ID        int64    `json:"id"`
-	Date      string   `json:"date"`
-	ExerciseID int64   `json:"exercise_id"`
-	Reps      int      `json:"reps"`
-	WeightLbs *float64 `json:"weight_lbs"`
+	ID         int64    `json:"id"`
+	Date       string   `json:"date"`
+	ExerciseID int64    `json:"exercise_id"`
+	Reps       int      `json:"reps"`
+	WeightLbs  *float64 `json:"weight_lbs"`
 }
 
 type workoutGroupJSON struct {
-	ExerciseID     int64            `json:"exercise_id"`
-	ExerciseName   string           `json:"exercise_name"`
-	BodyPart       *string          `json:"body_part"`
-	TotalVolumeLbs float64          `json:"total_volume_lbs"`
-	Sets           []workoutSetJSON `json:"sets"`
+	ExerciseID   int64            `json:"exercise_id"`
+	ExerciseName string           `json:"exercise_name"`
+	BodyPart     *string          `json:"body_part"`
+	Sets         []workoutSetJSON `json:"sets"`
 }
 
 type workoutSummaryJSON struct {
-	TotalSets      int                `json:"total_sets"`
-	TotalVolumeLbs float64            `json:"total_volume_lbs"`
-	ExerciseCount  int                `json:"exercise_count"`
-	Groups         []workoutGroupJSON `json:"groups"`
+	TotalSets     int                `json:"total_sets"`
+	ExerciseCount int                `json:"exercise_count"`
+	Groups        []workoutGroupJSON `json:"groups"`
 }
 
 type daySnapshotJSON struct {
-	Date      string          `json:"date"`
-	System    *systemJSON     `json:"system"`
-	Gym       *gymJSON        `json:"gym"`
-	Nutrition *nutritionJSON  `json:"nutrition"`
-	Health    *healthDayJSON  `json:"health"`
-	Body      *bodyMetricJSON `json:"body"`
+	Date      string              `json:"date"`
+	System    *systemJSON         `json:"system"`
+	Gym       *gymJSON            `json:"gym"`
+	Nutrition *nutritionJSON      `json:"nutrition"`
+	Health    *healthDayJSON      `json:"health"`
+	Body      *bodyMetricJSON     `json:"body"`
 	Workout   *workoutSummaryJSON `json:"workout"`
 }
 
@@ -96,10 +94,9 @@ func toGroupsJSON(sets []db.WorkoutSet) []workoutGroupJSON {
 	out := make([]workoutGroupJSON, 0, len(groups))
 	for _, g := range groups {
 		gj := workoutGroupJSON{
-			ExerciseID:     g.ExerciseID,
-			ExerciseName:   g.ExerciseName,
-			TotalVolumeLbs: g.TotalVolume,
-			Sets:           make([]workoutSetJSON, 0, len(g.Sets)),
+			ExerciseID:   g.ExerciseID,
+			ExerciseName: g.ExerciseName,
+			Sets:         make([]workoutSetJSON, 0, len(g.Sets)),
 		}
 		if g.BodyPart != "" {
 			bp := g.BodyPart
@@ -194,12 +191,7 @@ func buildDaySnapshot(dateStr string) (daySnapshotJSON, error) {
 	sets, err := db.WorkoutSetsForDay(dateStr)
 	if err == nil && len(sets) > 0 {
 		ws := &workoutSummaryJSON{Groups: toGroupsJSON(sets)}
-		for _, s := range sets {
-			ws.TotalSets++
-			if s.WeightLbs.Valid {
-				ws.TotalVolumeLbs += s.WeightLbs.Float64 * float64(s.Reps)
-			}
-		}
+		ws.TotalSets = len(sets)
 		ws.ExerciseCount = len(ws.Groups)
 		out.Workout = ws
 	}
@@ -292,17 +284,13 @@ func APICalendar(w http.ResponseWriter, r *http.Request, _ *db.User) {
 		cells = append(cells, cj)
 	}
 
-	// Total volume across the visible period
-	var totalVolume float64
+	// Total sets across the visible period
+	var totalSets int
 	if first != "" {
 		fromT, _ := time.ParseInLocation("2006-01-02", first, time.Local)
 		toT, _ := time.ParseInLocation("2006-01-02", last, time.Local)
 		if sets, err := db.WorkoutSetsBetween(fromT, toT); err == nil {
-			for _, s := range sets {
-				if s.WeightLbs.Valid {
-					totalVolume += s.WeightLbs.Float64 * float64(s.Reps)
-				}
-			}
+			totalSets = len(sets)
 		}
 	}
 
@@ -314,12 +302,12 @@ func APICalendar(w http.ResponseWriter, r *http.Request, _ *db.User) {
 		"today":     model.TodayStr,
 		"cells":     cells,
 		"stats": map[string]any{
-			"gym_days":         model.GymDays,
-			"avg_calories":     model.AvgCalories,
-			"avg_steps":        model.AvgSteps,
-			"avg_sleep_h":      model.AvgSleep,
-			"workout_days":     workoutDays,
-			"total_volume_lbs": totalVolume,
+			"gym_days":     model.GymDays,
+			"avg_calories": model.AvgCalories,
+			"avg_steps":    model.AvgSteps,
+			"avg_sleep_h":  model.AvgSleep,
+			"workout_days": workoutDays,
+			"total_sets":   totalSets,
 		},
 	})
 }

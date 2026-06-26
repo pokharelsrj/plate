@@ -27,6 +27,13 @@ struct WorkoutView: View {
             .navigationTitle("Workout")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        WorkoutStatsView()
+                    } label: {
+                        Image(systemName: "chart.bar.xaxis")
+                    }
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         showDaySummary = true
@@ -41,6 +48,7 @@ struct WorkoutView: View {
             }
             .task {
                 vm.session = session
+                vm.startObservingWatch()
                 await vm.load()
                 vm.restoreRestTimer()
             }
@@ -106,7 +114,7 @@ struct WorkoutView: View {
                     .foregroundStyle(Color.piPrimary)
                 }
 
-                Text("\(vm.groups.count) exercises · \(vm.totalSets) sets · \(Int(vm.totalVolume).formatted()) lb")
+                Text("\(vm.groups.count) exercises · \(vm.totalSets) sets")
                     .font(.piCaption)
                     .foregroundStyle(Color.piTextMuted)
 
@@ -323,7 +331,7 @@ struct WorkoutView: View {
                     withAnimation(.snappy) { todayCollapsed.toggle() }
                 } label: {
                     HStack {
-                        Eyebrow("Today · \(Int(vm.todayVolume).formatted()) lb")
+                        Eyebrow("Today · \(vm.todaySets.count) sets")
                         Spacer()
                         Image(systemName: todayCollapsed ? "chevron.down" : "chevron.up")
                             .font(.piCaption)
@@ -480,14 +488,7 @@ struct SetRow: View {
     var body: some View {
         HStack {
             SetRowLabel(index: index, set: set)
-            if set.weightLbs != nil {
-                Spacer()
-                Text("\(Int(set.volume).formatted()) lb")
-                    .font(.piCaption)
-                    .foregroundStyle(Color.piTextMuted)
-            } else {
-                Spacer()
-            }
+            Spacer()
             Button(action: onEdit) {
                 Image(systemName: "pencil")
                     .foregroundStyle(Color.piTextMuted)
@@ -564,9 +565,6 @@ struct DaySummarySheet: View {
                             .font(.piSubheadline)
                             .foregroundStyle(Color.piTextMuted)
                         Spacer()
-                        Text("\(Int(vm.totalVolume).formatted()) lb")
-                            .font(.piMetricSmall)
-                            .foregroundStyle(Color.piWorkoutGold)
                     }
                     .listRowBackground(Color.clear)
                 }
@@ -579,11 +577,6 @@ struct DaySummarySheet: View {
                                 HStack {
                                     SetRowLabel(index: index + 1, set: set)
                                     Spacer()
-                                    if set.weightLbs != nil {
-                                        Text("\(Int(set.volume).formatted()) lb")
-                                            .font(.piCaption)
-                                            .foregroundStyle(Color.piTextMuted)
-                                    }
                                 }
                             }
                             .listRowBackground(Color.piBg2)
@@ -603,7 +596,7 @@ struct DaySummarySheet: View {
                             }
                         } label: {
                             HStack {
-                                Eyebrow("\(group.exerciseName) · \(Int(group.totalVolumeLbs).formatted()) lb",
+                                Eyebrow("\(group.exerciseName) · \(group.sets.count) sets",
                                         color: vm.active?.exerciseId == group.exerciseId ? .piPrimary : .piTextMuted)
                                 Spacer()
                                 Image(systemName: "target")

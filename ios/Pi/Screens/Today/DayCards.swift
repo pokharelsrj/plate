@@ -200,11 +200,11 @@ struct DaySnapshotCards: View {
         VStack(alignment: .leading, spacing: 12) {
             sectionHeader("Workout", tab: .workout)
             HStack {
-                Text("\(w.exerciseCount) exercises · \(w.totalSets) sets")
+                Text("\(w.exerciseCount) exercises")
                     .font(.piSubheadline)
                     .foregroundStyle(Color.piTextMuted)
                 Spacer()
-                Text("\(Int(w.totalVolumeLbs).formatted()) lb")
+                Text("\(w.totalSets) sets")
                     .font(.piMetricSmall)
                     .foregroundStyle(Color.piWorkoutGold)
             }

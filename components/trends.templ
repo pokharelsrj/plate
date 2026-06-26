@@ -47,8 +47,8 @@ templ TrendsPage(rangeDays int) {
 					<div class="summary-value sum-workouts" id="sum-workouts">—</div>
 				</div>
 				<div class="summary-card">
-					<div class="metric-label">total volume</div>
-					<div class="summary-value sum-volume" id="sum-volume">—</div>
+					<div class="metric-label">total sets</div>
+					<div class="summary-value sum-sets" id="sum-sets">—</div>
 				</div>
 				<div class="summary-card">
 					<div class="metric-label">range</div>
@@ -81,16 +81,12 @@ templ TrendsPage(rangeDays int) {
 				<div class="chart-wrap"><canvas id="hr-chart"></canvas></div>
 			</div>
 			<div class="chart-card">
-				<div class="chart-title">WEIGHT (LBS)</div>
+				<div class="chart-title">WEIGHT (LBS) &middot; weekly average</div>
 				<div class="chart-wrap"><canvas id="weight-chart"></canvas></div>
 			</div>
 			<div class="chart-card">
 				<div class="chart-title">BODY FAT %</div>
 				<div class="chart-wrap"><canvas id="bf-chart"></canvas></div>
-			</div>
-			<div class="chart-card">
-				<div class="chart-title">WORKOUT VOLUME &middot; lbs lifted per day</div>
-				<div class="chart-wrap"><canvas id="vol-chart"></canvas></div>
 			</div>
 			<div class="chart-card">
 				<div class="chart-title">SETS BY BODY PART</div>
@@ -107,7 +103,7 @@ templ TrendsPage(rangeDays int) {
 				Chart.defaults.font.family = "'Courier New', Courier, monospace";
 				Chart.defaults.font.size = 10;
 
-				let calChart, macroChart, gymChart, stepsChart, sleepChart, hrChart, weightChart, bfChart, volChart, bodyPartChart;
+				let calChart, macroChart, gymChart, stepsChart, sleepChart, hrChart, weightChart, bfChart, bodyPartChart;
 
 				function fmtDate(s) {
 					const d = new Date(s + 'T00:00:00');
@@ -163,8 +159,7 @@ templ TrendsPage(rangeDays int) {
 					document.getElementById('sum-bf').textContent =
 						data.latest_bf ? data.latest_bf.toFixed(1) + '%' : '—';
 					document.getElementById('sum-workouts').textContent = data.workout_days || 0;
-					document.getElementById('sum-volume').textContent =
-						data.total_volume ? Math.round(data.total_volume).toLocaleString() + ' lb' : '—';
+					document.getElementById('sum-sets').textContent = data.total_sets || 0;
 					document.getElementById('sum-range').textContent = data.range_days + ' days';
 
 					const commonScale = {
@@ -307,15 +302,27 @@ templ TrendsPage(rangeDays int) {
 						options: chartOptions(commonScale),
 					});
 
-					// Weight
+					// Weight — one point per week = average of that week's weigh-ins.
+					// Points arrive chronologically, so the bucket order is chronological too.
+					const wWeekly = {};
+					const wWeekOrder = [];
+					data.points.forEach(p => {
+						if (p.weight_lbs == null) return;
+						const k = weekKey(p.date);
+						if (!wWeekly[k]) { wWeekly[k] = { sum: 0, count: 0, firstDate: p.date }; wWeekOrder.push(k); }
+						wWeekly[k].sum += p.weight_lbs;
+						wWeekly[k].count += 1;
+					});
+					const weightLabels = wWeekOrder.map(k => fmtDate(wWeekly[k].firstDate));
+					const weightVals = wWeekOrder.map(k => wWeekly[k].sum / wWeekly[k].count);
 					if (weightChart) weightChart.destroy();
 					weightChart = new Chart(document.getElementById('weight-chart'), {
 						type: 'line',
 						data: {
-							labels,
+							labels: weightLabels,
 							datasets: [{
-								label: 'Weight (lb)',
-								data: data.points.map(p => p.weight_lbs),
+								label: 'Weekly avg weight (lb)',
+								data: weightVals,
 								borderColor: '#5ce1e6',
 								backgroundColor: 'rgba(92,225,230,0.1)',
 								borderWidth: 2,
@@ -344,23 +351,6 @@ templ TrendsPage(rangeDays int) {
 								tension: 0.3,
 								spanGaps: true,
 								fill: true,
-							}],
-						},
-						options: chartOptions(commonScale),
-					});
-
-					// Workout volume
-					if (volChart) volChart.destroy();
-					volChart = new Chart(document.getElementById('vol-chart'), {
-						type: 'bar',
-						data: {
-							labels,
-							datasets: [{
-								label: 'Volume (lb)',
-								data: data.points.map(p => p.workout_volume),
-								backgroundColor: 'rgba(255,209,102,0.5)',
-								borderColor: '#ffd166',
-								borderWidth: 1,
 							}],
 						},
 						options: chartOptions(commonScale),
@@ -439,7 +429,7 @@ templ TrendsPage(rangeDays int) {
 			.summary-value.sum-weight { color: #5ce1e6; }
 			.summary-value.sum-bf { color: #ff70b3; }
 			.summary-value.sum-workouts { color: #ffd166; }
-			.summary-value.sum-volume { color: #ffd166; }
+			.summary-value.sum-sets { color: #ffd166; }
 			.chart-card {
 				background: var(--bg2); border: 1px solid var(--border);
 				border-radius: 6px; padding: 1rem 1.25rem; margin-bottom: 1rem;

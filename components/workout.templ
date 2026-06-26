@@ -11,7 +11,6 @@ type WorkoutGroup struct {
 	ExerciseName string
 	BodyPart     string
 	Sets         []db.WorkoutSet
-	TotalVolume  float64
 }
 
 type PickerGroup struct {
@@ -26,7 +25,6 @@ type WorkoutActive struct {
 	PrefillReps     int
 	PrefillWeight   float64
 	TodaySets       []db.WorkoutSet
-	TodayVolume     float64
 	LastSessionDate string
 	LastSessionSets []db.WorkoutSet
 }
@@ -43,7 +41,6 @@ type WorkoutPageModel struct {
 	Active        *WorkoutActive
 	Groups        []WorkoutGroup
 	TotalSets     int
-	TotalVolume   float64
 	ExerciseCount int
 	ErrorMsg      string
 }
@@ -71,7 +68,6 @@ templ WorkoutPage(m WorkoutPageModel) {
 		<div class="wk-totals">
 			<div class="wk-total"><span class="wk-total-num">{ fmt.Sprintf("%d", m.ExerciseCount) }</span><span class="wk-total-lbl">EXERCISES</span></div>
 			<div class="wk-total"><span class="wk-total-num">{ fmt.Sprintf("%d", m.TotalSets) }</span><span class="wk-total-lbl">SETS</span></div>
-			<div class="wk-total"><span class="wk-total-num">{ fmt.Sprintf("%.0f", m.TotalVolume) }</span><span class="wk-total-lbl">VOLUME (LB)</span></div>
 		</div>
 
 		if m.Active != nil {
@@ -147,7 +143,7 @@ templ WorkoutPage(m WorkoutPageModel) {
 			<details class="session-summary" open>
 				<summary>
 					<span class="metric-label">TODAY'S SESSION</span>
-					<span class="metric-sub">{ fmt.Sprintf("%d exercises · %d sets · %.0f lb", m.ExerciseCount, m.TotalSets, m.TotalVolume) }</span>
+					<span class="metric-sub">{ fmt.Sprintf("%d exercises · %d sets", m.ExerciseCount, m.TotalSets) }</span>
 				</summary>
 				<div class="session-list">
 					for _, g := range m.Groups {
@@ -247,8 +243,8 @@ templ activePanel(a *WorkoutActive, date string) {
 					<div class="active-bp">{ a.BodyPart }</div>
 				}
 			</div>
-			if a.TodayVolume > 0 {
-				<div class="active-vol">{ fmt.Sprintf("%.0f lb", a.TodayVolume) }<span class="metric-sub" style="margin-left:0.3rem">today</span></div>
+			if len(a.TodaySets) > 0 {
+				<div class="active-vol">{ fmt.Sprintf("%d sets", len(a.TodaySets)) }<span class="metric-sub" style="margin-left:0.3rem">today</span></div>
 			}
 		</div>
 
@@ -398,9 +394,7 @@ templ sessionGroup(g WorkoutGroup, date string) {
 					<span class="wg-bodypart">{ g.BodyPart }</span>
 				}
 			</div>
-			if g.TotalVolume > 0 {
-				<span class="sg-vol">{ fmt.Sprintf("%.0f lb", g.TotalVolume) }</span>
-			}
+			<span class="sg-vol">{ fmt.Sprintf("%d sets", len(g.Sets)) }</span>
 		</div>
 		<div class="sg-sets">
 			for i, s := range g.Sets {

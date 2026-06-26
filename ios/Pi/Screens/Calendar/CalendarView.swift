@@ -125,7 +125,7 @@ struct CalendarView: View {
             HStack {
                 statItem("\(Int(stats.avgSteps).formatted())", "avg steps", .piStepsOrange)
                 statItem(String(format: "%.1fh", stats.avgSleepH), "avg sleep", .piSleepPurple)
-                statItem("\(Int(stats.totalVolumeLbs).formatted())", "lb volume", .piWeightTeal)
+                statItem("\(stats.totalSets)", "sets", .piWeightTeal)
             }
         }
         .piCard()

@@ -211,6 +211,9 @@ struct SettingsView: View {
         do {
             try await health.requestAuthorization()
             try await health.sync(daysBack: daysBack, client: session.client)
+            // Now that access is granted, wire up automatic background syncing.
+            health.startBackgroundDelivery()
+            HealthBackgroundTasks.shared.schedule()
             toast = Toast(message: "Synced last \(daysBack) days of health data")
         } catch {
             toast = Toast(message: error.localizedDescription, isError: true)

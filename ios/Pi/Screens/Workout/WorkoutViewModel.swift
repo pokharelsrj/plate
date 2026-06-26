@@ -11,7 +11,6 @@ final class WorkoutViewModel {
     var exercises: [Exercise] = []
     var groups: [WorkoutGroup] = []
     var totalSets = 0
-    var totalVolume = 0.0
     var active: WorkoutActive?
     var todaySets: [WorkoutSet] = []
 
@@ -71,6 +70,22 @@ final class WorkoutViewModel {
         return buckets.keys.sorted().map { ($0, buckets[$0]!) }
     }
 
+    // MARK: - Watch sync
+
+    private var watchObserver: NSObjectProtocol?
+
+    func startObservingWatch() {
+        guard watchObserver == nil else { return }
+        watchObserver = NotificationCenter.default.addObserver(
+            forName: .watchDidAddSet, object: nil, queue: .main
+        ) { [weak self] note in
+            guard let self else { return }
+            let noteDate = note.userInfo?["date"] as? String ?? PiDate.todayString
+            guard noteDate == self.date else { return }
+            Task { await self.refresh(prefill: false) }
+        }
+    }
+
     // MARK: - Loading
 
     func load() async {
@@ -107,7 +122,6 @@ final class WorkoutViewModel {
     private func apply(_ resp: WorkoutResponse, prefill: Bool) {
         groups = resp.groups
         totalSets = resp.totalSets
-        totalVolume = resp.totalVolumeLbs
         active = resp.active
         todaySets = resp.active?.todaySets ?? []
         // Hide rows that are mid-undo-window so a refresh doesn't resurrect them.
@@ -354,9 +368,5 @@ final class WorkoutViewModel {
         } catch {
             toast = Toast(message: "Update failed — \(error.localizedDescription)", isError: true)
         }
-    }
-
-    var todayVolume: Double {
-        todaySets.reduce(0) { $0 + $1.volume }
     }
 }

@@ -160,6 +160,10 @@ struct APIClient {
         return try await request("/api/workout", query: query)
     }
 
+    func workoutStats(rangeDays: Int) async throws -> WorkoutStats {
+        try await request("/api/workout/stats", query: [URLQueryItem(name: "range", value: String(rangeDays))])
+    }
+
     func addSet(date: String, exerciseId: Int64, reps: Int, weightLbs: Double?) async throws -> WorkoutSet {
         struct Body: Encodable {
             let date: String

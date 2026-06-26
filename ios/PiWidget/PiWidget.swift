@@ -81,7 +81,7 @@ struct TodayWidgetView: View {
             header
             metricRow("figure.walk", value: steps(snap), color: Color("PiStepsOrange"))
             metricRow("moon.fill", value: sleep(snap), color: Color("PiSleepPurple"))
-            metricRow("dumbbell.fill", value: volume(snap), color: Color("PiWorkoutGold"))
+            metricRow("dumbbell.fill", value: workoutSets(snap), color: Color("PiWorkoutGold"))
             metricRow("flame.fill", value: calories(snap), color: Color("PiCalGood"))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -100,7 +100,7 @@ struct TodayWidgetView: View {
                 }
                 VStack(alignment: .leading, spacing: 7) {
                     metricRow("flame.fill", value: calories(snap), color: Color("PiCalGood"))
-                    metricRow("dumbbell.fill", value: volume(snap), color: Color("PiWorkoutGold"))
+                    metricRow("dumbbell.fill", value: workoutSets(snap), color: Color("PiWorkoutGold"))
                     metricRow("checkmark.circle.fill",
                               value: (snap.gym?.checkins.isEmpty == false) ? "Gym ✓" : "No gym yet",
                               color: Color("PiGymCyan"))
@@ -152,9 +152,9 @@ struct TodayWidgetView: View {
         return "\(m / 60)h \(m % 60)m sleep"
     }
 
-    private func volume(_ s: TodaySnapshot) -> String {
+    private func workoutSets(_ s: TodaySnapshot) -> String {
         guard let w = s.workout, w.totalSets > 0 else { return "no sets yet" }
-        return "\(Int(w.totalVolumeLbs).formatted()) lb · \(w.totalSets) sets"
+        return "\(w.totalSets) sets · \(w.exerciseCount) exercises"
     }
 
     private func calories(_ s: TodaySnapshot) -> String {

@@ -1,0 +1,340 @@
+package components
+
+import "fmt"
+
+templ WorkoutStatsPage(rangeDays int) {
+	@Layout("workout-stats") {
+		<div id="stats-root" data-initial-range={ fmt.Sprintf("%d", rangeDays) }>
+			<div class="trends-header">
+				<div>
+					<div class="metric-label">workout stats</div>
+					<div class="metric-sub">strength &amp; consistency</div>
+				</div>
+				<div class="range-selector">
+					<button class="range-btn" data-range="7">7d</button>
+					<button class="range-btn" data-range="30">30d</button>
+					<button class="range-btn" data-range="90">90d</button>
+				</div>
+			</div>
+
+			<div class="summary-row">
+				<div class="summary-card">
+					<div class="metric-label">sessions</div>
+					<div class="summary-value sv-sessions" id="f-sessions">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">sessions / week</div>
+					<div class="summary-value sv-perweek" id="f-perweek">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">week streak</div>
+					<div class="summary-value sv-streak" id="f-streak">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">days since last</div>
+					<div class="summary-value sv-since" id="f-since">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">total sets</div>
+					<div class="summary-value sv-sets" id="f-sets">—</div>
+				</div>
+				<div class="summary-card">
+					<div class="metric-label">avg sets / session</div>
+					<div class="summary-value sv-avgsets" id="f-avgsets">—</div>
+				</div>
+			</div>
+
+			<div class="chart-card">
+				<div class="chart-title">PERSONAL RECORDS &middot; all-time best per lift</div>
+				<div class="pr-wrap">
+					<table class="pr-table">
+						<thead>
+							<tr>
+								<th>exercise</th>
+								<th>part</th>
+								<th class="num">best set</th>
+								<th class="num">est 1rm</th>
+								<th class="num">top reps</th>
+								<th class="num">sets</th>
+							</tr>
+						</thead>
+						<tbody id="pr-body"></tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="chart-card">
+				<div class="chart-title">WEEKLY SETS &middot; by body part</div>
+				<div class="chart-wrap"><canvas id="weekly-chart"></canvas></div>
+			</div>
+
+			<div class="chart-card">
+				<div class="chart-title">SET DISTRIBUTION &middot; by body part</div>
+				<div class="chart-wrap"><canvas id="bodypart-chart"></canvas></div>
+			</div>
+
+			<div class="chart-card">
+				<div class="chart-title-row">
+					<div class="chart-title" id="prog-title">PROGRESSION</div>
+					<select id="prog-select" class="prog-select"></select>
+				</div>
+				<div class="chart-wrap"><canvas id="prog-chart"></canvas></div>
+			</div>
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+		<script>
+			(function() {
+				const GREEN = '#00ff88', GREEN_DIM = '#00cc6a';
+				const MUTED = 'rgba(0,255,136,0.4)', GRID = 'rgba(0,255,136,0.08)';
+				const BP_COLORS = ['#ffd166','#06d6a0','#118ab2','#ef476f','#ab47bc','#ff9800','#5ce1e6','#90a4ae','#f78fb3','#c0e218'];
+				Chart.defaults.color = MUTED;
+				Chart.defaults.font.family = "'Courier New', Courier, monospace";
+				Chart.defaults.font.size = 10;
+
+				let weeklyChart, bodyPartChart, progChart;
+				let lastData = null;
+
+				const tooltip = {
+					backgroundColor: '#0d1117', borderColor: GREEN_DIM, borderWidth: 1,
+					titleColor: GREEN, bodyColor: GREEN,
+				};
+				const commonScale = { grid: { color: GRID, drawBorder: false }, ticks: { color: MUTED } };
+
+				function bpColor(name, allParts) {
+					const i = allParts.indexOf(name);
+					return BP_COLORS[(i < 0 ? 0 : i) % BP_COLORS.length];
+				}
+
+				async function load(days) {
+					document.querySelectorAll('.range-btn').forEach(b => {
+						b.classList.toggle('active', parseInt(b.dataset.range) === days);
+					});
+					const r = await fetch('/workout/stats/data?range=' + days);
+					lastData = await r.json();
+					render(lastData);
+				}
+
+				function render(data) {
+					const f = data.frequency || {};
+					document.getElementById('f-sessions').textContent = f.total_sessions ?? '—';
+					document.getElementById('f-perweek').textContent = (f.sessions_per_week ?? 0).toFixed(1);
+					document.getElementById('f-streak').textContent =
+						(f.week_streak ?? 0) + (f.week_streak === 1 ? ' wk' : ' wks');
+					document.getElementById('f-since').textContent =
+						f.days_since_last == null || f.days_since_last < 0 ? '—' :
+						f.days_since_last === 0 ? 'today' : f.days_since_last + 'd';
+					document.getElementById('f-sets').textContent = f.total_sets ?? '—';
+					document.getElementById('f-avgsets').textContent = (f.avg_sets_per_session ?? 0).toFixed(1);
+
+					renderPRs(data.prs || []);
+					renderWeekly(data.weekly_sets || []);
+					renderBodyPart(data.sets_by_body_part || {});
+					renderProgressions(data.progressions || []);
+				}
+
+				function fmtWt(w) { return Number.isInteger(w) ? w : w.toFixed(1); }
+
+				function renderPRs(prs) {
+					const body = document.getElementById('pr-body');
+					if (!prs.length) {
+						body.innerHTML = '<tr><td colspan="6" class="pr-empty">No sets logged in your library yet.</td></tr>';
+						return;
+					}
+					body.innerHTML = prs.map(p => {
+						const best = p.best_weight_lbs != null
+							? fmtWt(p.best_weight_lbs) + ' lb × ' + p.best_weight_reps
+							: 'bodyweight';
+						const orm = p.est_one_rm != null ? fmtWt(p.est_one_rm) + ' lb' : '—';
+						return '<tr>' +
+							'<td>' + p.exercise + '</td>' +
+							'<td class="pr-bp">' + (p.body_part || '') + '</td>' +
+							'<td class="num">' + best + '</td>' +
+							'<td class="num pr-orm">' + orm + '</td>' +
+							'<td class="num">' + p.best_reps + '</td>' +
+							'<td class="num">' + p.sets + '</td>' +
+							'</tr>';
+					}).join('');
+				}
+
+				function renderWeekly(weeks) {
+					const labels = weeks.map(w => w.label);
+					const parts = [];
+					weeks.forEach(w => Object.keys(w.by_body_part || {}).forEach(bp => {
+						if (!parts.includes(bp)) parts.push(bp);
+					}));
+					parts.sort();
+					const datasets = parts.map(bp => ({
+						label: bp,
+						data: weeks.map(w => (w.by_body_part || {})[bp] || 0),
+						backgroundColor: bpColor(bp, parts),
+						stack: 's',
+					}));
+					if (weeklyChart) weeklyChart.destroy();
+					weeklyChart = new Chart(document.getElementById('weekly-chart'), {
+						type: 'bar',
+						data: { labels, datasets },
+						options: {
+							responsive: true, maintainAspectRatio: false,
+							interaction: { mode: 'index', intersect: false },
+							plugins: { legend: { labels: { color: MUTED, boxWidth: 10 } }, tooltip },
+							scales: {
+								x: { ...commonScale, stacked: true },
+								y: { ...commonScale, stacked: true, title: { display: true, text: 'sets', color: MUTED } },
+							},
+						},
+					});
+				}
+
+				function renderBodyPart(byBp) {
+					const labels = Object.keys(byBp);
+					const values = labels.map(k => byBp[k]);
+					if (bodyPartChart) bodyPartChart.destroy();
+					bodyPartChart = new Chart(document.getElementById('bodypart-chart'), {
+						type: 'doughnut',
+						data: {
+							labels,
+							datasets: [{
+								data: values,
+								backgroundColor: labels.map(l => bpColor(l, labels)),
+								borderColor: '#0d1117', borderWidth: 2,
+							}],
+						},
+						options: {
+							responsive: true, maintainAspectRatio: false,
+							plugins: {
+								legend: { position: 'right', labels: { color: MUTED, boxWidth: 10, font: { size: 10 } } },
+								tooltip,
+							},
+						},
+					});
+				}
+
+				function renderProgressions(progs) {
+					const select = document.getElementById('prog-select');
+					if (!progs.length) {
+						select.innerHTML = '';
+						document.getElementById('prog-title').textContent = 'PROGRESSION · no data';
+						if (progChart) { progChart.destroy(); progChart = null; }
+						return;
+					}
+					select.innerHTML = progs.map((p, i) =>
+						'<option value="' + i + '">' + p.exercise + '</option>').join('');
+					select.onchange = () => drawProg(progs[parseInt(select.value)]);
+					drawProg(progs[0]);
+				}
+
+				function drawProg(prog) {
+					const bodyweight = prog.is_bodyweight;
+					document.getElementById('prog-title').textContent =
+						'PROGRESSION · ' + (bodyweight ? 'best reps / session' : 'est 1RM (lb)');
+					const labels = prog.points.map(p => {
+						const d = new Date(p.date + 'T00:00:00');
+						return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+					});
+					const values = prog.points.map(p => bodyweight ? p.best_reps : p.est_one_rm);
+					if (progChart) progChart.destroy();
+					progChart = new Chart(document.getElementById('prog-chart'), {
+						type: 'line',
+						data: {
+							labels,
+							datasets: [{
+								label: bodyweight ? 'Best reps' : 'Est 1RM (lb)',
+								data: values,
+								borderColor: '#ffd166',
+								backgroundColor: 'rgba(255,209,102,0.12)',
+								borderWidth: 2, pointRadius: 3, tension: 0.3, spanGaps: true, fill: true,
+							}],
+						},
+						options: {
+							responsive: true, maintainAspectRatio: false,
+							interaction: { mode: 'index', intersect: false },
+							plugins: { legend: { display: false }, tooltip },
+							scales: { x: commonScale, y: { ...commonScale, beginAtZero: false } },
+						},
+					});
+				}
+
+				document.querySelectorAll('.range-btn').forEach(b => {
+					b.addEventListener('click', () => load(parseInt(b.dataset.range)));
+				});
+				const initial = parseInt(document.getElementById('stats-root').dataset.initialRange) || 30;
+				load(initial);
+			})();
+		</script>
+
+		<style>
+			.trends-header {
+				display:flex; align-items:center; justify-content:space-between;
+				margin-bottom: 1rem; gap: 0.75rem; flex-wrap: wrap;
+			}
+			.range-selector { display:flex; gap: 0.25rem; }
+			.range-btn {
+				background: transparent; border: 1px solid var(--border);
+				color: var(--text-muted); font-family: inherit;
+				font-size: 0.7rem; padding: 0.3rem 0.75rem;
+				border-radius: 4px; cursor: pointer; letter-spacing: 0.1em;
+				transition: all 0.15s;
+			}
+			.range-btn:hover { color: var(--green); }
+			.range-btn.active { color: var(--green); background: var(--green-faint); border-color: var(--green-dim); }
+
+			.summary-row {
+				display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+				gap: 0.75rem; margin-bottom: 1rem;
+			}
+			.summary-card {
+				background: var(--bg2); border: 1px solid var(--border);
+				border-radius: 6px; padding: 0.75rem 1rem;
+			}
+			.summary-value {
+				color: var(--green); font-size: 1.4rem; font-weight: bold;
+				margin-top: 0.25rem; line-height: 1;
+			}
+			.sv-perweek { color: #00d4ff; }
+			.sv-streak { color: #06d6a0; }
+			.sv-since { color: #ff9500; }
+			.sv-sets { color: #ffd166; }
+			.sv-avgsets { color: #af52de; }
+
+			.chart-card {
+				background: var(--bg2); border: 1px solid var(--border);
+				border-radius: 6px; padding: 1rem 1.25rem; margin-bottom: 1rem;
+			}
+			.chart-title {
+				color: var(--text-muted); font-size: 0.65rem;
+				letter-spacing: 0.2em; margin-bottom: 0.75rem;
+			}
+			.chart-title-row {
+				display:flex; align-items:center; justify-content:space-between; gap:0.5rem;
+			}
+			.prog-select {
+				background: var(--bg3); color: var(--green); border: 1px solid var(--border);
+				border-radius: 4px; font-family: inherit; font-size: 0.75rem;
+				padding: 0.3rem 0.5rem; margin-bottom: 0.75rem; max-width: 60%;
+			}
+			.chart-wrap { height: 240px; position: relative; }
+
+			.pr-wrap { overflow-x: auto; }
+			.pr-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+			.pr-table th {
+				text-align: left; color: var(--text-muted); font-weight: normal;
+				letter-spacing: 0.1em; padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--border);
+			}
+			.pr-table td {
+				padding: 0.4rem 0.6rem; border-bottom: 1px solid rgba(0,255,136,0.06);
+				color: var(--green);
+			}
+			.pr-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+			.pr-table .pr-bp { color: var(--text-muted); text-transform: lowercase; }
+			.pr-table .pr-orm { color: #ffd166; }
+			.pr-empty { color: var(--text-muted); text-align: center; padding: 1rem; }
+
+			@media (max-width: 600px) {
+				.chart-wrap { height: 200px; }
+				.chart-card { padding: 0.75rem; }
+				.pr-table { font-size: 0.72rem; }
+			}
+		</style>
+	}
+}

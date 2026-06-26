@@ -16,6 +16,24 @@ final class WatchWorkoutVM {
     var isAdding = false
     private var manualRestMark = false
 
+    var selectedBodyPart: String = ""
+
+    var bodyParts: [String] {
+        var seen = Set<String>()
+        var parts: [String] = []
+        for e in exercises {
+            if let bp = e.bodyPart, !seen.contains(bp) {
+                seen.insert(bp)
+                parts.append(bp)
+            }
+        }
+        return parts.sorted()
+    }
+
+    var filteredExercises: [Exercise] {
+        selectedBodyPart.isEmpty ? exercises : exercises.filter { $0.bodyPart == selectedBodyPart }
+    }
+
     var activePR: ExercisePR? {
         guard let active else { return nil }
         return exercises.first(where: { $0.id == active.exerciseId })?.pr
@@ -124,10 +142,6 @@ final class WatchWorkoutVM {
         restStartedAt = Date()
         WatchAPI.shared.notifyTimerStarted(restStartedAt!, exercise: active?.exerciseName ?? "Workout")
     }
-
-    var todayVolume: Double {
-        todaySets.reduce(0) { $0 + ($1.weightLbs ?? 0) * Double($1.reps) }
-    }
 }
 
 struct WatchWorkoutView: View {
@@ -231,7 +245,7 @@ struct WatchWorkoutView: View {
                 }
                 .disabled(vm.isAdding || !vm.canRepeatLast)
 
-                Text("\(vm.todaySets.count) sets · \(Int(vm.todayVolume)) lb")
+                Text("\(vm.todaySets.count) sets")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
 
@@ -301,7 +315,16 @@ struct WatchWorkoutView: View {
                     }
                 }
             }
-            ForEach(vm.exercises) { exercise in
+            if !vm.bodyParts.isEmpty {
+                Picker("Filter", selection: $vm.selectedBodyPart) {
+                    Text("All").tag("")
+                    ForEach(vm.bodyParts, id: \.self) { bp in
+                        Text(bp.capitalized).tag(bp)
+                    }
+                }
+                .pickerStyle(.navigationLink)
+            }
+            ForEach(vm.filteredExercises) { exercise in
                 Button {
                     Task { try? await vm.select(exerciseId: exercise.id) }
                 } label: {

@@ -28,21 +28,12 @@ func APIWorkout(w http.ResponseWriter, r *http.Request, _ *db.User) {
 	}
 
 	groups := toGroupsJSON(sets)
-	var totalSets int
-	var totalVol float64
-	for _, s := range sets {
-		totalSets++
-		if s.WeightLbs.Valid {
-			totalVol += s.WeightLbs.Float64 * float64(s.Reps)
-		}
-	}
 
 	resp := map[string]any{
-		"date":             dateStr,
-		"total_sets":       totalSets,
-		"total_volume_lbs": totalVol,
-		"exercise_count":   len(groups),
-		"groups":           groups,
+		"date":           dateStr,
+		"total_sets":     len(sets),
+		"exercise_count": len(groups),
+		"groups":         groups,
 	}
 
 	if eidStr := r.URL.Query().Get("exercise_id"); eidStr != "" {
@@ -73,17 +64,12 @@ func APIWorkout(w http.ResponseWriter, r *http.Request, _ *db.User) {
 		}
 
 		todaySets := []workoutSetJSON{}
-		var todayVol float64
 		for _, s := range sets {
 			if s.ExerciseID == eid {
 				todaySets = append(todaySets, toSetJSON(s))
-				if s.WeightLbs.Valid {
-					todayVol += s.WeightLbs.Float64 * float64(s.Reps)
-				}
 			}
 		}
 		active["today_sets"] = todaySets
-		active["today_volume_lbs"] = todayVol
 
 		prefillReps := 10
 		var prefillWeight *float64

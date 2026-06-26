@@ -183,6 +183,7 @@ templ Layout(title string) {
 						<div class="nav-dropdown">
 							<a href="/fitness" class={ "nav-dropdown-item", navActive(title, "fitness") }>calendar</a>
 							<a href="/workout" class={ "nav-dropdown-item", navActive(title, "workout") }>workout</a>
+							<a href="/workout/stats" class={ "nav-dropdown-item", navActive(title, "workout-stats") }>stats</a>
 							<a href="/exercises" class={ "nav-dropdown-item", navActive(title, "exercises") }>exercises</a>
 							<a href="/body" class={ "nav-dropdown-item", navActive(title, "body") }>body</a>
 						</div>
@@ -216,7 +217,7 @@ func navActive(title, page string) string {
 }
 
 func inHealthGroup(title string) bool {
-	return title == "fitness" || title == "workout" || title == "exercises" || title == "body"
+	return title == "fitness" || title == "workout" || title == "workout-stats" || title == "exercises" || title == "body"
 }
 
 func inAdminGroup(title string) bool {

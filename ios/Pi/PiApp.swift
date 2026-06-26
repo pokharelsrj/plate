@@ -1,7 +1,21 @@
 import SwiftUI
+import UIKit
+
+/// Registers background work during launch: the BGTaskScheduler full-sync task
+/// (which must be registered before launch finishes) and HealthKit background
+/// delivery so new samples push automatically even when the app is closed.
+final class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        HealthBackgroundTasks.shared.register()
+        Task { @MainActor in HealthService.shared.startBackgroundDelivery() }
+        return true
+    }
+}
 
 @main
 struct PiApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @AppStorage("themePreference") private var themePreference = "system"
     @Environment(\.scenePhase) private var scenePhase
     @State private var session = Session()

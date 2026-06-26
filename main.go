@@ -51,6 +51,10 @@ func main() {
 	mux.HandleFunc("POST /workout/set/update", handlers.WorkoutUpdateSet)
 	mux.HandleFunc("POST /workout/set/delete", handlers.WorkoutDeleteSet)
 
+	// Workout stats (lifting analytics)
+	mux.HandleFunc("GET /workout/stats", handlers.WorkoutStatsPage)
+	mux.HandleFunc("GET /workout/stats/data", handlers.WorkoutStatsData)
+
 	// Exercise library
 	mux.HandleFunc("GET /exercises", handlers.ExercisesPage)
 	mux.HandleFunc("POST /exercises", handlers.ExerciseCreate)
@@ -89,6 +93,7 @@ func main() {
 	mux.HandleFunc("GET /api/calendar", handlers.WithAPIKey(handlers.APICalendar))
 
 	mux.HandleFunc("GET /api/workout", handlers.WithAPIKey(handlers.APIWorkout))
+	mux.HandleFunc("GET /api/workout/stats", handlers.WithAPIKey(handlers.APIWorkoutStats))
 	mux.HandleFunc("POST /api/workout/set", handlers.WithAPIKey(handlers.APIWorkoutAddSet))
 	mux.HandleFunc("PUT /api/workout/set/{id}", handlers.WithAPIKey(handlers.APIWorkoutUpdateSet))
 	mux.HandleFunc("DELETE /api/workout/set/{id}", handlers.WithAPIKey(handlers.APIWorkoutDeleteSet))

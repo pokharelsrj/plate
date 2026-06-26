@@ -153,16 +153,13 @@ func renderWorkoutPage(w http.ResponseWriter, r *http.Request, errMsg string) {
 			}
 			// Today's sets for active
 			var todayActive []db.WorkoutSet
-			var todayVol float64
 			for _, g := range todayGroups {
 				if g.ExerciseID == selectedID {
 					todayActive = g.Sets
-					todayVol = g.TotalVolume
 					break
 				}
 			}
 			active.TodaySets = todayActive
-			active.TodayVolume = todayVol
 
 			// Prefill: most recent set's values (today's last set, or last session's last set)
 			if last, _ := db.LastSetForExercise(selectedID); last != nil {
@@ -181,14 +178,7 @@ func renderWorkoutPage(w http.ResponseWriter, r *http.Request, errMsg string) {
 	}
 
 	// Compute session totals
-	var totalSets int
-	var totalVol float64
-	for _, s := range sets {
-		totalSets++
-		if s.WeightLbs.Valid {
-			totalVol += s.WeightLbs.Float64 * float64(s.Reps)
-		}
-	}
+	totalSets := len(sets)
 
 	prev := dateOffset(dateStr, -1)
 	next := dateOffset(dateStr, 1)
@@ -205,7 +195,6 @@ func renderWorkoutPage(w http.ResponseWriter, r *http.Request, errMsg string) {
 		Active:        active,
 		Groups:        todayGroups,
 		TotalSets:     totalSets,
-		TotalVolume:   totalVol,
 		ExerciseCount: len(todayGroups),
 		ErrorMsg:      errMsg,
 	}
@@ -272,18 +261,11 @@ func groupSetsByExercise(sets []db.WorkoutSet) []components.WorkoutGroup {
 	out := make([]components.WorkoutGroup, 0, len(order))
 	for _, id := range order {
 		b := m[id]
-		var totalVolume float64
-		for _, s := range b.Sets {
-			if s.WeightLbs.Valid {
-				totalVolume += s.WeightLbs.Float64 * float64(s.Reps)
-			}
-		}
 		out = append(out, components.WorkoutGroup{
 			ExerciseID:   id,
 			ExerciseName: b.ExerciseName,
 			BodyPart:     b.BodyPart,
 			Sets:         b.Sets,
-			TotalVolume:  totalVolume,
 		})
 	}
 	return out
