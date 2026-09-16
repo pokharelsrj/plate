@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plate — Privacy Policy</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    max-width: 44rem; margin: 0 auto; padding: 2.5rem 1.25rem 5rem;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { font-size: 1.9rem; margin-bottom: .25rem; }
+  h2 { font-size: 1.15rem; margin-top: 2.25rem; }
+  .sub { color: #6b7280; margin-top: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  th, td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid #8884; vertical-align: top; }
+  th { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: #6b7280; }
+  code { font-size: .9em; background: #8881; padding: .1em .35em; border-radius: 3px; }
+  .note { border-left: 3px solid #4ade80; padding: .1rem 0 .1rem 1rem; margin: 1.5rem 0; }
+</style>
+</head>
+<body>
+
+<h1>Plate — Privacy Policy</h1>
+<p class="sub">Last updated 16 September 2026</p>
+
+<p>Plate is a personal health and training log. It is a <strong>client for a server
+you choose</strong>: the app stores almost nothing itself and sends your data to
+whichever backend you point it at.</p>
+
+<h2>Who operates the server</h2>
+
+<p>This matters more than anything else on this page, because it decides who can
+see your data.</p>
+
+<ul>
+  <li><strong>If you use the default server</strong> (<code>api.srijanpokharel.com</code>),
+    it is operated privately by Srijan Pokharel and runs on hardware in a private
+    residence. As its administrator, he has technical access to the database,
+    including your entries.</li>
+  <li><strong>If you run your own server</strong> — the backend is open source and
+    self-hosting is the intended setup — your data goes only to your machine, and
+    nobody else can read it. Change the address under <strong>Advanced</strong> on
+    the sign-in screen.</li>
+</ul>
+
+<p>Accounts are created by an administrator; there is no public sign-up.</p>
+
+<h2>What is collected</h2>
+
+<table>
+  <tr><th>Data</th><th>Where it comes from</th><th>Why</th></tr>
+  <tr><td>Email address, display name, date of birth, sex</td><td>You, at sign-up</td><td>Sign-in, and the age and sex inputs the body-fat formula needs</td></tr>
+  <tr><td>Workouts — exercises, sets, reps, weight</td><td>You</td><td>The training log and its statistics</td></tr>
+  <tr><td>Body weight and caliper skinfold measurements</td><td>You</td><td>Weight trends and estimated body fat</td></tr>
+  <tr><td>Steps, sleep stages, resting heart rate, active energy</td><td>Apple Health, with your permission</td><td>Shown alongside your training on the daily and calendar views</td></tr>
+  <tr><td>Calories and macronutrients</td><td>Healthifyme, only if the server operator configured it</td><td>Nutrition tracking</td></tr>
+  <tr><td>Gym check-in times</td><td>LA Fitness, only if the server operator configured it</td><td>Attendance history</td></tr>
+</table>
+
+<h2>Apple Health (HealthKit)</h2>
+
+<div class="note">
+<p>Plate <strong>reads</strong> steps, sleep analysis, resting heart rate and active
+energy. It <strong>never writes</strong> anything to Apple Health.</p>
+<p>HealthKit data is used only to display your own history inside the app. It is
+<strong>never</strong> used for advertising or marketing, <strong>never</strong> sold
+or shared with data brokers, and <strong>never</strong> disclosed to third parties
+for their own purposes.</p>
+</div>
+
+<p>You grant this access explicitly in iOS and can revoke it at any time in
+Settings → Privacy &amp; Security → Health → Plate. The app keeps working without
+it; the Apple Health figures simply stop updating.</p>
+
+<h2>How it is stored and protected</h2>
+
+<ul>
+  <li>Your data lives in a SQLite database on the server you configured. Each
+    account's records are separated by account, and one account cannot read
+    another's.</li>
+  <li>Passwords are stored only as PBKDF2-SHA256 hashes, never in plain text.</li>
+  <li>Your API key is held in the iOS Keychain on your device.</li>
+  <li>Traffic to the default server uses HTTPS. If you point the app at a server on
+    your own network, that connection may be plain HTTP — it never leaves your
+    network.</li>
+  <li>A small cache of recent figures is shared with the widget and Apple Watch app
+    through a private app group on your device.</li>
+</ul>
+
+<h2>What is not done</h2>
+
+<ul>
+  <li>No analytics, telemetry, crash reporting or advertising SDKs. The app talks to
+    your server and to Apple Health, and nothing else.</li>
+  <li>No tracking, in the App Store sense or any other. Your data is never linked to
+    you across other apps or websites.</li>
+  <li>Nothing is sold, rented, or shared for anyone else's purposes.</li>
+</ul>
+
+<h2>Retention and deletion</h2>
+
+<p>Data is kept until it is deleted. Individual entries can be removed in the app.
+<strong>Deleting an account permanently deletes everything belonging to it</strong> —
+workouts, body measurements, Apple Health days, nutrition and check-ins — in the
+same operation.</p>
+
+<p>To have your account and its data deleted from the default server, email the
+address below. If you run your own server, you control this directly.</p>
+
+<h2>Children</h2>
+
+<p>Plate is not directed at children under 13, and accounts are not created for
+them.</p>
+
+<h2>Changes</h2>
+
+<p>If this policy changes materially, the date at the top of this page is updated.
+The current version is always published here.</p>
+
+<h2>Contact</h2>
+
+<p>Questions, or a deletion request:
+<a href="mailto:CONTACT-EMAIL-HERE">CONTACT-EMAIL-HERE</a></p>
+
+<p>The source code for both the app and the server is at
+<a href="https://github.com/pokharelsrj/plate">github.com/pokharelsrj/plate</a>.</p>
+
+</body>
+</html>

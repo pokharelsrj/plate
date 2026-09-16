@@ -64,6 +64,22 @@ hand and pushes Apple Health with their own API key, both of which are already
 per-user. Per-user integration credentials would need somewhere safe to keep
 them, which this doesn't have yet.
 
+## Demo data
+
+A brand-new account opens on empty screens, which is fine for you and
+unhelpful for anyone evaluating the app. `cmd/seed-demo` fills one account with
+plausible history — a four-day split, a slow cut with realistic day-to-day
+weight noise, sleep stages, macros and gym check-ins:
+
+```sh
+go run ./cmd/seed-demo -db data.db -email demo@example.com -password secret -days 120
+```
+
+It creates the account if it's missing, wipes and regenerates on every run, and
+is deterministic, so re-running reproduces the same history. It only ever
+touches that user's rows, reads the shared exercise library without writing to
+it, and leaves every other account alone.
+
 ## Migrations
 
 `PRAGMA user_version` tracks the schema; `migrate()` in `db/db.go` walks it
