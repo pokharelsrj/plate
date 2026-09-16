@@ -28,6 +28,7 @@
 		708D9D1A7FA7EB70C4E321E2 /* MetricViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F3F3170427B78E449094D /* MetricViews.swift */; };
 		7679D312095CCF9AC51554BF /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBDED5EF96888039422E275 /* APIClient.swift */; };
 		7B33ACD0F9B848809D636BC2 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA304B4AA1D9713060AC251 /* Models.swift */; };
+		7E6AD94C23AF538217C97246 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5892F3126C2C77D3A25401CD /* Assets.xcassets */; };
 		8CBE21BBFE7E6EBE184F505A /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA304B4AA1D9713060AC251 /* Models.swift */; };
 		8CE3E2A353CE1FE2C17DC2D0 /* RestTimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA7304912303491D1BD0FF77 /* RestTimerIntents.swift */; };
 		97E68723B646914ECA6256E5 /* ExercisesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED6248FAB50830A18737C6 /* ExercisesView.swift */; };
@@ -116,6 +117,7 @@
 		51D4F7178C267B0E357D519B /* PiWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiWidget.swift; sourceTree = "<group>"; };
 		54BD3277F0020DB2EF7E975D /* Pi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pi.entitlements; sourceTree = "<group>"; };
 		56606A9FEC81C4A1B71CAB5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5892F3126C2C77D3A25401CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D1A4F36A02E3BE907DBC81B /* DayCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCards.swift; sourceTree = "<group>"; };
 		5FD237C0131045D4A801C674 /* RestTimerAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerAttributes.swift; sourceTree = "<group>"; };
 		66EF9E2D65E4A043ADF09BCE /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
@@ -371,6 +373,7 @@
 		F43B3F433115ACDBD5F6A673 /* PiWatch */ = {
 			isa = PBXGroup;
 			children = (
+				5892F3126C2C77D3A25401CD /* Assets.xcassets */,
 				F119A6A04562875BF2AEA8A2 /* Info.plist */,
 				C3C2F2EC77B3BE75450004A8 /* PiWatchApp.swift */,
 				0E11FD00832ECD62AA2F2588 /* WatchAPI.swift */,
@@ -427,6 +430,7 @@
 			buildConfigurationList = 36512C91A77183E00AB1D88E /* Build configuration list for PBXNativeTarget "PiWatch" */;
 			buildPhases = (
 				D4C61FC0CEDAEF886F70CFF8 /* Sources */,
+				6DD3DB62B995DE9C391A91E6 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -448,6 +452,14 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					72416FE8D69F2AFDE682D02F = {
+						DevelopmentTeam = "$(DEVELOPMENT_TEAM)";
+						ProvisioningStyle = Automatic;
+					};
+					9DDCD1BB53FCF19984B24763 = {
+						DevelopmentTeam = "$(DEVELOPMENT_TEAM)";
+						ProvisioningStyle = Automatic;
+					};
 					D228CC10F31981A5838AA163 = {
 						DevelopmentTeam = "$(DEVELOPMENT_TEAM)";
 						ProvisioningStyle = Automatic;
@@ -489,6 +501,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				B174921D18D125D6CDDF542F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6DD3DB62B995DE9C391A91E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E6AD94C23AF538217C97246 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -631,9 +651,11 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -694,8 +716,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				INFOPLIST_FILE = PiWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.srijanpokharel.pi.watchkitapp;
 				PRODUCT_NAME = Pi;
@@ -758,9 +778,11 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -794,8 +816,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				INFOPLIST_FILE = PiWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.srijanpokharel.pi.watchkitapp;
 				PRODUCT_NAME = Pi;

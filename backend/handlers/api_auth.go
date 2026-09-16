@@ -43,8 +43,22 @@ func nsPtr(ns sql.NullString) *string {
 	return &s
 }
 
+// dummyHash is verified against when the email doesn't exist, so a miss costs
+// the same PBKDF2 work as a hit and the response time stops leaking which
+// addresses have accounts. The password it encodes is unguessable and unused.
+const dummyHash = "pbkdf2:sha256:210000:" +
+	"00000000000000000000000000000000:" +
+	"0000000000000000000000000000000000000000000000000000000000000000"
+
 // POST /api/auth/login — public
 func APILogin(w http.ResponseWriter, r *http.Request) {
+	ip := clientIP(r)
+	if loginLimiter.blocked(ip) {
+		w.Header().Set("Retry-After", strconv.Itoa(int(loginWindow.Seconds())))
+		apiErr(w, http.StatusTooManyRequests, "too many failed attempts, try again later")
+		return
+	}
+
 	var req struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -58,10 +72,16 @@ func APILogin(w http.ResponseWriter, r *http.Request) {
 		apiErr(w, http.StatusInternalServerError, "lookup failed")
 		return
 	}
-	if u == nil || !u.IsActive || !db.VerifyPassword(req.Password, u.PasswordHash) {
+	hash := dummyHash
+	if u != nil {
+		hash = u.PasswordHash
+	}
+	if !db.VerifyPassword(req.Password, hash) || u == nil || !u.IsActive {
+		loginLimiter.record(ip)
 		apiErr(w, http.StatusUnauthorized, "invalid credentials")
 		return
 	}
+	loginLimiter.reset(ip)
 	writeJSON(w, http.StatusOK, map[string]any{
 		"user":    toUserJSON(u),
 		"api_key": u.APIKey,
