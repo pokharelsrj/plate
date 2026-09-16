@@ -20,29 +20,6 @@ struct ProgressRing: View {
     }
 }
 
-/// Small labeled gauge for the system card (CPU / Mem / Disk / Temp).
-struct SystemDial: View {
-    let label: String
-    let value: Double      // percent 0-100, or °C for temp
-    let display: String
-    let color: Color
-
-    var body: some View {
-        VStack(spacing: 6) {
-            ZStack {
-                ProgressRing(progress: value / 100, color: color, lineWidth: 5, size: 52)
-                Text(display)
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color.piText)
-                    .minimumScaleFactor(0.6)
-                    .frame(width: 40)
-            }
-            Eyebrow(label)
-        }
-        .frame(maxWidth: .infinity)
-    }
-}
-
 /// Stacked horizontal bar of sleep stages.
 struct SleepStageBar: View {
     let deep: Double

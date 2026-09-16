@@ -1,3 +1,5 @@
+//go:generate templ generate
+
 package main
 
 import (
@@ -32,11 +34,9 @@ func main() {
 	mux.HandleFunc("POST /login", handlers.LoginSubmit)
 	mux.HandleFunc("POST /logout", handlers.Logout)
 
-	// Stats (system metrics)
-	mux.HandleFunc("GET /", handlers.StatsPage)
-	mux.HandleFunc("GET /stats/data", handlers.StatsData)
-
-	// Fitness
+	// Fitness calendar — also the home page. "/" is registered exactly (`{$}`)
+	// so unknown paths fall through to the 404 below instead of rendering it.
+	mux.HandleFunc("GET /{$}", handlers.FitnessPage)
 	mux.HandleFunc("GET /fitness", handlers.FitnessPage)
 	mux.HandleFunc("GET /fitness/grid", handlers.FitnessGrid)
 	mux.HandleFunc("GET /fitness/day", handlers.FitnessDayDetail)
@@ -114,6 +114,8 @@ func main() {
 
 	mux.HandleFunc("GET /api/sync", handlers.WithAPIKey(handlers.APISyncStatus))
 	mux.HandleFunc("POST /api/sync/trigger", handlers.WithAPIKey(handlers.APISyncTrigger))
+
+	mux.HandleFunc("/", http.NotFound)
 
 	log.Println("listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", handlers.AuthMiddleware(mux)))

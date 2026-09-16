@@ -30,19 +30,11 @@ type workoutSummaryJSON struct {
 
 type daySnapshotJSON struct {
 	Date      string              `json:"date"`
-	System    *systemJSON         `json:"system"`
 	Gym       *gymJSON            `json:"gym"`
 	Nutrition *nutritionJSON      `json:"nutrition"`
 	Health    *healthDayJSON      `json:"health"`
 	Body      *bodyMetricJSON     `json:"body"`
 	Workout   *workoutSummaryJSON `json:"workout"`
-}
-
-type systemJSON struct {
-	CPUPercent    float64 `json:"cpu_percent"`
-	MemoryPercent float64 `json:"memory_percent"`
-	DiskPercent   float64 `json:"disk_percent"`
-	TempCelsius   float64 `json:"temp_celsius"`
 }
 
 type gymJSON struct {
@@ -136,24 +128,12 @@ func toBodyJSON(b db.BodyMetric) *bodyMetricJSON {
 }
 
 // buildDaySnapshot assembles the full snapshot for one date.
-// System metrics are included only when the date is today.
 func buildDaySnapshot(dateStr string) (daySnapshotJSON, error) {
 	t, err := time.ParseInLocation("2006-01-02", dateStr, time.Local)
 	if err != nil {
 		return daySnapshotJSON{}, err
 	}
 	out := daySnapshotJSON{Date: dateStr}
-
-	if dateStr == time.Now().Format("2006-01-02") {
-		if s, err := collectStats(); err == nil {
-			out.System = &systemJSON{
-				CPUPercent:    s.CPUPercent,
-				MemoryPercent: s.MemPercent,
-				DiskPercent:   s.DiskPercent,
-				TempCelsius:   s.TempCelsius,
-			}
-		}
-	}
 
 	from := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.Local)
 	to := from.AddDate(0, 0, 1)

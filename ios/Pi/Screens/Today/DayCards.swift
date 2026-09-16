@@ -11,9 +11,6 @@ struct DaySnapshotCards: View {
 
     var body: some View {
         VStack(spacing: 14) {
-            if let sys = snapshot.system {
-                systemCard(sys)
-            }
             if let health = snapshot.health {
                 healthCard(health)
             }
@@ -41,26 +38,6 @@ struct DaySnapshotCards: View {
     private var isEmptyDay: Bool {
         snapshot.health == nil && snapshot.nutrition == nil && snapshot.body == nil
             && snapshot.workout == nil && (snapshot.gym?.checkins.isEmpty ?? true)
-    }
-
-    // MARK: - System
-
-    private func systemCard(_ sys: TodaySnapshot.SystemMetrics) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Eyebrow("Pi System")
-            HStack(spacing: 8) {
-                SystemDial(label: "CPU", value: sys.cpuPercent,
-                           display: percentLabel(sys.cpuPercent), color: .piPrimary)
-                SystemDial(label: "Mem", value: sys.memoryPercent,
-                           display: percentLabel(sys.memoryPercent), color: .piGymCyan)
-                SystemDial(label: "Disk", value: sys.diskPercent,
-                           display: percentLabel(sys.diskPercent), color: .piStepsOrange)
-                SystemDial(label: "Temp", value: sys.tempCelsius,
-                           display: sys.tempCelsius > 0 ? "\(Int(sys.tempCelsius))°" : "—",
-                           color: .piWarn)
-            }
-        }
-        .piCard()
     }
 
     // MARK: - Health
@@ -276,11 +253,6 @@ struct DaySnapshotCards: View {
             return "\(s.reps)×\(w.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(w)) : String(format: "%.1f", w))"
         }
         return "\(s.reps) reps"
-    }
-
-    /// An idle Pi sits below 1% CPU — show a decimal there so it doesn't read as 0%.
-    private func percentLabel(_ v: Double) -> String {
-        v < 10 ? String(format: "%.1f%%", v) : "\(Int(v))%"
     }
 
     private func hoursLabel(_ h: Double) -> String {

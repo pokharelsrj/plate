@@ -42,11 +42,11 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " | pi</title><link href=\"https://cdn.jsdelivr.net/npm/daisyui@4/dist/full.min.css\" rel=\"stylesheet\"><script src=\"https://cdn.jsdelivr.net/npm/tailwindcss-cdn@3.4.16/tailwindcss.min.js\"></script><script src=\"https://unpkg.com/htmx.org@2.0.4\"></script><script src=\"https://unpkg.com/hyperscript.org@0.9.14\"></script><style>\n\t\t\t\t:root {\n\t\t\t\t\t--green: #00ff88;\n\t\t\t\t\t--green-dim: #00cc6a;\n\t\t\t\t\t--green-faint: rgba(0,255,136,0.08);\n\t\t\t\t\t--bg: #080c10;\n\t\t\t\t\t--bg2: #0d1117;\n\t\t\t\t\t--bg3: #161b22;\n\t\t\t\t\t--border: rgba(0,255,136,0.15);\n\t\t\t\t\t--text-muted: rgba(0,255,136,0.4);\n\t\t\t\t}\n\t\t\t\t* { box-sizing: border-box; }\n\t\t\t\tbody {\n\t\t\t\t\tbackground: var(--bg);\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-family: 'Courier New', Courier, monospace;\n\t\t\t\t\tmin-height: 100vh;\n\t\t\t\t}\n\t\t\t\t.card-terminal {\n\t\t\t\t\tbackground: var(--bg2);\n\t\t\t\t\tborder: 1px solid var(--border);\n\t\t\t\t\tborder-radius: 6px;\n\t\t\t\t\tbox-shadow: 0 0 20px rgba(0,255,136,0.04), inset 0 0 20px rgba(0,0,0,0.3);\n\t\t\t\t}\n\t\t\t\t.card-terminal:hover {\n\t\t\t\t\tborder-color: rgba(0,255,136,0.3);\n\t\t\t\t\tbox-shadow: 0 0 30px rgba(0,255,136,0.08);\n\t\t\t\t\ttransition: all 0.2s ease;\n\t\t\t\t}\n\t\t\t\t.nav-bar {\n\t\t\t\t\tbackground: var(--bg2);\n\t\t\t\t\tborder-bottom: 1px solid var(--border);\n\t\t\t\t\tpadding: 0.75rem 1.5rem;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\talign-items: center;\n\t\t\t\t\tjustify-content: space-between;\n\t\t\t\t\tflex-wrap: wrap;\n\t\t\t\t\tgap: 0.5rem;\n\t\t\t\t}\n\t\t\t\t.nav-logo {\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-weight: bold;\n\t\t\t\t\tfont-size: 1rem;\n\t\t\t\t\tletter-spacing: 0.3em;\n\t\t\t\t}\n\t\t\t\t.nav-links { display: flex; gap: 0.25rem; align-items: center; flex-wrap: wrap; }\n\t\t\t\t.nav-link {\n\t\t\t\t\tcolor: var(--text-muted);\n\t\t\t\t\ttext-decoration: none;\n\t\t\t\t\tfont-size: 0.8rem;\n\t\t\t\t\tletter-spacing: 0.1em;\n\t\t\t\t\tpadding: 0.3rem 0.75rem;\n\t\t\t\t\tborder-radius: 4px;\n\t\t\t\t\tborder: 1px solid transparent;\n\t\t\t\t\ttransition: all 0.15s;\n\t\t\t\t}\n\t\t\t\t.nav-link:hover, .nav-link.active {\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tborder-color: var(--border);\n\t\t\t\t\tbackground: var(--green-faint);\n\t\t\t\t}\n\t\t\t\t.nav-link.disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }\n\t\t\t\t.nav-divider { width: 1px; height: 1rem; background: var(--border); margin: 0 0.5rem; }\n\n\t\t\t\t.nav-group { position: relative; }\n\t\t\t\t.nav-group-summary {\n\t\t\t\t\tcursor: pointer; list-style: none;\n\t\t\t\t\tdisplay: inline-block;\n\t\t\t\t}\n\t\t\t\t.nav-group-summary::-webkit-details-marker { display: none; }\n\t\t\t\t.nav-group[open] > .nav-group-summary { color: var(--green); }\n\t\t\t\t.nav-dropdown {\n\t\t\t\t\tposition: absolute; top: 100%; right: 0;\n\t\t\t\t\tmargin-top: 0.4rem;\n\t\t\t\t\tbackground: var(--bg2); border: 1px solid var(--border);\n\t\t\t\t\tborder-radius: 6px; padding: 0.3rem;\n\t\t\t\t\tdisplay: flex; flex-direction: column; gap: 0.15rem;\n\t\t\t\t\tmin-width: 160px;\n\t\t\t\t\tbox-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 8px rgba(0,255,136,0.04);\n\t\t\t\t\tz-index: 100;\n\t\t\t\t}\n\t\t\t\t.nav-dropdown-item {\n\t\t\t\t\tcolor: var(--text-muted); text-decoration: none;\n\t\t\t\t\tfont-size: 0.8rem; letter-spacing: 0.1em;\n\t\t\t\t\tpadding: 0.4rem 0.75rem; border-radius: 4px;\n\t\t\t\t\tbackground: transparent; border: none; font-family: inherit;\n\t\t\t\t\ttext-align: left; cursor: pointer; transition: all 0.15s;\n\t\t\t\t}\n\t\t\t\t.nav-dropdown-item:hover { color: var(--green); background: var(--green-faint); }\n\t\t\t\t.nav-dropdown-item.active { color: var(--green); background: var(--green-faint); }\n\t\t\t\t.nav-dropdown-logout { color: rgba(255,80,80,0.5); }\n\t\t\t\t.nav-dropdown-logout:hover { color: rgba(255,80,80,0.9); background: rgba(255,80,80,0.08); }\n\n\t\t\t\t@media (max-width: 600px) {\n\t\t\t\t\t.nav-bar { padding: 0.6rem 1rem; }\n\t\t\t\t\t.nav-divider { display: none; }\n\t\t\t\t\t.nav-link { font-size: 0.7rem; padding: 0.25rem 0.5rem; }\n\t\t\t\t\t.nav-link.disabled { display: none; }\n\t\t\t\t\t.nav-dropdown { right: auto; left: 0; }\n\t\t\t\t}\n\t\t\t\t.btn-terminal {\n\t\t\t\t\tbackground: transparent;\n\t\t\t\t\tborder: 1px solid var(--green-dim);\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-family: inherit;\n\t\t\t\t\tfont-size: 0.75rem;\n\t\t\t\t\tletter-spacing: 0.1em;\n\t\t\t\t\tpadding: 0.35rem 1rem;\n\t\t\t\t\tborder-radius: 4px;\n\t\t\t\t\tcursor: pointer;\n\t\t\t\t\ttransition: all 0.15s;\n\t\t\t\t\tdisplay: inline-flex;\n\t\t\t\t\talign-items: center;\n\t\t\t\t\tgap: 0.4rem;\n\t\t\t\t}\n\t\t\t\t.btn-terminal:hover {\n\t\t\t\t\tbackground: var(--green-faint);\n\t\t\t\t\tbox-shadow: 0 0 10px rgba(0,255,136,0.2);\n\t\t\t\t}\n\t\t\t\t.btn-logout {\n\t\t\t\t\tborder-color: rgba(255,80,80,0.3);\n\t\t\t\t\tcolor: rgba(255,80,80,0.5);\n\t\t\t\t}\n\t\t\t\t.btn-logout:hover {\n\t\t\t\t\tbackground: rgba(255,80,80,0.08);\n\t\t\t\t\tcolor: rgba(255,80,80,0.9);\n\t\t\t\t\tborder-color: rgba(255,80,80,0.6);\n\t\t\t\t\tbox-shadow: 0 0 10px rgba(255,80,80,0.15);\n\t\t\t\t}\n\t\t\t\t.bar-track {\n\t\t\t\t\theight: 4px;\n\t\t\t\t\tbackground: rgba(0,255,136,0.1);\n\t\t\t\t\tborder-radius: 2px;\n\t\t\t\t\toverflow: hidden;\n\t\t\t\t}\n\t\t\t\t.bar-fill {\n\t\t\t\t\theight: 100%;\n\t\t\t\t\tborder-radius: 2px;\n\t\t\t\t\tbackground: linear-gradient(90deg, var(--green-dim), var(--green));\n\t\t\t\t\tbox-shadow: 0 0 8px rgba(0,255,136,0.5);\n\t\t\t\t\ttransition: width 0.4s ease;\n\t\t\t\t}\n\t\t\t\t.bar-fill.warn { background: linear-gradient(90deg, #cc8800, #ffaa00); box-shadow: 0 0 8px rgba(255,170,0,0.5); }\n\t\t\t\t.bar-fill.danger { background: linear-gradient(90deg, #cc2200, #ff4400); box-shadow: 0 0 8px rgba(255,68,0,0.5); }\n\t\t\t\t.metric-value { font-size: 2rem; font-weight: bold; letter-spacing: -0.02em; line-height: 1; }\n\t\t\t\t.metric-label { font-size: 0.65rem; letter-spacing: 0.2em; color: var(--text-muted); }\n\t\t\t\t.metric-sub { font-size: 0.7rem; color: var(--text-muted); }\n\t\t\t\t.spinner { display: none; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.6s linear infinite; }\n\t\t\t\t.htmx-request .spinner { display: inline-block; }\n\t\t\t\t.htmx-request .refresh-text { display: none; }\n\t\t\t\t@keyframes spin { to { transform: rotate(360deg); } }\n\t\t\t\t.temp-warn { color: #ffaa00; }\n\t\t\t\t.temp-danger { color: #ff4422; }\n\t\t\t\t.scanline {\n\t\t\t\t\tposition: fixed; top: 0; left: 0; right: 0; bottom: 0;\n\t\t\t\t\tbackground: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);\n\t\t\t\t\tpointer-events: none; z-index: 9999;\n\t\t\t\t}\n\t\t\t</style></head><body><div class=\"scanline\"></div><div class=\"nav-bar\"><span class=\"nav-logo\">&#9632; PI</span><nav class=\"nav-links\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " | pi</title><link href=\"https://cdn.jsdelivr.net/npm/daisyui@4/dist/full.min.css\" rel=\"stylesheet\"><script src=\"https://cdn.jsdelivr.net/npm/tailwindcss-cdn@3.4.16/tailwindcss.min.js\"></script><script src=\"https://unpkg.com/htmx.org@2.0.4\"></script><script src=\"https://unpkg.com/hyperscript.org@0.9.14\"></script><style>\n\t\t\t\t:root {\n\t\t\t\t\t--green: #00ff88;\n\t\t\t\t\t--green-dim: #00cc6a;\n\t\t\t\t\t--green-faint: rgba(0,255,136,0.08);\n\t\t\t\t\t--bg: #080c10;\n\t\t\t\t\t--bg2: #0d1117;\n\t\t\t\t\t--bg3: #161b22;\n\t\t\t\t\t--border: rgba(0,255,136,0.15);\n\t\t\t\t\t--text-muted: rgba(0,255,136,0.4);\n\t\t\t\t}\n\t\t\t\t* { box-sizing: border-box; }\n\t\t\t\tbody {\n\t\t\t\t\tbackground: var(--bg);\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-family: 'Courier New', Courier, monospace;\n\t\t\t\t\tmin-height: 100vh;\n\t\t\t\t}\n\t\t\t\t.card-terminal {\n\t\t\t\t\tbackground: var(--bg2);\n\t\t\t\t\tborder: 1px solid var(--border);\n\t\t\t\t\tborder-radius: 6px;\n\t\t\t\t\tbox-shadow: 0 0 20px rgba(0,255,136,0.04), inset 0 0 20px rgba(0,0,0,0.3);\n\t\t\t\t}\n\t\t\t\t.card-terminal:hover {\n\t\t\t\t\tborder-color: rgba(0,255,136,0.3);\n\t\t\t\t\tbox-shadow: 0 0 30px rgba(0,255,136,0.08);\n\t\t\t\t\ttransition: all 0.2s ease;\n\t\t\t\t}\n\t\t\t\t.nav-bar {\n\t\t\t\t\tbackground: var(--bg2);\n\t\t\t\t\tborder-bottom: 1px solid var(--border);\n\t\t\t\t\tpadding: 0.75rem 1.5rem;\n\t\t\t\t\tdisplay: flex;\n\t\t\t\t\talign-items: center;\n\t\t\t\t\tjustify-content: space-between;\n\t\t\t\t\tflex-wrap: wrap;\n\t\t\t\t\tgap: 0.5rem;\n\t\t\t\t}\n\t\t\t\t.nav-logo {\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-weight: bold;\n\t\t\t\t\tfont-size: 1rem;\n\t\t\t\t\tletter-spacing: 0.3em;\n\t\t\t\t\ttext-decoration: none;\n\t\t\t\t}\n\t\t\t\t.nav-links { display: flex; gap: 0.25rem; align-items: center; flex-wrap: wrap; }\n\t\t\t\t.nav-link {\n\t\t\t\t\tcolor: var(--text-muted);\n\t\t\t\t\ttext-decoration: none;\n\t\t\t\t\tfont-size: 0.8rem;\n\t\t\t\t\tletter-spacing: 0.1em;\n\t\t\t\t\tpadding: 0.3rem 0.75rem;\n\t\t\t\t\tborder-radius: 4px;\n\t\t\t\t\tborder: 1px solid transparent;\n\t\t\t\t\ttransition: all 0.15s;\n\t\t\t\t}\n\t\t\t\t.nav-link:hover, .nav-link.active {\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tborder-color: var(--border);\n\t\t\t\t\tbackground: var(--green-faint);\n\t\t\t\t}\n\t\t\t\t.nav-link.disabled { opacity: 0.25; cursor: not-allowed; pointer-events: none; }\n\t\t\t\t.nav-divider { width: 1px; height: 1rem; background: var(--border); margin: 0 0.5rem; }\n\n\t\t\t\t.nav-group { position: relative; }\n\t\t\t\t.nav-group-summary {\n\t\t\t\t\tcursor: pointer; list-style: none;\n\t\t\t\t\tdisplay: inline-block;\n\t\t\t\t}\n\t\t\t\t.nav-group-summary::-webkit-details-marker { display: none; }\n\t\t\t\t.nav-group[open] > .nav-group-summary { color: var(--green); }\n\t\t\t\t.nav-dropdown {\n\t\t\t\t\tposition: absolute; top: 100%; right: 0;\n\t\t\t\t\tmargin-top: 0.4rem;\n\t\t\t\t\tbackground: var(--bg2); border: 1px solid var(--border);\n\t\t\t\t\tborder-radius: 6px; padding: 0.3rem;\n\t\t\t\t\tdisplay: flex; flex-direction: column; gap: 0.15rem;\n\t\t\t\t\tmin-width: 160px;\n\t\t\t\t\tbox-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 8px rgba(0,255,136,0.04);\n\t\t\t\t\tz-index: 100;\n\t\t\t\t}\n\t\t\t\t.nav-dropdown-item {\n\t\t\t\t\tcolor: var(--text-muted); text-decoration: none;\n\t\t\t\t\tfont-size: 0.8rem; letter-spacing: 0.1em;\n\t\t\t\t\tpadding: 0.4rem 0.75rem; border-radius: 4px;\n\t\t\t\t\tbackground: transparent; border: none; font-family: inherit;\n\t\t\t\t\ttext-align: left; cursor: pointer; transition: all 0.15s;\n\t\t\t\t}\n\t\t\t\t.nav-dropdown-item:hover { color: var(--green); background: var(--green-faint); }\n\t\t\t\t.nav-dropdown-item.active { color: var(--green); background: var(--green-faint); }\n\t\t\t\t.nav-dropdown-logout { color: rgba(255,80,80,0.5); }\n\t\t\t\t.nav-dropdown-logout:hover { color: rgba(255,80,80,0.9); background: rgba(255,80,80,0.08); }\n\n\t\t\t\t@media (max-width: 600px) {\n\t\t\t\t\t.nav-bar { padding: 0.6rem 1rem; }\n\t\t\t\t\t.nav-divider { display: none; }\n\t\t\t\t\t.nav-link { font-size: 0.7rem; padding: 0.25rem 0.5rem; }\n\t\t\t\t\t.nav-link.disabled { display: none; }\n\t\t\t\t\t.nav-dropdown { right: auto; left: 0; }\n\t\t\t\t}\n\t\t\t\t.btn-terminal {\n\t\t\t\t\tbackground: transparent;\n\t\t\t\t\tborder: 1px solid var(--green-dim);\n\t\t\t\t\tcolor: var(--green);\n\t\t\t\t\tfont-family: inherit;\n\t\t\t\t\tfont-size: 0.75rem;\n\t\t\t\t\tletter-spacing: 0.1em;\n\t\t\t\t\tpadding: 0.35rem 1rem;\n\t\t\t\t\tborder-radius: 4px;\n\t\t\t\t\tcursor: pointer;\n\t\t\t\t\ttransition: all 0.15s;\n\t\t\t\t\tdisplay: inline-flex;\n\t\t\t\t\talign-items: center;\n\t\t\t\t\tgap: 0.4rem;\n\t\t\t\t}\n\t\t\t\t.btn-terminal:hover {\n\t\t\t\t\tbackground: var(--green-faint);\n\t\t\t\t\tbox-shadow: 0 0 10px rgba(0,255,136,0.2);\n\t\t\t\t}\n\t\t\t\t.btn-logout {\n\t\t\t\t\tborder-color: rgba(255,80,80,0.3);\n\t\t\t\t\tcolor: rgba(255,80,80,0.5);\n\t\t\t\t}\n\t\t\t\t.btn-logout:hover {\n\t\t\t\t\tbackground: rgba(255,80,80,0.08);\n\t\t\t\t\tcolor: rgba(255,80,80,0.9);\n\t\t\t\t\tborder-color: rgba(255,80,80,0.6);\n\t\t\t\t\tbox-shadow: 0 0 10px rgba(255,80,80,0.15);\n\t\t\t\t}\n\t\t\t\t.bar-track {\n\t\t\t\t\theight: 4px;\n\t\t\t\t\tbackground: rgba(0,255,136,0.1);\n\t\t\t\t\tborder-radius: 2px;\n\t\t\t\t\toverflow: hidden;\n\t\t\t\t}\n\t\t\t\t.bar-fill {\n\t\t\t\t\theight: 100%;\n\t\t\t\t\tborder-radius: 2px;\n\t\t\t\t\tbackground: linear-gradient(90deg, var(--green-dim), var(--green));\n\t\t\t\t\tbox-shadow: 0 0 8px rgba(0,255,136,0.5);\n\t\t\t\t\ttransition: width 0.4s ease;\n\t\t\t\t}\n\t\t\t\t.bar-fill.warn { background: linear-gradient(90deg, #cc8800, #ffaa00); box-shadow: 0 0 8px rgba(255,170,0,0.5); }\n\t\t\t\t.bar-fill.danger { background: linear-gradient(90deg, #cc2200, #ff4400); box-shadow: 0 0 8px rgba(255,68,0,0.5); }\n\t\t\t\t.metric-value { font-size: 2rem; font-weight: bold; letter-spacing: -0.02em; line-height: 1; }\n\t\t\t\t.metric-label { font-size: 0.65rem; letter-spacing: 0.2em; color: var(--text-muted); }\n\t\t\t\t.metric-sub { font-size: 0.7rem; color: var(--text-muted); }\n\t\t\t\t.spinner { display: none; width: 12px; height: 12px; border: 2px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin 0.6s linear infinite; }\n\t\t\t\t.htmx-request .spinner { display: inline-block; }\n\t\t\t\t.htmx-request .refresh-text { display: none; }\n\t\t\t\t@keyframes spin { to { transform: rotate(360deg); } }\n\t\t\t\t.temp-warn { color: #ffaa00; }\n\t\t\t\t.temp-danger { color: #ff4422; }\n\t\t\t\t.scanline {\n\t\t\t\t\tposition: fixed; top: 0; left: 0; right: 0; bottom: 0;\n\t\t\t\t\tbackground: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);\n\t\t\t\t\tpointer-events: none; z-index: 9999;\n\t\t\t\t}\n\t\t\t</style></head><body><div class=\"scanline\"></div><div class=\"nav-bar\"><a href=\"/\" class=\"nav-logo\">&#9632; PI</a><nav class=\"nav-links\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var3 = []any{"nav-link", navActive(title, "stats")}
+		var templ_7745c5c3_Var3 = []any{"nav-link", navActive(title, "fitness")}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -64,7 +64,7 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\">pi</a> <details class=\"nav-group\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\">calendar</a> <details class=\"nav-group\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -100,12 +100,12 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var7 = []any{"nav-dropdown-item", navActive(title, "fitness")}
+		var templ_7745c5c3_Var7 = []any{"nav-dropdown-item", navActive(title, "workout")}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<a href=\"/fitness\" class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<a href=\"/workout\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -118,16 +118,16 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\">calendar</a> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\">workout</a> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var9 = []any{"nav-dropdown-item", navActive(title, "workout")}
+		var templ_7745c5c3_Var9 = []any{"nav-dropdown-item", navActive(title, "workout-stats")}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<a href=\"/workout\" class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<a href=\"/workout/stats\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -140,16 +140,16 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\">workout</a> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\">stats</a> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var11 = []any{"nav-dropdown-item", navActive(title, "workout-stats")}
+		var templ_7745c5c3_Var11 = []any{"nav-dropdown-item", navActive(title, "exercises")}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<a href=\"/workout/stats\" class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<a href=\"/exercises\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -162,16 +162,16 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\">stats</a> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\">exercises</a> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var13 = []any{"nav-dropdown-item", navActive(title, "exercises")}
+		var templ_7745c5c3_Var13 = []any{"nav-dropdown-item", navActive(title, "body")}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<a href=\"/exercises\" class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "<a href=\"/body\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -184,16 +184,16 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\">exercises</a> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "\">body</a></div></details> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var15 = []any{"nav-dropdown-item", navActive(title, "body")}
+		var templ_7745c5c3_Var15 = []any{"nav-link", navActive(title, "trends")}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var15...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<a href=\"/body\" class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<a href=\"/trends\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -206,16 +206,26 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "\">body</a></div></details> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "\">trends</a> <details class=\"nav-group\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var17 = []any{"nav-link", navActive(title, "trends")}
+		if inAdminGroup(title) {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, " open")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, ">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var17 = []any{"nav-link", "nav-group-summary", templ.KV("active", inAdminGroup(title))}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var17...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<a href=\"/trends\" class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<summary class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -228,26 +238,16 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\">trends</a> <details class=\"nav-group\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\">more &#9662;</summary><div class=\"nav-dropdown\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if inAdminGroup(title) {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, " open")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, ">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var19 = []any{"nav-link", "nav-group-summary", templ.KV("active", inAdminGroup(title))}
+		var templ_7745c5c3_Var19 = []any{"nav-dropdown-item", navActive(title, "sync")}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var19...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<summary class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<a href=\"/sync\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -260,29 +260,7 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\">more &#9662;</summary><div class=\"nav-dropdown\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var21 = []any{"nav-dropdown-item", navActive(title, "sync")}
-		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var21...)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<a href=\"/sync\" class=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var22 string
-		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var21).String())
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/layout.templ`, Line: 1, Col: 0}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var22)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\">sync status</a><form method=\"POST\" action=\"/logout\" style=\"margin:0\"><button type=\"submit\" class=\"nav-dropdown-item nav-dropdown-logout\">logout</button></form></div></details></nav></div><main style=\"padding: 1rem; max-width: 960px; margin: 0 auto;\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\">sync status</a><form method=\"POST\" action=\"/logout\" style=\"margin:0\"><button type=\"submit\" class=\"nav-dropdown-item nav-dropdown-logout\">logout</button></form></div></details></nav></div><main style=\"padding: 1rem; max-width: 960px; margin: 0 auto;\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -290,7 +268,7 @@ func Layout(title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "</main></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</main></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -306,7 +284,7 @@ func navActive(title, page string) string {
 }
 
 func inHealthGroup(title string) bool {
-	return title == "fitness" || title == "workout" || title == "workout-stats" || title == "exercises" || title == "body"
+	return title == "workout" || title == "workout-stats" || title == "exercises" || title == "body"
 }
 
 func inAdminGroup(title string) bool {

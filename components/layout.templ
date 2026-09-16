@@ -55,6 +55,7 @@ templ Layout(title string) {
 					font-weight: bold;
 					font-size: 1rem;
 					letter-spacing: 0.3em;
+					text-decoration: none;
 				}
 				.nav-links { display: flex; gap: 0.25rem; align-items: center; flex-wrap: wrap; }
 				.nav-link {
@@ -174,14 +175,13 @@ templ Layout(title string) {
 		<body>
 			<div class="scanline"></div>
 			<div class="nav-bar">
-				<span class="nav-logo">&#9632; PI</span>
+				<a href="/" class="nav-logo">&#9632; PI</a>
 				<nav class="nav-links">
-					<a href="/" class={ "nav-link", navActive(title, "stats") }>pi</a>
+					<a href="/" class={ "nav-link", navActive(title, "fitness") }>calendar</a>
 
 					<details class="nav-group" open?={ inHealthGroup(title) }>
 						<summary class={ "nav-link", "nav-group-summary", templ.KV("active", inHealthGroup(title)) }>health &#9662;</summary>
 						<div class="nav-dropdown">
-							<a href="/fitness" class={ "nav-dropdown-item", navActive(title, "fitness") }>calendar</a>
 							<a href="/workout" class={ "nav-dropdown-item", navActive(title, "workout") }>workout</a>
 							<a href="/workout/stats" class={ "nav-dropdown-item", navActive(title, "workout-stats") }>stats</a>
 							<a href="/exercises" class={ "nav-dropdown-item", navActive(title, "exercises") }>exercises</a>
@@ -217,7 +217,7 @@ func navActive(title, page string) string {
 }
 
 func inHealthGroup(title string) bool {
-	return title == "fitness" || title == "workout" || title == "workout-stats" || title == "exercises" || title == "body"
+	return title == "workout" || title == "workout-stats" || title == "exercises" || title == "body"
 }
 
 func inAdminGroup(title string) bool {

@@ -34,9 +34,9 @@ func APIBody(w http.ResponseWriter, r *http.Request, _ *db.User) {
 		}
 	}
 	writeJSON(w, http.StatusOK, map[string]any{
-		"history":            out,
-		"latest_weight_lbs":  latestWeight,
-		"latest_bf_percent":  latestBF,
+		"history":           out,
+		"latest_weight_lbs": latestWeight,
+		"latest_bf_percent": latestBF,
 	})
 }
 

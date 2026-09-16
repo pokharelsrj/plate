@@ -133,19 +133,12 @@ struct HealthDay: Codable, Hashable {
 
 struct TodaySnapshot: Codable {
     let date: String
-    let system: SystemMetrics?
     let gym: GymInfo?
     let nutrition: Nutrition?
     let health: HealthDay?
     let body: BodyMetric?
     let workout: WorkoutSummary?
 
-    struct SystemMetrics: Codable {
-        let cpuPercent: Double
-        let memoryPercent: Double
-        let diskPercent: Double
-        let tempCelsius: Double
-    }
     struct GymInfo: Codable {
         let checkins: [String]
     }
