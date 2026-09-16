@@ -1,0 +1,15 @@
+[Unit]
+Description=Plate API server
+After=network.target
+
+[Service]
+Type=simple
+User=youruser
+WorkingDirectory=/home/youruser/plate
+EnvironmentFile=/home/youruser/plate/.env
+ExecStart=/home/youruser/plate/plate
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

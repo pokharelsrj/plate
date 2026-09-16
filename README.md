@@ -1,84 +1,94 @@
-# pi-webpage
+# Plate
 
-A self-hosted personal health dashboard that runs on a Raspberry Pi (or any
-Linux box). It pulls gym check-ins and nutrition from third-party services,
-accepts Apple Health data pushed from an iOS Shortcut, and lets you log lifts
-and body measurements by hand — then puts the whole day on one calendar.
+Two things go on a plate: what you lift, and what you eat. This tracks both, on
+hardware you own, with nobody's analytics team in the middle.
 
-Two clients share one backend:
+It's a small Go server that sits on a Raspberry Pi in a closet, quietly
+collecting your gym check-ins, your meals, and whatever your Apple Watch
+noticed overnight — and a SwiftUI app that makes all of it look like one day at
+a time instead of six apps you forgot to open.
 
-- **Web UI** — server-rendered [templ](https://templ.guide) + [htmx](https://htmx.org), dark terminal theme
-- **iOS + watchOS app** — native SwiftUI, in [`ios/`](ios/) (see [ios/README.md](ios/README.md))
+## Why "plate"
 
-## What it tracks
+The app used to be called **Pi**, because it ran on a Raspberry Pi, which is
+the kind of name you pick at 1am and regret at a dinner party.
 
-| Area | Source |
+**Plate** kept the lineage — a pie gets served on one — and picked up two
+better meanings on the way:
+
+- the **weight plate** you slide onto the bar
+- the **dinner plate** you fill afterward
+
+Those are, almost exactly, the two halves of what this thing measures. Lifting
+and eating, on one surface. The name stopped being a pun about hardware and
+started describing the product, which is the correct direction for a name to
+travel.
+
+## What it actually does
+
+| It knows | Because |
 |---|---|
-| Gym check-ins | LA Fitness API (scheduled sync) |
-| Nutrition — calories and macros | Healthifyme API (scheduled sync) |
-| Steps, sleep stages, resting HR, active energy | Apple Health, pushed to `POST /api/health/ingest` |
-| Workouts — exercises, sets, reps, weight | Logged in the app or web UI |
-| Body — weight and caliper skinfolds | Logged in the app or web UI (Jackson-Pollock 3-site BF%) |
+| When you went to the gym | LA Fitness check-ins, synced on a cron |
+| What you ate | Healthifyme calories and macros, same cron |
+| How you slept, how much you moved | Apple Health, pushed up by a Shortcut |
+| What you lifted | You logged it — on the phone, or on the watch mid-set |
+| What you weigh, and how much of it is you | Scale + calipers, Jackson-Pollock 3-site |
 
-Analytics on top of that: a month/week calendar, lifting stats (PRs, estimated
-1RM, weekly set volume by body part), and long-run weight/nutrition trends.
+Then it does the part that's actually the point: puts a month on one screen so
+you can see the week you ate well and didn't train, or the month you trained
+five days a week and wondered why the scale didn't move.
 
-## Stack
+There are PRs and estimated 1RMs. There are weight trends with weekly averages,
+because daily weigh-ins are mostly water and lies. There's a widget with
+today's numbers, and a Live Activity that runs your rest timer on the Lock
+Screen so you stop scrolling between sets. (You will keep scrolling between
+sets.)
 
-- **Go 1.25**, standard-library `net/http` routing — no web framework
-- **SQLite** via [modernc.org/sqlite](https://modernc.org/sqlite) (pure Go, so it cross-compiles to ARM with `CGO_ENABLED=0`)
-- **templ** for typed HTML components, **htmx** + **hyperscript** for interactivity, **Chart.js** for graphs
-- **robfig/cron** for the sync scheduler
-- Auth: cookie sessions for the web UI, `X-Api-Key` for `/api/*`; passwords hashed with PBKDF2-SHA256
+## What's in here
 
-## Running it
+```
+backend/    Go + SQLite. A JSON API and two scheduled syncs. No web UI.
+ui/         SwiftUI app, watchOS companion, widget + Live Activity.
+```
+
+That's the whole split. The backend speaks JSON and nothing else; the app is
+the only front end. There used to be a server-rendered web UI in here too — it
+was fine, it was green-on-black and very 1983 — but the app outgrew it and
+maintaining two front ends for an audience of one is a hobby, not a feature.
+
+## Getting it running
+
+**Backend** — needs Go 1.25:
 
 ```sh
-cp .env.example .env   # then edit it
-templ generate         # regenerate components/*_templ.go
-go run .               # listens on :8080
+cd backend
+cp .env.example .env      # fill in your own accounts
+go run .                  # listens on :8080
 ```
 
-The first boot seeds an admin account from `AUTH_USER` / `AUTH_PASS` if the
-users table is empty; every setting is documented in [.env.example](.env.example).
-Further accounts are created from **Settings → Admin → Manage users**.
+First boot seeds an admin from `AUTH_USER` / `AUTH_PASS`. Everything else is in
+[`backend/.env.example`](backend/.env.example), commented.
 
-`templ generate` needs the templ CLI:
+**App** — needs Xcode 15+ and, briefly, patience with Apple:
 
 ```sh
-go install github.com/a-h/templ/cmd/templ@v0.3.1020
+cd ui
+xcodegen generate
+open Pi.xcodeproj
 ```
 
-### Deploying to a Pi
+Point it at your server on the login screen under **Advanced**, sign in, done.
+[`ui/README.md`](ui/README.md) covers signing, which is the annoying part.
 
-Cross-compile a single static binary (the templ views are compiled in, so
-nothing else needs copying):
+## Fair warnings
 
-```sh
-GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o pi-webpage .
-```
-
-Copy it to the host along with your `.env`, then run it under systemd —
-[`pi-monitor.service`](pi-monitor.service) is a starting point (adjust `User`
-and the paths). [`Caddyfile`](Caddyfile) is an example reverse proxy that
-exposes *only* the Apple Health ingest endpoint publicly and keeps the rest of
-the API and UI on the LAN/VPN.
-
-## Layout
-
-```
-main.go          route table — the quickest map of the app
-handlers/        HTTP handlers: web pages (templ) and the JSON API (/api/*)
-components/      templ views (*.templ; *_templ.go is generated — don't edit)
-db/              SQLite schema and queries, one file per domain
-sync/            LA Fitness + Healthifyme clients and the cron scheduler
-ios/             SwiftUI app, watch app, and widget (XcodeGen project)
-PLAN.md          design notes for the iOS app + the JSON API contract
-```
-
-## Notes
-
-This is a personal project, published because the pieces may be useful to
-someone building something similar. It is **not** hardened for use on the open
-internet: keep it behind a VPN or LAN, as the example Caddyfile does. The
-third-party syncs talk to undocumented endpoints and can break at any time.
+- **Keep it on your LAN or behind a VPN.** The one exception is the Apple
+  Health ingest endpoint, which needs to be reachable from anywhere;
+  [`backend/Caddyfile`](backend/Caddyfile) shows how to expose exactly that and
+  nothing else. This is not hardened for the open internet and does not pretend
+  to be.
+- **The syncs talk to undocumented endpoints.** LA Fitness and Healthifyme did
+  not ask to be integrated with. They can and will break.
+- **It's a personal project**, published because the pieces might save someone
+  else a weekend. Body-fat math is the 3-site formula for men; swap it if that
+  isn't you.

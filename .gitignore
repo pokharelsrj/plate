@@ -1,6 +1,6 @@
 # Build output
-/pi-webpage
-ios/build/
+/backend/plate
+/ui/build/
 
 # Local data + secrets
 .env
