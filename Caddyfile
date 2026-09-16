@@ -1,6 +1,8 @@
+# Example reverse proxy for the one endpoint that has to be reachable from
+# outside the LAN. Replace the hostname with your own.
 health.example.com {
-	# Public path: ONLY the Apple Health ingest endpoint (iOS Shortcut posts
-	# here from anywhere). Auth is via X-Api-Key on the Go server.
+	# Public path: ONLY the Apple Health ingest endpoint (the iOS Shortcut
+	# posts here from anywhere). Auth is via X-Api-Key on the Go server.
 	handle /api/health/ingest {
 		reverse_proxy localhost:8080 {
 			header_up X-Real-IP {remote_host}
@@ -8,7 +10,7 @@ health.example.com {
 	}
 
 	# Everything else — rest of the API + UI — is VPN/LAN-only:
-	# clients use http://pi.local:8080 directly.
+	# clients reach the server directly at http://<host>:8080.
 	handle {
 		respond "Not Found" 404
 	}

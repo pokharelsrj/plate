@@ -1,9 +1,16 @@
-.claude
-.idea
-pi-webpage
+# Build output
+/pi-webpage
+ios/build/
+
+# Local data + secrets
+.env
 *.db
 *.db-shm
 *.db-wal
-.env
-ios/Pi.xcodeproj/xcuserdata/
-ios/Pi.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Editor / OS
+.claude
+.idea
+.DS_Store
+*.xcuserdatad/
+xcuserdata/

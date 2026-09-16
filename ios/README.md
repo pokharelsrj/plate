@@ -1,6 +1,6 @@
 # Pi iOS app
 
-Native SwiftUI client for the pi-webpage Go backend (see `../Plan.md`).
+Native SwiftUI client for the pi-webpage Go backend (see `../PLAN.md`).
 
 ## Requirements
 
@@ -33,7 +33,7 @@ Edit `project.yml` (not the xcodeproj) when adding targets/settings. New Swift f
 
 The app talks to the backend over the JSON API (`/api/*`, `X-Api-Key` auth).
 
-- Default base URL: `https://health.example.com` (changeable under **Advanced** on the login screen — local HTTP works for LAN/simulator testing, e.g. `http://localhost:8080`).
+- Default base URL: `http://pi.local:8080` (changeable under **Advanced** on the login screen — point it at your own host; `http://localhost:8080` works for simulator testing).
 - Sign in with the email/password of a user row on the server. On first boot after the backend update, the admin account is seeded from the `AUTH_USER` / `AUTH_PASS` env vars (API key reuses `HEALTH_API_KEY`).
 - New accounts are created from Settings → Admin → Manage users (admin only).
 
@@ -47,4 +47,4 @@ The app talks to the backend over the JSON API (`/api/*`, `X-Api-Key` auth).
 | Screens | Today, Calendar + day detail, Workout (gym-first logging), Body (charts), Exercises, Sync, Settings (profile / theme / goals / admin users) |
 | HealthKit | `Pi/HealthKit/HealthService.swift` — manual "Sync Apple Health now" in Settings |
 
-Deferred from Plan.md for v1: widgets (WidgetKit extension), background tasks/observers, and iOS trends (web-only by design).
+Deferred from PLAN.md: iOS trends — analytics stay on the web by design.
