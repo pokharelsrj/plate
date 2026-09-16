@@ -12,15 +12,13 @@
 		1007788DA94DF734CA5F45B8 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E2D88A1AE1EC09EFE96F21 /* Theme.swift */; };
 		1407A75CBA0D55D64DC5A962 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814299711B2FD4C642C5F145 /* Session.swift */; };
 		170370EC963255D17B26C794 /* DayCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1A4F36A02E3BE907DBC81B /* DayCards.swift */; };
-		1B44ED3CCED4BB8046C2451A /* FinanceSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD2B45AE9C19BF8E2715A56 /* FinanceSummaryView.swift */; };
-		1CCED9424F348488AB90146D /* FinanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5931A3472CA8D40679B02617 /* FinanceView.swift */; };
 		20885804032EEA4C9159B789 /* TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6693E7B2239AB812B82F0 /* TrendsView.swift */; };
 		2E1984B68B3B24BDA32FCA25 /* PiWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C9319E2E676798657ED56794 /* PiWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3036D3C311814E51EAD06DD6 /* PiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5B8E58E9DE569DA96694606 /* PiApp.swift */; };
 		403CE75693D328F3AEE3CFC1 /* GymStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEB6585F1292AD76ADD57BE /* GymStepper.swift */; };
 		4404D802DE25488868A25B2A /* RestActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F09111521A6A858E38560E40 /* RestActivity.swift */; };
 		456A4210093C9D1A00D6D989 /* DayDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB44A3D5C26E9D6B28886611 /* DayDetailView.swift */; };
-		50CF3ABD8916D6FD9CB1BD0E /* Pi.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 871260723750A51D9872E725 /* Pi.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		50CF3ABD8916D6FD9CB1BD0E /* PiWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 871260723750A51D9872E725 /* PiWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		59A2C38DDF9128FD938DDEFC /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FC9D89F97274D12DFAA79C /* LoginView.swift */; };
 		5CBB589920024CC6BFC38FE7 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EF9E2D65E4A043ADF09BCE /* ViewModifiers.swift */; };
 		626EC12F6026404E4BBCD768 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCBD6FE26558C0809893C395 /* TodayView.swift */; };
@@ -30,7 +28,6 @@
 		708D9D1A7FA7EB70C4E321E2 /* MetricViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732F3F3170427B78E449094D /* MetricViews.swift */; };
 		7679D312095CCF9AC51554BF /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBDED5EF96888039422E275 /* APIClient.swift */; };
 		7B33ACD0F9B848809D636BC2 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA304B4AA1D9713060AC251 /* Models.swift */; };
-		89490BAEA35F93CB1D4CA296 /* FinanceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D8F063C105227781013325F /* FinanceClient.swift */; };
 		8CBE21BBFE7E6EBE184F505A /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA304B4AA1D9713060AC251 /* Models.swift */; };
 		8CE3E2A353CE1FE2C17DC2D0 /* RestTimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA7304912303491D1BD0FF77 /* RestTimerIntents.swift */; };
 		97E68723B646914ECA6256E5 /* ExercisesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED6248FAB50830A18737C6 /* ExercisesView.swift */; };
@@ -46,7 +43,6 @@
 		B174921D18D125D6CDDF542F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78909B2BAB49BA2A6F5B2F2F /* Assets.xcassets */; };
 		B64B38E9F4A7E731B5F2D239 /* PiWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D4F7178C267B0E357D519B /* PiWidget.swift */; };
 		BB4ABEAC8538F0372B0F2187 /* WatchAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E11FD00832ECD62AA2F2588 /* WatchAPI.swift */; };
-		BFC331DACD37ADB839B0FBE1 /* FinanceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5AB78B1644CBBAA93EB5262 /* FinanceModels.swift */; };
 		C4121A2E27AF9BBA9BD1F69D /* BodyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1694135E7A681892C79CFF22 /* BodyView.swift */; };
 		C5D0B14BDB0B3A3FA899B67E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78909B2BAB49BA2A6F5B2F2F /* Assets.xcassets */; };
 		CA2292B53E53F4C32A6F9EE0 /* RestTimerAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD237C0131045D4A801C674 /* RestTimerAttributes.swift */; };
@@ -55,13 +51,11 @@
 		D119675595D76ABEF7B80ED4 /* SyncStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4D9ECE28B756145423AFE7 /* SyncStatusView.swift */; };
 		D1F22A0161F21CDFF652AC89 /* PiWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C2F2EC77B3BE75450004A8 /* PiWatchApp.swift */; };
 		D285EE07BB970FC7F7C777EF /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FE8F63467D20FA04AED309 /* ProfileView.swift */; };
-		D304E9A5625E9E1B8B7CFB1D /* UploadStatementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AB95E0338D1D62E7051FE3 /* UploadStatementView.swift */; };
 		D3E923BD67CC68D08E6C48B2 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4FB976B61C49F9C47B7570 /* Keychain.swift */; };
 		DCCC0BBF3101CD480C0CFA8E /* RestTimerAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD237C0131045D4A801C674 /* RestTimerAttributes.swift */; };
 		EBACE10D925EA5D0CDEF5DB9 /* SharedCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016288F73586C2E6F1B8202A /* SharedCache.swift */; };
 		F75DD0C5A130E2541146A8BE /* SharedCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016288F73586C2E6F1B8202A /* SharedCache.swift */; };
 		F9CA8EAD0F6CAB33DF155651 /* HealthBackgroundTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD9A4196F772892FF502CD5D /* HealthBackgroundTasks.swift */; };
-		FA82DAD88F1567966C5723F2 /* CategorizeSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E7E25764B8B9DC82F8143D /* CategorizeSheet.swift */; };
 		FAAD21687965AEA5D10706A2 /* RestTimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA7304912303491D1BD0FF77 /* RestTimerIntents.swift */; };
 /* End PBXBuildFile section */
 
@@ -100,7 +94,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				50CF3ABD8916D6FD9CB1BD0E /* Pi.app in Embed Watch Content */,
+				50CF3ABD8916D6FD9CB1BD0E /* PiWatch.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -109,7 +103,7 @@
 
 /* Begin PBXFileReference section */
 		016288F73586C2E6F1B8202A /* SharedCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedCache.swift; sourceTree = "<group>"; };
-		0626CBA767E8B1CDE2EFB42B /* Pi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0626CBA767E8B1CDE2EFB42B /* Pi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E11FD00832ECD62AA2F2588 /* WatchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAPI.swift; sourceTree = "<group>"; };
 		1694135E7A681892C79CFF22 /* BodyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyView.swift; sourceTree = "<group>"; };
 		1CEB6585F1292AD76ADD57BE /* GymStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymStepper.swift; sourceTree = "<group>"; };
@@ -122,12 +116,9 @@
 		51D4F7178C267B0E357D519B /* PiWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiWidget.swift; sourceTree = "<group>"; };
 		54BD3277F0020DB2EF7E975D /* Pi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pi.entitlements; sourceTree = "<group>"; };
 		56606A9FEC81C4A1B71CAB5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		5931A3472CA8D40679B02617 /* FinanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceView.swift; sourceTree = "<group>"; };
 		5D1A4F36A02E3BE907DBC81B /* DayCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayCards.swift; sourceTree = "<group>"; };
-		5D8F063C105227781013325F /* FinanceClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceClient.swift; sourceTree = "<group>"; };
 		5FD237C0131045D4A801C674 /* RestTimerAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerAttributes.swift; sourceTree = "<group>"; };
 		66EF9E2D65E4A043ADF09BCE /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
-		68E7E25764B8B9DC82F8143D /* CategorizeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorizeSheet.swift; sourceTree = "<group>"; };
 		69336377252C6EB92784D504 /* PiWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PiWidget.entitlements; sourceTree = "<group>"; };
 		694D80DC32FA0FE20E564AFD /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		732F3F3170427B78E449094D /* MetricViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricViews.swift; sourceTree = "<group>"; };
@@ -136,9 +127,8 @@
 		814299711B2FD4C642C5F145 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		81EB781591A3D97D2650A47F /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
 		8254A6090B975F72CE1F001D /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
-		82AB95E0338D1D62E7051FE3 /* UploadStatementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadStatementView.swift; sourceTree = "<group>"; };
 		83F22D5D0345AD7670DBC521 /* WatchRelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRelay.swift; sourceTree = "<group>"; };
-		871260723750A51D9872E725 /* Pi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		871260723750A51D9872E725 /* PiWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PiWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87B627CD11531D1DEEAF94D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9F193AF47AE66ED1F4D6DC43 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		A3E7113DD21490820A8D4EB3 /* AppLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLock.swift; sourceTree = "<group>"; };
@@ -147,17 +137,15 @@
 		BB44A3D5C26E9D6B28886611 /* DayDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayDetailView.swift; sourceTree = "<group>"; };
 		BEA304B4AA1D9713060AC251 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		C3C2F2EC77B3BE75450004A8 /* PiWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiWatchApp.swift; sourceTree = "<group>"; };
-		C9319E2E676798657ED56794 /* PiWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PiWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9319E2E676798657ED56794 /* PiWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = PiWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA7304912303491D1BD0FF77 /* RestTimerIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerIntents.swift; sourceTree = "<group>"; };
 		CEA35F74F6767638FDDA57D6 /* WorkoutStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutStatsView.swift; sourceTree = "<group>"; };
 		D4DD01347D807BC80433478E /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 		D5E2D88A1AE1EC09EFE96F21 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		D6576B3C7FA43587E139202F /* WorkoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutViewModel.swift; sourceTree = "<group>"; };
 		D662F4FA928A9A6FF6539AF0 /* AdminUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUsersView.swift; sourceTree = "<group>"; };
-		DAD2B45AE9C19BF8E2715A56 /* FinanceSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceSummaryView.swift; sourceTree = "<group>"; };
 		DDBDED5EF96888039422E275 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		E1C6693E7B2239AB812B82F0 /* TrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendsView.swift; sourceTree = "<group>"; };
-		E5AB78B1644CBBAA93EB5262 /* FinanceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinanceModels.swift; sourceTree = "<group>"; };
 		E998AE45F11CE163CE0E2A72 /* RestLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestLiveActivity.swift; sourceTree = "<group>"; };
 		F09111521A6A858E38560E40 /* RestActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestActivity.swift; sourceTree = "<group>"; };
 		F119A6A04562875BF2AEA8A2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -167,17 +155,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		019572963994721948EA0C9B /* Finance */ = {
-			isa = PBXGroup;
-			children = (
-				68E7E25764B8B9DC82F8143D /* CategorizeSheet.swift */,
-				DAD2B45AE9C19BF8E2715A56 /* FinanceSummaryView.swift */,
-				5931A3472CA8D40679B02617 /* FinanceView.swift */,
-				82AB95E0338D1D62E7051FE3 /* UploadStatementView.swift */,
-			);
-			path = Finance;
-			sourceTree = "<group>";
-		};
 		170389033D0DE9C30FA628A6 /* Today */ = {
 			isa = PBXGroup;
 			children = (
@@ -201,7 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				0626CBA767E8B1CDE2EFB42B /* Pi.app */,
-				871260723750A51D9872E725 /* Pi.app */,
+				871260723750A51D9872E725 /* PiWatch.app */,
 				C9319E2E676798657ED56794 /* PiWidget.appex */,
 			);
 			name = Products;
@@ -230,7 +207,6 @@
 		47FEDAB4FDE0BE663E21CA9D /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				E5AB78B1644CBBAA93EB5262 /* FinanceModels.swift */,
 				BEA304B4AA1D9713060AC251 /* Models.swift */,
 			);
 			path = Models;
@@ -325,7 +301,6 @@
 				8EEC2C74BCAF270BD6D34604 /* Body */,
 				31CF39982B0F52E626AB6442 /* Calendar */,
 				BC63E2BAC0ACC8F3A7AEAE2F /* Exercises */,
-				019572963994721948EA0C9B /* Finance */,
 				DE8561CFC1D293F0F719E4E6 /* Login */,
 				E21D32F0E08C2ADF6F485A21 /* Settings */,
 				94B9FB10EC69CF95E711E7C8 /* Sync */,
@@ -341,7 +316,6 @@
 			children = (
 				DDBDED5EF96888039422E275 /* APIClient.swift */,
 				8254A6090B975F72CE1F001D /* APIError.swift */,
-				5D8F063C105227781013325F /* FinanceClient.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -462,7 +436,7 @@
 			packageProductDependencies = (
 			);
 			productName = PiWatch;
-			productReference = 871260723750A51D9872E725 /* Pi.app */;
+			productReference = 871260723750A51D9872E725 /* PiWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -475,6 +449,7 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					D228CC10F31981A5838AA163 = {
+						DevelopmentTeam = "$(DEVELOPMENT_TEAM)";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -554,14 +529,9 @@
 				A30FC17B6F7513F9DFAD56B2 /* AppLock.swift in Sources */,
 				C4121A2E27AF9BBA9BD1F69D /* BodyView.swift in Sources */,
 				9C4CF86F911317EEA7FD76B7 /* CalendarView.swift in Sources */,
-				FA82DAD88F1567966C5723F2 /* CategorizeSheet.swift in Sources */,
 				170370EC963255D17B26C794 /* DayCards.swift in Sources */,
 				456A4210093C9D1A00D6D989 /* DayDetailView.swift in Sources */,
 				97E68723B646914ECA6256E5 /* ExercisesView.swift in Sources */,
-				89490BAEA35F93CB1D4CA296 /* FinanceClient.swift in Sources */,
-				BFC331DACD37ADB839B0FBE1 /* FinanceModels.swift in Sources */,
-				1B44ED3CCED4BB8046C2451A /* FinanceSummaryView.swift in Sources */,
-				1CCED9424F348488AB90146D /* FinanceView.swift in Sources */,
 				403CE75693D328F3AEE3CFC1 /* GymStepper.swift in Sources */,
 				F9CA8EAD0F6CAB33DF155651 /* HealthBackgroundTasks.swift in Sources */,
 				A578D1F66F5BE9243E7B1EB5 /* HealthService.swift in Sources */,
@@ -584,7 +554,6 @@
 				626EC12F6026404E4BBCD768 /* TodayView.swift in Sources */,
 				20885804032EEA4C9159B789 /* TrendsView.swift in Sources */,
 				65E00156C06544F42F833CB6 /* Typography.swift in Sources */,
-				D304E9A5625E9E1B8B7CFB1D /* UploadStatementView.swift in Sources */,
 				5CBB589920024CC6BFC38FE7 /* ViewModifiers.swift in Sources */,
 				AE568672380C431DCDD442B6 /* WatchRelay.swift in Sources */,
 				CA8CB737A3C5CAA034501A06 /* WorkoutStatsView.swift in Sources */,
@@ -616,7 +585,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = PiPrimary;
 				CODE_SIGN_ENTITLEMENTS = Pi/Pi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = Q5L4RXB888;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Pi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -692,7 +660,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = PiWidget/PiWidget.entitlements;
-				DEVELOPMENT_TEAM = Q5L4RXB888;
 				INFOPLIST_FILE = PiWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -710,7 +677,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = PiWidget/PiWidget.entitlements;
-				DEVELOPMENT_TEAM = Q5L4RXB888;
 				INFOPLIST_FILE = PiWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -729,7 +695,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Q5L4RXB888;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				INFOPLIST_FILE = PiWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.srijanpokharel.pi.watchkitapp;
 				PRODUCT_NAME = Pi;
@@ -746,7 +712,6 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = PiPrimary;
 				CODE_SIGN_ENTITLEMENTS = Pi/Pi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = Q5L4RXB888;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Pi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -830,7 +795,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Q5L4RXB888;
+				DEVELOPMENT_TEAM = "$(DEVELOPMENT_TEAM)";
 				INFOPLIST_FILE = PiWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.srijanpokharel.pi.watchkitapp;
 				PRODUCT_NAME = Pi;

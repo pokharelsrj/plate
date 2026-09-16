@@ -2,18 +2,12 @@ import SwiftUI
 import Observation
 
 enum AppTab: Hashable {
-    case today, calendar, workout, body, finance, settings
+    case today, calendar, workout, body, settings
 }
 
 @Observable
 final class Router {
     var tab: AppTab = .today
-
-    init() {
-        #if DEBUG
-        if ProcessInfo.processInfo.environment["PI_TEST_TAB"] == "finance" { tab = .finance }
-        #endif
-    }
 }
 
 struct RootView: View {
@@ -35,9 +29,6 @@ struct RootView: View {
             BodyView()
                 .tabItem { Label("Body", systemImage: "figure.arms.open") }
                 .tag(AppTab.body)
-            FinanceView()
-                .tabItem { Label("Finance", systemImage: "creditcard.fill") }
-                .tag(AppTab.finance)
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
                 .tag(AppTab.settings)

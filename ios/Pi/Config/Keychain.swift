@@ -1,22 +1,15 @@
 import Foundation
 import Security
 
-/// Minimal keychain wrapper for the API keys.
+/// Minimal keychain wrapper for the API key.
 enum Keychain {
     private static let service = "com.srijanpokharel.pi.api"
     private static let account = "primary"
-    private static let financeAccount = "finance"
 
     /// Key for the Go backend (issued at login).
     static var apiKey: String? {
         get { read(account) }
         set { write(account, newValue) }
-    }
-
-    /// Key for the separate finance backend (set in Settings → Finance).
-    static var financeKey: String? {
-        get { read(financeAccount) }
-        set { write(financeAccount, newValue) }
     }
 
     private static func read(_ account: String) -> String? {

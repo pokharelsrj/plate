@@ -14,11 +14,6 @@ struct SettingsView: View {
     @State private var toast: Toast?
     @State private var healthSyncing = false
 
-    @State private var financeURLText = ""
-    @State private var financeKeyText = ""
-    @State private var financeStatus: String?
-    @State private var financeOK = false
-
     var body: some View {
         NavigationStack {
             List {
@@ -28,7 +23,6 @@ struct SettingsView: View {
                 appearanceSection
                 goalsSection
                 integrationsSection
-                financeSection
                 diagnosticsSection
                 if session.user?.isAdmin == true {
                     adminSection
@@ -37,11 +31,6 @@ struct SettingsView: View {
             .scrollContentBackground(.hidden)
             .background(Color.piBg)
             .navigationTitle("Settings")
-            .onAppear {
-                if financeURLText.isEmpty { financeURLText = session.financeBaseURL.absoluteString }
-                if financeKeyText.isEmpty { financeKeyText = session.financeKey ?? "" }
-                financeOK = session.financeConfigured
-            }
             .toast($toast)
             .confirmationDialog("Rotate API key?", isPresented: $showRotateConfirm, titleVisibility: .visible) {
                 Button("Rotate key", role: .destructive) {
@@ -165,37 +154,6 @@ struct SettingsView: View {
         .listRowBackground(Color.piBg2)
     }
 
-    private var financeSection: some View {
-        Section {
-            TextField("Server URL", text: $financeURLText)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .keyboardType(.URL)
-                .font(.piSubheadline)
-            SecureField("API key", text: $financeKeyText)
-                .font(.piSubheadline)
-            Button {
-                Task { await saveFinance() }
-            } label: {
-                HStack {
-                    Label("Save & test connection", systemImage: "checkmark.circle")
-                    Spacer()
-                    if let financeStatus {
-                        Text(financeStatus)
-                            .font(.piCaption)
-                            .foregroundStyle(financeOK ? Color.piCalGood : Color.piWarn)
-                    }
-                }
-            }
-            .foregroundStyle(Color.piText)
-        } header: {
-            Text("Finance")
-        } footer: {
-            Text("Separate finance service on the Pi (LAN-only). Powers the Finance tab.")
-        }
-        .listRowBackground(Color.piBg2)
-    }
-
     private var diagnosticsSection: some View {
         Section("Diagnostics") {
             LabeledContent("Server", value: session.baseURL.absoluteString)
@@ -236,27 +194,6 @@ struct SettingsView: View {
     }
 
     // MARK: - Actions
-
-    @MainActor
-    private func saveFinance() async {
-        let trimmed = financeURLText.trimmingCharacters(in: .whitespaces)
-        guard let url = URL(string: trimmed), url.scheme != nil, !financeKeyText.isEmpty else {
-            financeOK = false
-            financeStatus = "Enter a valid URL and key"
-            return
-        }
-        session.configureFinance(baseURL: url, key: financeKeyText)
-        do {
-            try await session.financeClient.ping()
-            financeOK = true
-            financeStatus = "Connected"
-            toast = Toast(message: "Finance connected")
-        } catch {
-            financeOK = false
-            financeStatus = "Saved — can't reach server"
-            toast = Toast(message: error.localizedDescription, isError: true)
-        }
-    }
 
     private func rotateKey() async {
         do {

@@ -9,46 +9,21 @@ final class Session {
     private(set) var apiKey: String?
     var baseURL: URL
 
-    /// Finance backend (separate FastAPI service on the Pi) — its own URL + key.
-    var financeBaseURL: URL
-    private(set) var financeKey: String?
-
     /// Set when the saved key was rejected — shown as a banner on the login screen.
     var sessionExpired = false
 
-    /// The Pi's LAN/VPN address — the API is not exposed publicly.
+    /// The server's LAN/VPN address — the API is not exposed publicly. Override
+    /// it under "Advanced" on the login screen to point at your own host.
     static let defaultBaseURL = URL(string: "http://pi.local:8080")!
-
-    /// Old public endpoint, now blocked at Caddy; migrated to the LAN URL on launch.
-    private static let legacyBaseURL = "https://health.example.com"
-
-    /// Finance FastAPI service on the Pi (LAN-only, separate port).
-    static let defaultFinanceBaseURL = URL(string: "http://pi.local:8090")!
 
     private static let userKey = "session.user"
     private static let baseURLKey = "session.baseURL"
-    private static let financeBaseURLKey = "session.financeBaseURL"
     private static let lastEmailKey = "session.lastEmail"
 
     var isAuthenticated: Bool { apiKey != nil }
 
-    /// True once a finance key is configured (Settings → Finance).
-    var financeConfigured: Bool { (financeKey?.isEmpty == false) }
-
     var client: APIClient {
         APIClient(baseURL: baseURL, apiKey: apiKey)
-    }
-
-    var financeClient: FinanceClient {
-        FinanceClient(baseURL: financeBaseURL, apiKey: financeKey)
-    }
-
-    @MainActor
-    func configureFinance(baseURL: URL, key: String) {
-        financeBaseURL = baseURL
-        financeKey = key
-        Keychain.financeKey = key
-        UserDefaults.standard.set(baseURL.absoluteString, forKey: Self.financeBaseURLKey)
     }
 
     /// Builds a client from persisted credentials for background work (health
@@ -67,21 +42,13 @@ final class Session {
 
     init() {
         let defaults = UserDefaults.standard
-        // Initialize all non-optional stored properties before any `self` read.
-        if let s = defaults.string(forKey: Self.financeBaseURLKey), let url = URL(string: s) {
-            financeBaseURL = url
-        } else {
-            financeBaseURL = Self.defaultFinanceBaseURL
-        }
-        if let s = defaults.string(forKey: Self.baseURLKey), let url = URL(string: s),
-           s != Self.legacyBaseURL {
+        if let s = defaults.string(forKey: Self.baseURLKey), let url = URL(string: s) {
             baseURL = url
         } else {
             baseURL = Self.defaultBaseURL
             defaults.set(baseURL.absoluteString, forKey: Self.baseURLKey)
         }
         apiKey = Keychain.apiKey
-        financeKey = Keychain.financeKey
         if let data = defaults.data(forKey: Self.userKey) {
             user = try? APIClient.decoder.decode(User.self, from: data)
         }
@@ -91,8 +58,6 @@ final class Session {
         let env = ProcessInfo.processInfo.environment
         if let s = env["PI_TEST_BASE_URL"], let u = URL(string: s) { baseURL = u }
         if let k = env["PI_TEST_API_KEY"] { apiKey = k }
-        if let s = env["PI_TEST_FINANCE_URL"], let u = URL(string: s) { financeBaseURL = u }
-        if let k = env["PI_TEST_FINANCE_KEY"] { financeKey = k }
         #endif
 
         NotificationCenter.default.addObserver(forName: .piUnauthorized, object: nil, queue: .main) { [weak self] _ in
