@@ -12,9 +12,10 @@ final class Session {
     /// Set when the saved key was rejected — shown as a banner on the login screen.
     var sessionExpired = false
 
-    /// The server's LAN/VPN address — the API is not exposed publicly. Override
-    /// it under "Advanced" on the login screen to point at your own host.
-    static let defaultBaseURL = URL(string: "http://pi.local:8080")!
+    /// Where the app looks for its backend out of the box. Override it under
+    /// "Advanced" on the login screen to point at your own server — running
+    /// one is the expected setup; see the backend/ directory.
+    static let defaultBaseURL = URL(string: "https://api.srijanpokharel.com")!
 
     private static let userKey = "session.user"
     private static let baseURLKey = "session.baseURL"

@@ -44,9 +44,9 @@ up on the next regenerate (and adding them in Xcode directly works fine too).
 
 ## Signing in
 
-- Default base URL is `http://pi.local:8080`. Change it under **Advanced** on
-  the login screen — point it at your own host, or `http://localhost:8080`
-  against a backend running on your Mac.
+- Default base URL is `https://api.srijanpokharel.com`. Change it under
+  **Advanced** on the login screen — point it at your own server, or
+  `http://localhost:8080` against a backend running on your Mac.
 - Sign in with the email and password of a user on the server. The first
   account is seeded from the backend's `AUTH_USER` / `AUTH_PASS`.
 - More accounts: Settings → Admin → Manage users (admin only).
