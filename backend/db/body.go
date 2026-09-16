@@ -14,28 +14,28 @@ type BodyMetric struct {
 	BfPercent sql.NullFloat64
 }
 
-func UpsertBodyMetric(b BodyMetric) error {
+func UpsertBodyMetric(userID int64, b BodyMetric) error {
 	_, err := DB.Exec(`
-		INSERT INTO body_metrics (date, weight_lbs, bf_chest_mm, bf_abdomen_mm, bf_thigh_mm, bf_percent, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-		ON CONFLICT(date) DO UPDATE SET
+		INSERT INTO body_metrics (user_id, date, weight_lbs, bf_chest_mm, bf_abdomen_mm, bf_thigh_mm, bf_percent, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+		ON CONFLICT(user_id, date) DO UPDATE SET
 			weight_lbs    = COALESCE(excluded.weight_lbs,    weight_lbs),
 			bf_chest_mm   = COALESCE(excluded.bf_chest_mm,   bf_chest_mm),
 			bf_abdomen_mm = COALESCE(excluded.bf_abdomen_mm, bf_abdomen_mm),
 			bf_thigh_mm   = COALESCE(excluded.bf_thigh_mm,   bf_thigh_mm),
 			bf_percent    = COALESCE(excluded.bf_percent,    bf_percent),
 			updated_at    = CURRENT_TIMESTAMP
-	`, b.Date, b.WeightLbs, b.ChestMm, b.AbdomenMm, b.ThighMm, b.BfPercent)
+	`, userID, b.Date, b.WeightLbs, b.ChestMm, b.AbdomenMm, b.ThighMm, b.BfPercent)
 	return err
 }
 
-func BodyBetween(from, to time.Time) (map[string]BodyMetric, error) {
+func BodyBetween(userID int64, from, to time.Time) (map[string]BodyMetric, error) {
 	rows, err := DB.Query(`
 		SELECT date, weight_lbs, bf_chest_mm, bf_abdomen_mm, bf_thigh_mm, bf_percent
 		FROM body_metrics
-		WHERE date >= ? AND date <= ?
+		WHERE user_id = ? AND date >= ? AND date <= ?
 		ORDER BY date ASC
-	`, from.Format("2006-01-02"), to.Format("2006-01-02"))
+	`, userID, from.Format("2006-01-02"), to.Format("2006-01-02"))
 	if err != nil {
 		return nil, err
 	}
@@ -51,13 +51,14 @@ func BodyBetween(from, to time.Time) (map[string]BodyMetric, error) {
 	return out, rows.Err()
 }
 
-func RecentBodyMetrics(limit int) ([]BodyMetric, error) {
+func RecentBodyMetrics(userID int64, limit int) ([]BodyMetric, error) {
 	rows, err := DB.Query(`
 		SELECT date, weight_lbs, bf_chest_mm, bf_abdomen_mm, bf_thigh_mm, bf_percent
 		FROM body_metrics
+		WHERE user_id = ?
 		ORDER BY date DESC
 		LIMIT ?
-	`, limit)
+	`, userID, limit)
 	if err != nil {
 		return nil, err
 	}

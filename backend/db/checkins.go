@@ -8,21 +8,21 @@ type GymCheckin struct {
 	CheckinAt time.Time
 }
 
-func UpsertCheckin(c GymCheckin) error {
+func UpsertCheckin(userID int64, c GymCheckin) error {
 	_, err := DB.Exec(`
-		INSERT INTO gym_checkins (checkin_id, club_id, checkin_at)
-		VALUES (?, ?, ?)
-		ON CONFLICT(checkin_id) DO NOTHING
-	`, c.CheckinID, c.ClubID, c.CheckinAt.UTC())
+		INSERT INTO gym_checkins (user_id, checkin_id, club_id, checkin_at)
+		VALUES (?, ?, ?, ?)
+		ON CONFLICT(user_id, checkin_id) DO NOTHING
+	`, userID, c.CheckinID, c.ClubID, c.CheckinAt.UTC())
 	return err
 }
 
-func CheckinDatesBetween(from, to time.Time) (map[string][]time.Time, error) {
+func CheckinDatesBetween(userID int64, from, to time.Time) (map[string][]time.Time, error) {
 	rows, err := DB.Query(`
 		SELECT checkin_at FROM gym_checkins
-		WHERE checkin_at >= ? AND checkin_at < ?
+		WHERE user_id = ? AND checkin_at >= ? AND checkin_at < ?
 		ORDER BY checkin_at ASC
-	`, from.UTC(), to.UTC())
+	`, userID, from.UTC(), to.UTC())
 	if err != nil {
 		return nil, err
 	}
@@ -40,8 +40,8 @@ func CheckinDatesBetween(from, to time.Time) (map[string][]time.Time, error) {
 	return out, rows.Err()
 }
 
-func CheckinCount() (int, error) {
+func CheckinCount(userID int64) (int, error) {
 	var n int
-	err := DB.QueryRow(`SELECT COUNT(*) FROM gym_checkins`).Scan(&n)
+	err := DB.QueryRow(`SELECT COUNT(*) FROM gym_checkins WHERE user_id = ?`, userID).Scan(&n)
 	return n, err
 }

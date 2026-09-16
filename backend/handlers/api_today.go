@@ -128,7 +128,7 @@ func toBodyJSON(b db.BodyMetric) *bodyMetricJSON {
 }
 
 // buildDaySnapshot assembles the full snapshot for one date.
-func buildDaySnapshot(dateStr string) (daySnapshotJSON, error) {
+func buildDaySnapshot(userID int64, dateStr string) (daySnapshotJSON, error) {
 	t, err := time.ParseInLocation("2006-01-02", dateStr, time.Local)
 	if err != nil {
 		return daySnapshotJSON{}, err
@@ -137,7 +137,7 @@ func buildDaySnapshot(dateStr string) (daySnapshotJSON, error) {
 
 	from := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, time.Local)
 	to := from.AddDate(0, 0, 1)
-	if checkins, err := db.CheckinDatesBetween(from, to); err == nil {
+	if checkins, err := db.CheckinDatesBetween(userID, from, to); err == nil {
 		if times := checkins[dateStr]; len(times) > 0 {
 			g := &gymJSON{}
 			for _, c := range times {
@@ -146,7 +146,7 @@ func buildDaySnapshot(dateStr string) (daySnapshotJSON, error) {
 			out.Gym = g
 		}
 	}
-	if nutri, err := db.NutritionBetween(t, t); err == nil {
+	if nutri, err := db.NutritionBetween(userID, t, t); err == nil {
 		if n, ok := nutri[dateStr]; ok {
 			out.Nutrition = &nutritionJSON{
 				Calories:      nfPtr(n.Calories),
@@ -158,17 +158,17 @@ func buildDaySnapshot(dateStr string) (daySnapshotJSON, error) {
 			}
 		}
 	}
-	if health, err := db.HealthBetween(t, t); err == nil {
+	if health, err := db.HealthBetween(userID, t, t); err == nil {
 		if h, ok := health[dateStr]; ok {
 			out.Health = toHealthJSON(h)
 		}
 	}
-	if body, err := db.BodyBetween(t, t); err == nil {
+	if body, err := db.BodyBetween(userID, t, t); err == nil {
 		if b, ok := body[dateStr]; ok {
 			out.Body = toBodyJSON(b)
 		}
 	}
-	sets, err := db.WorkoutSetsForDay(dateStr)
+	sets, err := db.WorkoutSetsForDay(userID, dateStr)
 	if err == nil && len(sets) > 0 {
 		ws := &workoutSummaryJSON{Groups: toGroupsJSON(sets)}
 		ws.TotalSets = len(sets)
@@ -179,12 +179,12 @@ func buildDaySnapshot(dateStr string) (daySnapshotJSON, error) {
 }
 
 // GET /api/today and GET /api/day?date=
-func APIToday(w http.ResponseWriter, r *http.Request, _ *db.User) {
+func APIToday(w http.ResponseWriter, r *http.Request, u *db.User) {
 	dateStr := r.URL.Query().Get("date")
 	if dateStr == "" {
 		dateStr = time.Now().Format("2006-01-02")
 	}
-	snap, err := buildDaySnapshot(dateStr)
+	snap, err := buildDaySnapshot(u.ID, dateStr)
 	if err != nil {
 		apiErr(w, http.StatusBadRequest, "invalid date")
 		return
@@ -193,13 +193,13 @@ func APIToday(w http.ResponseWriter, r *http.Request, _ *db.User) {
 }
 
 // GET /api/calendar?view=month|week&date=YYYY-MM-DD
-func APICalendar(w http.ResponseWriter, r *http.Request, _ *db.User) {
+func APICalendar(w http.ResponseWriter, r *http.Request, u *db.User) {
 	view := r.URL.Query().Get("view")
 	if view != "week" {
 		view = "month"
 	}
 	anchor := parseAnchor(r.URL.Query().Get("date"))
-	model, err := buildCalendar(view, anchor)
+	model, err := buildCalendar(u.ID, view, anchor)
 	if err != nil {
 		apiErr(w, http.StatusInternalServerError, err.Error())
 		return
@@ -269,7 +269,7 @@ func APICalendar(w http.ResponseWriter, r *http.Request, _ *db.User) {
 	if first != "" {
 		fromT, _ := time.ParseInLocation("2006-01-02", first, time.Local)
 		toT, _ := time.ParseInLocation("2006-01-02", last, time.Local)
-		if sets, err := db.WorkoutSetsBetween(fromT, toT); err == nil {
+		if sets, err := db.WorkoutSetsBetween(u.ID, fromT, toT); err == nil {
 			totalSets = len(sets)
 		}
 	}

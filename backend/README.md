@@ -39,8 +39,37 @@ Two mechanisms, both `X-Api-Key`:
 - **Health ingest** checks the same key on its own, because the iOS Shortcut
   posts from outside the LAN and never logs in.
 
-Passwords are PBKDF2-SHA256. `WithAPIKey` resolves the caller; `WithAdmin`
-additionally requires the admin role.
+Passwords are PBKDF2-SHA256, and the login endpoint allows ten failures per
+client IP per fifteen minutes before returning 429. `WithAPIKey` resolves the
+caller; `WithAdmin` additionally requires the admin role.
+
+## Who owns what
+
+Every table holding a person's data carries a `user_id`, and every query is
+scoped to the caller — two accounts on one server never see each other's
+workouts, weigh-ins, meals, or Apple Health days. Reaching for another user's
+row by id returns 404, not 403, so ids don't leak either. Deleting an account
+cascades to its data.
+
+Two things are deliberately shared: the **exercise library** and its
+**body-part tags**. They're a catalogue rather than personal data, and
+splitting them would mean everyone retyping "Bench Press". Set counts and PRs
+shown against an exercise are still per-user. An exercise can't be deleted
+while *anyone* has sets logged against it.
+
+The **scheduled syncs are the exception**: LA Fitness and Healthifyme
+credentials come from the environment, not from each user, so exactly one
+account can own them — the admin named by `AUTH_USER`. Everyone else logs by
+hand and pushes Apple Health with their own API key, both of which are already
+per-user. Per-user integration credentials would need somewhere safe to keep
+them, which this doesn't have yet.
+
+## Migrations
+
+`PRAGMA user_version` tracks the schema; `migrate()` in `db/db.go` walks it
+forward on boot. Version 2 added `user_id` to every data table and handed
+existing rows to the first admin — on a single-person install, the person whose
+data it always was. Migrations are idempotent, so a restart is a no-op.
 
 ## Routes
 

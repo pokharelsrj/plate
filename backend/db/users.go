@@ -249,3 +249,27 @@ func SeedAdminFromEnv() error {
 	}
 	return err
 }
+
+// SyncOwnerID is the account the scheduled LA Fitness / Healthifyme syncs write
+// to. Those credentials live in the environment, not per user, so exactly one
+// account can own them: the admin named by AUTH_USER, falling back to the
+// oldest admin. Everyone else logs workouts by hand and pushes Apple Health
+// with their own API key, both of which are already per-user.
+func SyncOwnerID() (int64, error) {
+	if email := strings.TrimSpace(os.Getenv("AUTH_USER")); email != "" {
+		if u, err := UserByEmail(email); err == nil && u != nil {
+			return u.ID, nil
+		}
+	}
+	var id int64
+	err := DB.QueryRow(`
+		SELECT id FROM users
+		WHERE role = 'admin' AND is_active = 1
+		ORDER BY id ASC
+		LIMIT 1
+	`).Scan(&id)
+	if err == sql.ErrNoRows {
+		return 0, fmt.Errorf("no admin account to own scheduled syncs")
+	}
+	return id, err
+}

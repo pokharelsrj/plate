@@ -10,22 +10,22 @@ import (
 
 // APITrends serves weight, nutrition, and activity trends over the range in
 // the ?range= query param.
-func APITrends(w http.ResponseWriter, r *http.Request, _ *db.User) {
-	writeJSON(w, http.StatusOK, buildTrendsPayload(parseRange(r)))
+func APITrends(w http.ResponseWriter, r *http.Request, u *db.User) {
+	writeJSON(w, http.StatusOK, buildTrendsPayload(u.ID, parseRange(r)))
 }
 
-func buildTrendsPayload(days int) map[string]any {
+func buildTrendsPayload(userID int64, days int) map[string]any {
 	to := time.Now()
 	from := to.AddDate(0, 0, -days+1)
 
-	checkins, _ := db.CheckinDatesBetween(
+	checkins, _ := db.CheckinDatesBetween(userID,
 		time.Date(from.Year(), from.Month(), from.Day(), 0, 0, 0, 0, time.Local),
 		to.AddDate(0, 0, 1),
 	)
-	nutri, _ := db.NutritionBetween(from, to)
-	health, _ := db.HealthBetween(from, to)
-	body, _ := db.BodyBetween(from, to)
-	workoutSets, _ := db.WorkoutSetsBetween(from, to)
+	nutri, _ := db.NutritionBetween(userID, from, to)
+	health, _ := db.HealthBetween(userID, from, to)
+	body, _ := db.BodyBetween(userID, from, to)
+	workoutSets, _ := db.WorkoutSetsBetween(userID, from, to)
 
 	// Group workout sets by date and by body part
 	setsByBodyPart := map[string]int{}

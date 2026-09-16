@@ -94,10 +94,12 @@ func nullFloat(v any) sql.NullFloat64 {
 	return sql.NullFloat64{Float64: f, Valid: true}
 }
 
-func SyncHealthifyme(ctx context.Context, daysBack int) (int, error) {
+// ownerID is the Plate account the fetched days are written to; hmeUserID is
+// the unrelated account number Healthifyme uses in its own API.
+func SyncHealthifyme(ctx context.Context, ownerID int64, daysBack int) (int, error) {
 	apiKey := os.Getenv("HEALTHIFYME_API_KEY")
-	userID := os.Getenv("HEALTHIFYME_USER_ID")
-	if apiKey == "" || userID == "" {
+	hmeUserID := os.Getenv("HEALTHIFYME_USER_ID")
+	if apiKey == "" || hmeUserID == "" {
 		return 0, errors.New("HEALTHIFYME_API_KEY/HEALTHIFYME_USER_ID not set")
 	}
 	today := time.Now()
@@ -110,14 +112,14 @@ func SyncHealthifyme(ctx context.Context, daysBack int) (int, error) {
 			return count, ctx.Err()
 		default:
 		}
-		n, err := fetchHealthifyDay(ctx, apiKey, userID, d)
+		n, err := fetchHealthifyDay(ctx, apiKey, hmeUserID, d)
 		if err != nil {
 			if firstErr == nil {
 				firstErr = fmt.Errorf("date %s: %w", d, err)
 			}
 			continue
 		}
-		if err := db.UpsertNutrition(*n); err != nil {
+		if err := db.UpsertNutrition(ownerID, *n); err != nil {
 			if firstErr == nil {
 				firstErr = fmt.Errorf("upsert %s: %w", d, err)
 			}

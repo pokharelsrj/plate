@@ -15,7 +15,7 @@ type Source struct {
 	Name     string
 	Backfill int
 	Daily    int
-	Run      func(ctx context.Context, days int) (int, error)
+	Run      func(ctx context.Context, userID int64, days int) (int, error)
 }
 
 var Sources = []Source{
@@ -55,13 +55,21 @@ func RunSource(ctx context.Context, src Source, days int) {
 	}
 	defer setRunning(src.Name, false)
 
-	id, err := db.StartSyncRun(src.Name)
+	// Scheduled syncs use environment credentials, so they belong to one
+	// account; see db.SyncOwnerID.
+	owner, err := db.SyncOwnerID()
+	if err != nil {
+		log.Printf("sync %s: %v", src.Name, err)
+		return
+	}
+
+	id, err := db.StartSyncRun(owner, src.Name)
 	if err != nil {
 		log.Printf("sync %s: start run: %v", src.Name, err)
 		return
 	}
 	log.Printf("sync %s: starting (days=%d)", src.Name, days)
-	n, runErr := src.Run(ctx, days)
+	n, runErr := src.Run(ctx, owner, days)
 	if err := db.FinishSyncRun(id, n, runErr); err != nil {
 		log.Printf("sync %s: finish run: %v", src.Name, err)
 	}
@@ -109,14 +117,19 @@ func StartScheduler() {
 
 func MaybeInitialBackfill() {
 	go func() {
+		owner, err := db.SyncOwnerID()
+		if err != nil {
+			log.Printf("initial backfill: %v", err)
+			return
+		}
 		// LA Fitness: if no checkins, backfill
-		if n, err := db.CheckinCount(); err == nil && n == 0 {
+		if n, err := db.CheckinCount(owner); err == nil && n == 0 {
 			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 			RunSource(ctx, Sources[0], Sources[0].Backfill)
 			cancel()
 		}
 		// Healthifyme: if no nutrition data, backfill
-		if n, err := db.NutritionCount(); err == nil && n == 0 {
+		if n, err := db.NutritionCount(owner); err == nil && n == 0 {
 			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 			RunSource(ctx, Sources[1], Sources[1].Backfill)
 			cancel()

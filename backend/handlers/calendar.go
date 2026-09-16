@@ -49,7 +49,7 @@ func parseAnchor(s string) time.Time {
 	return time.Now()
 }
 
-func buildCalendar(view string, anchor time.Time) (calendarModel, error) {
+func buildCalendar(userID int64, view string, anchor time.Time) (calendarModel, error) {
 	var from, to time.Time
 	if view == "week" {
 		// Week containing anchor, Sunday start
@@ -66,23 +66,23 @@ func buildCalendar(view string, anchor time.Time) (calendarModel, error) {
 		endOffset := 6 - int(lastOfMonth.Weekday())
 		to = lastOfMonth.AddDate(0, 0, endOffset+1)
 	}
-	checkins, err := db.CheckinDatesBetween(from, to)
+	checkins, err := db.CheckinDatesBetween(userID, from, to)
 	if err != nil {
 		return calendarModel{}, err
 	}
-	nutri, err := db.NutritionBetween(from, to.AddDate(0, 0, -1))
+	nutri, err := db.NutritionBetween(userID, from, to.AddDate(0, 0, -1))
 	if err != nil {
 		return calendarModel{}, err
 	}
-	health, err := db.HealthBetween(from, to.AddDate(0, 0, -1))
+	health, err := db.HealthBetween(userID, from, to.AddDate(0, 0, -1))
 	if err != nil {
 		return calendarModel{}, err
 	}
-	body, err := db.BodyBetween(from, to.AddDate(0, 0, -1))
+	body, err := db.BodyBetween(userID, from, to.AddDate(0, 0, -1))
 	if err != nil {
 		return calendarModel{}, err
 	}
-	workoutDays, err := db.WorkoutDaysSet(from, to.AddDate(0, 0, -1))
+	workoutDays, err := db.WorkoutDaysSet(userID, from, to.AddDate(0, 0, -1))
 	if err != nil {
 		return calendarModel{}, err
 	}

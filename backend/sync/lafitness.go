@@ -153,7 +153,7 @@ func fetchCheckins(ctx context.Context, token, user, pass string, from, to time.
 	return out, nil
 }
 
-func SyncLAFitness(ctx context.Context, daysBack int) (int, error) {
+func SyncLAFitness(ctx context.Context, userID int64, daysBack int) (int, error) {
 	user := os.Getenv("LAFITNESS_USER")
 	pass := os.Getenv("LAFITNESS_PASS")
 	if user == "" || pass == "" {
@@ -171,7 +171,7 @@ func SyncLAFitness(ctx context.Context, daysBack int) (int, error) {
 	}
 	count := 0
 	for _, c := range checkins {
-		if err := db.UpsertCheckin(c); err != nil {
+		if err := db.UpsertCheckin(userID, c); err != nil {
 			return count, fmt.Errorf("upsert checkin %d: %w", c.CheckinID, err)
 		}
 		count++

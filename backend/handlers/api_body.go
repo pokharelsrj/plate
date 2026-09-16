@@ -12,12 +12,12 @@ import (
 )
 
 // GET /api/body?days=60
-func APIBody(w http.ResponseWriter, r *http.Request, _ *db.User) {
+func APIBody(w http.ResponseWriter, r *http.Request, u *db.User) {
 	days, _ := strconv.Atoi(r.URL.Query().Get("days"))
 	if days <= 0 {
 		days = 60
 	}
-	history, err := db.RecentBodyMetrics(days)
+	history, err := db.RecentBodyMetrics(u.ID, days)
 	if err != nil {
 		apiErr(w, http.StatusInternalServerError, err.Error())
 		return
@@ -79,13 +79,13 @@ func APIBodySubmit(w http.ResponseWriter, r *http.Request, u *db.User) {
 		}
 	}
 
-	if err := db.UpsertBodyMetric(b); err != nil {
+	if err := db.UpsertBodyMetric(u.ID, b); err != nil {
 		apiErr(w, http.StatusInternalServerError, "save failed: "+err.Error())
 		return
 	}
 	// Return the stored record (upsert may have merged with existing fields)
 	t, _ := time.ParseInLocation("2006-01-02", req.Date, time.Local)
-	stored, _ := db.BodyBetween(t, t)
+	stored, _ := db.BodyBetween(u.ID, t, t)
 	if rec, ok := stored[req.Date]; ok {
 		writeJSON(w, http.StatusOK, toBodyJSON(rec))
 		return

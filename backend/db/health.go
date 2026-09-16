@@ -17,13 +17,13 @@ type HealthDay struct {
 	SleepAwakeH    sql.NullFloat64
 }
 
-func UpsertHealthDay(h HealthDay) error {
+func UpsertHealthDay(userID int64, h HealthDay) error {
 	_, err := DB.Exec(`
 		INSERT INTO health_days
-			(date, steps, active_calories, resting_hr,
+			(user_id, date, steps, active_calories, resting_hr,
 			 sleep_asleep_h, sleep_deep_h, sleep_rem_h, sleep_core_h, sleep_awake_h, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-		ON CONFLICT(date) DO UPDATE SET
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+		ON CONFLICT(user_id, date) DO UPDATE SET
 			steps           = COALESCE(excluded.steps,           steps),
 			active_calories = COALESCE(excluded.active_calories, active_calories),
 			resting_hr      = COALESCE(excluded.resting_hr,      resting_hr),
@@ -33,19 +33,19 @@ func UpsertHealthDay(h HealthDay) error {
 			sleep_core_h    = COALESCE(excluded.sleep_core_h,    sleep_core_h),
 			sleep_awake_h   = COALESCE(excluded.sleep_awake_h,   sleep_awake_h),
 			updated_at      = CURRENT_TIMESTAMP
-	`, h.Date, h.Steps, h.ActiveCalories, h.RestingHR,
+	`, userID, h.Date, h.Steps, h.ActiveCalories, h.RestingHR,
 		h.SleepAsleepH, h.SleepDeepH, h.SleepRemH, h.SleepCoreH, h.SleepAwakeH)
 	return err
 }
 
-func HealthBetween(from, to time.Time) (map[string]HealthDay, error) {
+func HealthBetween(userID int64, from, to time.Time) (map[string]HealthDay, error) {
 	rows, err := DB.Query(`
 		SELECT date, steps, active_calories, resting_hr,
 		       sleep_asleep_h, sleep_deep_h, sleep_rem_h, sleep_core_h, sleep_awake_h
 		FROM health_days
-		WHERE date >= ? AND date <= ?
+		WHERE user_id = ? AND date >= ? AND date <= ?
 		ORDER BY date ASC
-	`, from.Format("2006-01-02"), to.Format("2006-01-02"))
+	`, userID, from.Format("2006-01-02"), to.Format("2006-01-02"))
 	if err != nil {
 		return nil, err
 	}

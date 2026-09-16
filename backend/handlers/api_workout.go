@@ -12,7 +12,7 @@ import (
 )
 
 // GET /api/workout?date=YYYY-MM-DD&exercise_id={id}
-func APIWorkout(w http.ResponseWriter, r *http.Request, _ *db.User) {
+func APIWorkout(w http.ResponseWriter, r *http.Request, u *db.User) {
 	dateStr := r.URL.Query().Get("date")
 	if dateStr == "" {
 		dateStr = time.Now().Format("2006-01-02")
@@ -21,7 +21,7 @@ func APIWorkout(w http.ResponseWriter, r *http.Request, _ *db.User) {
 		apiErr(w, http.StatusBadRequest, "invalid date")
 		return
 	}
-	sets, err := db.WorkoutSetsForDay(dateStr)
+	sets, err := db.WorkoutSetsForDay(u.ID, dateStr)
 	if err != nil {
 		apiErr(w, http.StatusInternalServerError, err.Error())
 		return
@@ -73,7 +73,7 @@ func APIWorkout(w http.ResponseWriter, r *http.Request, _ *db.User) {
 
 		prefillReps := 10
 		var prefillWeight *float64
-		if last, _ := db.LastSetForExercise(eid); last != nil {
+		if last, _ := db.LastSetForExercise(u.ID, eid); last != nil {
 			prefillReps = last.Reps
 			prefillWeight = nfPtr(last.WeightLbs)
 		}
@@ -81,7 +81,7 @@ func APIWorkout(w http.ResponseWriter, r *http.Request, _ *db.User) {
 		active["prefill_weight_lbs"] = prefillWeight
 
 		lastSets := []workoutSetJSON{}
-		if lastSession, _ := db.LastSessionForExercise(eid, dateStr); len(lastSession) > 0 {
+		if lastSession, _ := db.LastSessionForExercise(u.ID, eid, dateStr); len(lastSession) > 0 {
 			active["last_session_date"] = lastSession[0].Date
 			for _, s := range lastSession {
 				lastSets = append(lastSets, toSetJSON(s))
@@ -96,7 +96,7 @@ func APIWorkout(w http.ResponseWriter, r *http.Request, _ *db.User) {
 }
 
 // POST /api/workout/set
-func APIWorkoutAddSet(w http.ResponseWriter, r *http.Request, _ *db.User) {
+func APIWorkoutAddSet(w http.ResponseWriter, r *http.Request, u *db.User) {
 	var req struct {
 		Date       string   `json:"date"`
 		ExerciseID int64    `json:"exercise_id"`
@@ -126,12 +126,12 @@ func APIWorkoutAddSet(w http.ResponseWriter, r *http.Request, _ *db.User) {
 	if req.WeightLbs != nil && *req.WeightLbs > 0 {
 		weight = sql.NullFloat64{Float64: *req.WeightLbs, Valid: true}
 	}
-	id, err := db.AddWorkoutSet(req.Date, req.ExerciseID, req.Reps, weight)
+	id, err := db.AddWorkoutSet(u.ID, req.Date, req.ExerciseID, req.Reps, weight)
 	if err != nil {
 		apiErr(w, http.StatusInternalServerError, "save failed: "+err.Error())
 		return
 	}
-	created, err := db.GetWorkoutSet(id)
+	created, err := db.GetWorkoutSet(u.ID, id)
 	if err != nil || created == nil {
 		apiErr(w, http.StatusInternalServerError, "saved but could not reload set")
 		return
@@ -140,13 +140,13 @@ func APIWorkoutAddSet(w http.ResponseWriter, r *http.Request, _ *db.User) {
 }
 
 // PUT /api/workout/set/{id}
-func APIWorkoutUpdateSet(w http.ResponseWriter, r *http.Request, _ *db.User) {
+func APIWorkoutUpdateSet(w http.ResponseWriter, r *http.Request, u *db.User) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		apiErr(w, http.StatusBadRequest, "bad id")
 		return
 	}
-	existing, err := db.GetWorkoutSet(id)
+	existing, err := db.GetWorkoutSet(u.ID, id)
 	if err != nil {
 		apiErr(w, http.StatusInternalServerError, err.Error())
 		return
@@ -171,23 +171,33 @@ func APIWorkoutUpdateSet(w http.ResponseWriter, r *http.Request, _ *db.User) {
 	if req.WeightLbs != nil && *req.WeightLbs > 0 {
 		weight = sql.NullFloat64{Float64: *req.WeightLbs, Valid: true}
 	}
-	if err := db.UpdateWorkoutSet(id, req.Reps, weight); err != nil {
+	ok, err := db.UpdateWorkoutSet(u.ID, id, req.Reps, weight)
+	if err != nil {
 		apiErr(w, http.StatusInternalServerError, "update failed")
 		return
 	}
-	updated, _ := db.GetWorkoutSet(id)
+	if !ok {
+		apiErr(w, http.StatusNotFound, "set not found")
+		return
+	}
+	updated, _ := db.GetWorkoutSet(u.ID, id)
 	writeJSON(w, http.StatusOK, toSetJSON(*updated))
 }
 
 // DELETE /api/workout/set/{id}
-func APIWorkoutDeleteSet(w http.ResponseWriter, r *http.Request, _ *db.User) {
+func APIWorkoutDeleteSet(w http.ResponseWriter, r *http.Request, u *db.User) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		apiErr(w, http.StatusBadRequest, "bad id")
 		return
 	}
-	if err := db.DeleteWorkoutSet(id); err != nil {
+	ok, err := db.DeleteWorkoutSet(u.ID, id)
+	if err != nil {
 		apiErr(w, http.StatusInternalServerError, "delete failed")
+		return
+	}
+	if !ok {
+		apiErr(w, http.StatusNotFound, "set not found")
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -224,14 +234,14 @@ func toExerciseJSON(e db.Exercise, setCount int, pr *db.ExercisePR) exerciseJSON
 }
 
 // GET /api/exercises
-func APIExercises(w http.ResponseWriter, r *http.Request, _ *db.User) {
+func APIExercises(w http.ResponseWriter, r *http.Request, u *db.User) {
 	exercises, err := db.ListExercises()
 	if err != nil {
 		apiErr(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	counts, _ := db.CountSetsForExercises()
-	prs, _ := db.ExercisePRsAll()
+	counts, _ := db.CountSetsForExercises(u.ID)
+	prs, _ := db.ExercisePRsAll(u.ID)
 	out := make([]exerciseJSON, 0, len(exercises))
 	for _, e := range exercises {
 		var pr *db.ExercisePR
@@ -278,7 +288,7 @@ func APIExerciseCreate(w http.ResponseWriter, r *http.Request, _ *db.User) {
 }
 
 // PUT /api/exercises/{id}
-func APIExerciseUpdate(w http.ResponseWriter, r *http.Request, _ *db.User) {
+func APIExerciseUpdate(w http.ResponseWriter, r *http.Request, u *db.User) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		apiErr(w, http.StatusBadRequest, "bad id")
@@ -301,7 +311,7 @@ func APIExerciseUpdate(w http.ResponseWriter, r *http.Request, _ *db.User) {
 		apiErr(w, http.StatusConflict, "update failed: "+err.Error())
 		return
 	}
-	counts, _ := db.CountSetsForExercises()
+	counts, _ := db.CountSetsForExercises(u.ID)
 	e := db.Exercise{ID: id, Name: req.Name}
 	if req.BodyPart != "" {
 		e.BodyPart = sql.NullString{String: req.BodyPart, Valid: true}

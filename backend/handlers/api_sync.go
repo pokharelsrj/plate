@@ -10,7 +10,7 @@ import (
 )
 
 // GET /api/sync
-func APISyncStatus(w http.ResponseWriter, r *http.Request, _ *db.User) {
+func APISyncStatus(w http.ResponseWriter, r *http.Request, u *db.User) {
 	type sourceJSON struct {
 		Name          string  `json:"name"`
 		Running       bool    `json:"running"`
@@ -21,7 +21,7 @@ func APISyncStatus(w http.ResponseWriter, r *http.Request, _ *db.User) {
 	var sources []sourceJSON
 	appendSource := func(name string, running, pushBased bool) {
 		s := sourceJSON{Name: name, Running: running, PushBased: pushBased}
-		if last, _ := db.LastSuccessfulSync(name); last != nil {
+		if last, _ := db.LastSuccessfulSync(u.ID, name); last != nil {
 			at := last.StartedAt.UTC().Format(time.RFC3339)
 			if last.CompletedAt.Valid {
 				at = last.CompletedAt.Time.UTC().Format(time.RFC3339)
@@ -37,7 +37,7 @@ func APISyncStatus(w http.ResponseWriter, r *http.Request, _ *db.User) {
 	}
 	appendSource("apple_health", false, true)
 
-	runs, _ := db.RecentSyncRuns(20)
+	runs, _ := db.RecentSyncRuns(u.ID, 20)
 	type runJSON struct {
 		ID            int64   `json:"id"`
 		Source        string  `json:"source"`

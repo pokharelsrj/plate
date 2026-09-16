@@ -11,8 +11,8 @@ import (
 
 // APIWorkoutStats serves the lifting analytics — PRs, estimated 1RM,
 // progressions, and weekly set volume by body part.
-func APIWorkoutStats(w http.ResponseWriter, r *http.Request, _ *db.User) {
-	writeJSON(w, http.StatusOK, buildWorkoutStatsPayload(parseRange(r)))
+func APIWorkoutStats(w http.ResponseWriter, r *http.Request, u *db.User) {
+	writeJSON(w, http.StatusOK, buildWorkoutStatsPayload(u.ID, parseRange(r)))
 }
 
 func bodyPartOf(s db.WorkoutSet) string {
@@ -89,8 +89,8 @@ type weeklySets struct {
 
 func round1(v float64) float64 { return math.Round(v*10) / 10 }
 
-func buildWorkoutStatsPayload(days int) map[string]any {
-	allSets, _ := db.AllWorkoutSets()
+func buildWorkoutStatsPayload(userID int64, days int) map[string]any {
+	allSets, _ := db.AllWorkoutSets(userID)
 
 	to := time.Now()
 	from := to.AddDate(0, 0, -days+1)

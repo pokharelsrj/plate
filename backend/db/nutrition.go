@@ -19,13 +19,13 @@ type NutritionDay struct {
 	FibreBudgetG   sql.NullFloat64
 }
 
-func UpsertNutrition(n NutritionDay) error {
+func UpsertNutrition(userID int64, n NutritionDay) error {
 	_, err := DB.Exec(`
 		INSERT INTO nutrition_days
-			(date, calories, calorie_budget, protein_g, protein_budget_g,
+			(user_id, date, calories, calorie_budget, protein_g, protein_budget_g,
 			 carb_g, carb_budget_g, fat_g, fat_budget_g, fibre_g, fibre_budget_g, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-		ON CONFLICT(date) DO UPDATE SET
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+		ON CONFLICT(user_id, date) DO UPDATE SET
 			calories=excluded.calories,
 			calorie_budget=excluded.calorie_budget,
 			protein_g=excluded.protein_g,
@@ -37,19 +37,19 @@ func UpsertNutrition(n NutritionDay) error {
 			fibre_g=excluded.fibre_g,
 			fibre_budget_g=excluded.fibre_budget_g,
 			updated_at=CURRENT_TIMESTAMP
-	`, n.Date, n.Calories, n.CalorieBudget, n.ProteinG, n.ProteinBudgetG,
+	`, userID, n.Date, n.Calories, n.CalorieBudget, n.ProteinG, n.ProteinBudgetG,
 		n.CarbG, n.CarbBudgetG, n.FatG, n.FatBudgetG, n.FibreG, n.FibreBudgetG)
 	return err
 }
 
-func NutritionBetween(from, to time.Time) (map[string]NutritionDay, error) {
+func NutritionBetween(userID int64, from, to time.Time) (map[string]NutritionDay, error) {
 	rows, err := DB.Query(`
 		SELECT date, calories, calorie_budget, protein_g, protein_budget_g,
 		       carb_g, carb_budget_g, fat_g, fat_budget_g, fibre_g, fibre_budget_g
 		FROM nutrition_days
-		WHERE date >= ? AND date <= ?
+		WHERE user_id = ? AND date >= ? AND date <= ?
 		ORDER BY date ASC
-	`, from.Format("2006-01-02"), to.Format("2006-01-02"))
+	`, userID, from.Format("2006-01-02"), to.Format("2006-01-02"))
 	if err != nil {
 		return nil, err
 	}
@@ -66,8 +66,8 @@ func NutritionBetween(from, to time.Time) (map[string]NutritionDay, error) {
 	return out, rows.Err()
 }
 
-func NutritionCount() (int, error) {
+func NutritionCount(userID int64) (int, error) {
 	var n int
-	err := DB.QueryRow(`SELECT COUNT(*) FROM nutrition_days`).Scan(&n)
+	err := DB.QueryRow(`SELECT COUNT(*) FROM nutrition_days WHERE user_id = ?`, userID).Scan(&n)
 	return n, err
 }

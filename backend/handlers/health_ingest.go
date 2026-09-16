@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 
 	"plate/db"
 )
@@ -27,13 +26,14 @@ type healthIngestReq struct {
 }
 
 func HealthIngest(w http.ResponseWriter, r *http.Request) {
-	// Accept any active user's API key; falls back to the legacy HEALTH_API_KEY env match.
-	if apiUser(r) == nil {
-		legacy := os.Getenv("HEALTH_API_KEY")
-		if legacy == "" || r.Header.Get("X-Api-Key") != legacy {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
+	// Any active user's API key works, and apiUser also maps the legacy
+	// HEALTH_API_KEY onto the seeded admin. The days are filed against
+	// whichever account the key belongs to, so two people can each point a
+	// Shortcut here without their data mixing.
+	u := apiUser(r)
+	if u == nil {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
 	}
 
 	var req healthIngestReq
@@ -46,7 +46,7 @@ func HealthIngest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, _ := db.StartSyncRun("apple_health")
+	id, _ := db.StartSyncRun(u.ID, "apple_health")
 	count := 0
 	var firstErr error
 	for _, d := range req.Days {
@@ -64,7 +64,7 @@ func HealthIngest(w http.ResponseWriter, r *http.Request) {
 			SleepCoreH:     nullFloat(d.SleepCoreH),
 			SleepAwakeH:    nullFloat(d.SleepAwakeH),
 		}
-		if err := db.UpsertHealthDay(h); err != nil {
+		if err := db.UpsertHealthDay(u.ID, h); err != nil {
 			if firstErr == nil {
 				firstErr = fmt.Errorf("upsert %s: %w", d.Date, err)
 			}

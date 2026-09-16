@@ -15,11 +15,11 @@ type SyncRun struct {
 	ErrorMessage  sql.NullString
 }
 
-func StartSyncRun(source string) (int64, error) {
+func StartSyncRun(userID int64, source string) (int64, error) {
 	res, err := DB.Exec(`
-		INSERT INTO sync_runs (source, started_at, status)
-		VALUES (?, ?, 'running')
-	`, source, time.Now().UTC())
+		INSERT INTO sync_runs (user_id, source, started_at, status)
+		VALUES (?, ?, ?, 'running')
+	`, userID, source, time.Now().UTC())
 	if err != nil {
 		return 0, err
 	}
@@ -41,13 +41,14 @@ func FinishSyncRun(id int64, records int, err error) error {
 	return e
 }
 
-func RecentSyncRuns(limit int) ([]SyncRun, error) {
+func RecentSyncRuns(userID int64, limit int) ([]SyncRun, error) {
 	rows, err := DB.Query(`
 		SELECT id, source, started_at, completed_at, status, records_synced, error_message
 		FROM sync_runs
+		WHERE user_id = ?
 		ORDER BY started_at DESC
 		LIMIT ?
-	`, limit)
+	`, userID, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -63,14 +64,14 @@ func RecentSyncRuns(limit int) ([]SyncRun, error) {
 	return out, rows.Err()
 }
 
-func LastSuccessfulSync(source string) (*SyncRun, error) {
+func LastSuccessfulSync(userID int64, source string) (*SyncRun, error) {
 	row := DB.QueryRow(`
 		SELECT id, source, started_at, completed_at, status, records_synced, error_message
 		FROM sync_runs
-		WHERE source = ? AND status = 'success'
+		WHERE user_id = ? AND source = ? AND status = 'success'
 		ORDER BY started_at DESC
 		LIMIT 1
-	`, source)
+	`, userID, source)
 	var r SyncRun
 	if err := row.Scan(&r.ID, &r.Source, &r.StartedAt, &r.CompletedAt, &r.Status, &r.RecordsSynced, &r.ErrorMessage); err != nil {
 		if err == sql.ErrNoRows {
