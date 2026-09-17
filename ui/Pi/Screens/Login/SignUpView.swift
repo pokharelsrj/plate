@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Self-service account creation, shown only when the server reports that
 /// sign-up is enabled. The invite code is the server operator's gate — without
@@ -137,7 +138,7 @@ struct SignUpView: View {
                                          inviteCode: inviteCode.trimmingCharacters(in: .whitespaces),
                                          baseURL: url)
                 dismiss()
-            } catch let APIError.server(message) {
+            } catch APIError.server(let message) {
                 errorMessage = message
             } catch APIError.forbidden {
                 errorMessage = "That invite code isn't valid for this server."
