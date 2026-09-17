@@ -29,6 +29,7 @@ func main() {
 
 	// Unauthenticated: sign-in and a liveness probe.
 	mux.HandleFunc("POST /api/auth/login", handlers.APILogin)
+	mux.HandleFunc("POST /api/auth/signup", handlers.APISignup)
 	mux.HandleFunc("GET /api/health/ping", handlers.APIPing)
 
 	// Apple Health ingestion — carries its own X-Api-Key check, because the
@@ -40,6 +41,7 @@ func main() {
 	mux.HandleFunc("GET /api/me", handlers.WithAPIKey(handlers.APIMe))
 	mux.HandleFunc("PUT /api/me", handlers.WithAPIKey(handlers.APIMeUpdate))
 	mux.HandleFunc("POST /api/me/rotate-key", handlers.WithAPIKey(handlers.APIRotateKey))
+	mux.HandleFunc("DELETE /api/me", handlers.WithAPIKey(handlers.APIMeDelete))
 
 	mux.HandleFunc("GET /api/admin/users", handlers.WithAdmin(handlers.APIAdminListUsers))
 	mux.HandleFunc("POST /api/admin/users", handlers.WithAdmin(handlers.APIAdminCreateUser))

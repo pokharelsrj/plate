@@ -60,7 +60,7 @@ struct TodayWidgetView: View {
                 Text("π")
                     .font(.system(size: 28, weight: .bold, design: .rounded))
                     .foregroundStyle(Color("PiPrimary"))
-                Text("Open Pi to load today")
+                Text("Open Plate to load today")
                     .font(.system(size: 12))
                     .foregroundStyle(Color("PiTextMuted"))
                     .multilineTextAlignment(.center)

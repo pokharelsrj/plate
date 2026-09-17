@@ -7,20 +7,22 @@ struct LoginView: View {
     @State private var password = ""
     @State private var baseURLString = ""
     @State private var showAdvanced = false
-    @State private var showNoAccountInfo = false
+    @State private var showSignUp = false
+    @State private var signupOffered = false
     @State private var isLoading = false
     @State private var errorMessage: String?
 
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                VStack(spacing: 8) {
-                    Text("π")
-                        .font(.system(size: 64, weight: .bold, design: .rounded))
-                        .foregroundStyle(Color.piPrimary)
-                    Text("Sign in to your Pi")
+                VStack(spacing: 10) {
+                    PlateMark()
+                    Text("Plate")
                         .font(.piTitle)
                         .foregroundStyle(Color.piText)
+                    Text("Sign in to your server")
+                        .font(.piSubheadline)
+                        .foregroundStyle(Color.piTextMuted)
                 }
                 .padding(.top, 60)
 
@@ -79,11 +81,16 @@ struct LoginView: View {
                 .disabled(isLoading || email.isEmpty || password.isEmpty)
                 .opacity(email.isEmpty || password.isEmpty ? 0.5 : 1)
 
-                Button("Don't have an account?") {
-                    showNoAccountInfo = true
+                if signupOffered {
+                    Button("Create an account") { showSignUp = true }
+                        .font(.piSubheadline)
+                        .foregroundStyle(Color.piPrimary)
+                } else {
+                    Text("Accounts on this server are created by its admin.")
+                        .font(.piCaption)
+                        .foregroundStyle(Color.piTextMuted)
+                        .multilineTextAlignment(.center)
                 }
-                .font(.piSubheadline)
-                .foregroundStyle(Color.piTextMuted)
             }
             .padding(24)
         }
@@ -93,10 +100,9 @@ struct LoginView: View {
             email = session.lastEmail
             baseURLString = session.baseURL.absoluteString
         }
-        .alert("Private service", isPresented: $showNoAccountInfo) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("This is a private service. Ask the admin to create your account.")
+        .task(id: baseURLString) { await probeSignup() }
+        .sheet(isPresented: $showSignUp) {
+            SignUpView(baseURLString: baseURLString)
         }
     }
 
@@ -126,9 +132,40 @@ struct LoginView: View {
             } catch APIError.unauthorized {
                 errorMessage = "Invalid credentials"
             } catch {
-                errorMessage = "Can't reach Pi at \(url.absoluteString) — \(error.localizedDescription)"
+                errorMessage = "Can't reach the server at \(url.absoluteString) — \(error.localizedDescription)"
             }
             isLoading = false
         }
+    }
+
+    /// Asks the server whether it takes sign-ups, so the app never offers a
+    /// button the server will refuse. Any failure just hides it.
+    private func probeSignup() async {
+        guard let url = URL(string: baseURLString.trimmingCharacters(in: .whitespaces)),
+              url.scheme != nil else {
+            signupOffered = false
+            return
+        }
+        let ping = try? await APIClient.ping(baseURL: url)
+        signupOffered = ping?.signupEnabled ?? false
+    }
+}
+
+/// The app icon's mark: a plate rim with a hub, which reads as either the
+/// dinner kind or the kind that goes on a bar.
+private struct PlateMark: View {
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.piPrimary, lineWidth: 11)
+                .frame(width: 74, height: 74)
+            Circle()
+                .stroke(Color.piPrimary.opacity(0.55), lineWidth: 2)
+                .frame(width: 50, height: 50)
+            Circle()
+                .stroke(Color.piPrimary, lineWidth: 2)
+                .frame(width: 12, height: 12)
+        }
+        .accessibilityHidden(true)
     }
 }

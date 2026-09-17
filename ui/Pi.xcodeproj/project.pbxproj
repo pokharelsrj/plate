@@ -29,6 +29,7 @@
 		7679D312095CCF9AC51554BF /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBDED5EF96888039422E275 /* APIClient.swift */; };
 		7B33ACD0F9B848809D636BC2 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA304B4AA1D9713060AC251 /* Models.swift */; };
 		7E6AD94C23AF538217C97246 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5892F3126C2C77D3A25401CD /* Assets.xcassets */; };
+		86CA23AAC3F71E665E815E00 /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A9E098D612BCAF73AE5CFC7 /* SignUpView.swift */; };
 		8CBE21BBFE7E6EBE184F505A /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA304B4AA1D9713060AC251 /* Models.swift */; };
 		8CE3E2A353CE1FE2C17DC2D0 /* RestTimerIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA7304912303491D1BD0FF77 /* RestTimerIntents.swift */; };
 		97E68723B646914ECA6256E5 /* ExercisesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABED6248FAB50830A18737C6 /* ExercisesView.swift */; };
@@ -105,6 +106,7 @@
 /* Begin PBXFileReference section */
 		016288F73586C2E6F1B8202A /* SharedCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedCache.swift; sourceTree = "<group>"; };
 		0626CBA767E8B1CDE2EFB42B /* Pi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0A9E098D612BCAF73AE5CFC7 /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
 		0E11FD00832ECD62AA2F2588 /* WatchAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAPI.swift; sourceTree = "<group>"; };
 		1694135E7A681892C79CFF22 /* BodyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyView.swift; sourceTree = "<group>"; };
 		1CEB6585F1292AD76ADD57BE /* GymStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymStepper.swift; sourceTree = "<group>"; };
@@ -356,6 +358,7 @@
 			isa = PBXGroup;
 			children = (
 				F4FC9D89F97274D12DFAA79C /* LoginView.swift */,
+				0A9E098D612BCAF73AE5CFC7 /* SignUpView.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -568,6 +571,7 @@
 				1407A75CBA0D55D64DC5A962 /* Session.swift in Sources */,
 				03803676527CEC358A2D576C /* SettingsView.swift in Sources */,
 				F75DD0C5A130E2541146A8BE /* SharedCache.swift in Sources */,
+				86CA23AAC3F71E665E815E00 /* SignUpView.swift in Sources */,
 				D119675595D76ABEF7B80ED4 /* SyncStatusView.swift in Sources */,
 				1007788DA94DF734CA5F45B8 /* Theme.swift in Sources */,
 				9FEF15C11D8D6A8C55CFC9E7 /* Toast.swift in Sources */,

@@ -70,7 +70,7 @@ struct LockScreenView: View {
             Text("π")
                 .font(.system(size: 64, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.piPrimary)
-            Text("Pi is locked")
+            Text("Plate is locked")
                 .font(.piTitle)
                 .foregroundStyle(Color.piText)
             Button {

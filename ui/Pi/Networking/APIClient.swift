@@ -112,6 +112,22 @@ struct APIClient {
                                         body: ["email": email, "password": password])
     }
 
+    /// Creates an account on a server that has sign-up switched on, and
+    /// returns the same payload as login so the caller can go straight in.
+    static func signup(baseURL: URL, email: String, password: String,
+                       displayName: String, inviteCode: String) async throws -> LoginResponse {
+        struct Body: Encodable {
+            let email: String
+            let password: String
+            let displayName: String
+            let inviteCode: String
+        }
+        let client = APIClient(baseURL: baseURL, apiKey: nil)
+        return try await client.request("/api/auth/signup", method: "POST",
+                                        body: Body(email: email, password: password,
+                                                   displayName: displayName, inviteCode: inviteCode))
+    }
+
     static func ping(baseURL: URL) async throws -> PingResponse {
         let client = APIClient(baseURL: baseURL, apiKey: nil)
         return try await client.request("/api/health/ping")
@@ -133,6 +149,12 @@ struct APIClient {
 
     func rotateKey() async throws -> RotateKeyResponse {
         try await request("/api/me/rotate-key", method: "POST")
+    }
+
+    /// Closes the signed-in account. The server cascades the delete, so every
+    /// workout, weigh-in, health day, meal and check-in goes with it.
+    func deleteAccount() async throws {
+        try await requestVoid("/api/me", method: "DELETE")
     }
 
     // MARK: - Today / Calendar

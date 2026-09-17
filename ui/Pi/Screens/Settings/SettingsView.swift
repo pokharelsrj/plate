@@ -13,6 +13,8 @@ struct SettingsView: View {
     @State private var showSignOutConfirm = false
     @State private var toast: Toast?
     @State private var healthSyncing = false
+    @State private var showDeleteConfirm = false
+    @State private var isDeleting = false
 
     var body: some View {
         NavigationStack {
@@ -27,11 +29,20 @@ struct SettingsView: View {
                 if session.user?.isAdmin == true {
                     adminSection
                 }
+                dangerZoneSection
             }
             .scrollContentBackground(.hidden)
             .background(Color.piBg)
             .navigationTitle("Settings")
             .toast($toast)
+            .confirmationDialog("Delete your account?", isPresented: $showDeleteConfirm, titleVisibility: .visible) {
+                Button("Delete everything", role: .destructive) {
+                    Task { await deleteAccount() }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Your account and all of its data will be permanently deleted. This can't be undone.")
+            }
             .confirmationDialog("Rotate API key?", isPresented: $showRotateConfirm, titleVisibility: .visible) {
                 Button("Rotate key", role: .destructive) {
                     Task { await rotateKey() }
@@ -156,8 +167,6 @@ struct SettingsView: View {
 
     private var diagnosticsSection: some View {
         Section("Diagnostics") {
-            LabeledContent("Server", value: session.baseURL.absoluteString)
-                .font(.piSubheadline)
             LabeledContent("Version",
                            value: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—")
             LabeledContent("Widget cache", value: widgetCacheStatus)
@@ -177,6 +186,29 @@ struct SettingsView: View {
         return "updated \(cached.fetchedAt.formatted(.relative(presentation: .named)))"
     }
 
+    /// Apple requires in-app account deletion wherever accounts can be
+    /// created, and it's the right thing regardless: the server cascades the
+    /// delete, so nothing of the account survives it.
+    private var dangerZoneSection: some View {
+        Section {
+            Button(role: .destructive) {
+                showDeleteConfirm = true
+            } label: {
+                HStack {
+                    Label("Delete my account", systemImage: "trash")
+                    if isDeleting {
+                        Spacer()
+                        ProgressView()
+                    }
+                }
+            }
+            .disabled(isDeleting)
+        } footer: {
+            Text("Permanently deletes your account and everything in it — workouts, weigh-ins, Apple Health days, meals and check-ins. This can't be undone.")
+        }
+        .listRowBackground(Color.piBg2)
+    }
+
     private var adminSection: some View {
         Section("Admin") {
             NavigationLink {
@@ -194,6 +226,19 @@ struct SettingsView: View {
     }
 
     // MARK: - Actions
+
+    @MainActor
+    private func deleteAccount() async {
+        isDeleting = true
+        defer { isDeleting = false }
+        do {
+            // On success the session clears itself and the app drops to the
+            // login screen, so there's nothing to show afterwards.
+            try await session.deleteAccount()
+        } catch {
+            toast = Toast(message: error.localizedDescription, isError: true)
+        }
+    }
 
     private func rotateKey() async {
         do {

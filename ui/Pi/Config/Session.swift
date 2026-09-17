@@ -80,6 +80,30 @@ final class Session {
         UserDefaults.standard.set(baseURL.absoluteString, forKey: Self.baseURLKey)
     }
 
+    /// Creates an account and signs straight into it.
+    @MainActor
+    func signUp(email: String, password: String, displayName: String,
+                inviteCode: String, baseURL: URL) async throws {
+        let resp = try await APIClient.signup(baseURL: baseURL, email: email, password: password,
+                                              displayName: displayName, inviteCode: inviteCode)
+        self.baseURL = baseURL
+        apiKey = resp.apiKey
+        Keychain.apiKey = resp.apiKey
+        setUser(resp.user)
+        lastEmail = email
+        sessionExpired = false
+        UserDefaults.standard.set(baseURL.absoluteString, forKey: Self.baseURLKey)
+    }
+
+    /// Deletes the account server-side, then clears local state. Throws
+    /// without signing out if the server refuses — deleting the last admin,
+    /// for instance.
+    @MainActor
+    func deleteAccount() async throws {
+        try await client.deleteAccount()
+        signOut()
+    }
+
     @MainActor
     func signOut() {
         apiKey = nil

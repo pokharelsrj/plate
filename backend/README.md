@@ -43,6 +43,22 @@ Passwords are PBKDF2-SHA256, and the login endpoint allows ten failures per
 client IP per fifteen minutes before returning 429. `WithAPIKey` resolves the
 caller; `WithAdmin` additionally requires the admin role.
 
+## Accounts
+
+Three ways in, depending on how open you want the server to be:
+
+- **Seeded admin** — created on first boot from `AUTH_USER` / `AUTH_PASS`.
+- **Admin-created** — Settings → Admin → Manage users, in the app.
+- **Self-service sign-up** — off unless you set `SIGNUP_INVITE_CODE`. With it
+  set, `POST /api/auth/signup` accepts anyone presenting that code and the app
+  shows a "Create an account" button; the endpoint shares the login rate
+  limiter, and the code is compared in constant time. Sign-ups are always role
+  `user` — admins are promoted by other admins, never self-assigned.
+
+Anyone can close their own account with `DELETE /api/me`, which cascades
+through every table. The last remaining admin is refused, so a server can't be
+left with nobody able to manage it.
+
 ## Who owns what
 
 Every table holding a person's data carries a `user_id`, and every query is
@@ -92,10 +108,12 @@ data it always was. Migrations are idempotent, so a restart is a no-op.
 | Method | Path | |
 |---|---|---|
 | `POST` | `/api/auth/login` | email + password → user + API key |
-| `GET` | `/api/health/ping` | liveness, unauthenticated |
+| `POST` | `/api/auth/signup` | self-service sign-up; needs `SIGNUP_INVITE_CODE` |
+| `GET` | `/api/health/ping` | liveness + whether sign-up is enabled, unauthenticated |
 | `POST` | `/api/health/ingest` | Apple Health payload from the Shortcut |
 | `GET` `PUT` | `/api/me` | profile (display name, date of birth, sex) |
 | `POST` | `/api/me/rotate-key` | issue a new API key |
+| `DELETE` | `/api/me` | close your own account, cascading to all its data |
 | `GET` `POST` | `/api/admin/users` | list / create — admin only |
 | `PUT` `DELETE` | `/api/admin/users/{id}` | update / delete — admin only |
 | `POST` | `/api/admin/users/{id}/reset-password` | admin only |

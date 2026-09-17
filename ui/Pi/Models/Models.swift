@@ -26,6 +26,9 @@ struct PingResponse: Codable {
     let ok: Bool
     let version: String?
     let serverTime: String?
+    /// Whether this server accepts self-service sign-up. Older servers omit
+    /// it, so treat a missing value as "no".
+    let signupEnabled: Bool?
 }
 
 struct RotateKeyResponse: Codable {

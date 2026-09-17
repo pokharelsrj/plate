@@ -91,7 +91,7 @@ struct LoadableView<Value, Content: View>: View {
             content(value)
         } else if let error {
             ContentUnavailableView {
-                Label("Can't reach Pi", systemImage: "wifi.exclamationmark")
+                Label("Can't reach the server", systemImage: "wifi.exclamationmark")
             } description: {
                 Text(error)
             } actions: {
