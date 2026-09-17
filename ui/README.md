@@ -57,12 +57,17 @@ up on the next regenerate (and adding them in Xcode directly works fine too).
 
 ## Signing in
 
-- Default base URL is `https://api.srijanpokharel.com`. Change it under
-  **Advanced** on the login screen — point it at your own server, or
-  `http://localhost:8080` against a backend running on your Mac.
-- Sign in with the email and password of a user on the server. The first
+The server address is fixed at `https://api.srijanpokharel.com` — there's no
+in-app override, because the shipped app is a client for one instance rather
+than a general-purpose one. If you're hacking on this and want a different
+backend, change `Session.defaultBaseURL`, or set `PI_TEST_BASE_URL` in the
+scheme's environment for a DEBUG build.
+
+- Sign in with the email and password of a user on that server. The first
   account is seeded from the backend's `AUTH_USER` / `AUTH_PASS`.
-- More accounts: Settings → Admin → Manage users (admin only).
+- **Create an account** appears on the sign-in screen when the server has
+  `SIGNUP_INVITE_CODE` set; it needs that code.
+- Admins can also add accounts under Settings → Admin → Manage users.
 
 The API key comes back from login and lives in the Keychain. Rotate it from
 Settings if you ever need to.

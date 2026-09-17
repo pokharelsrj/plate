@@ -1,5 +1,9 @@
 # Plate
 
+<p align="center">
+  <img src="docs/assets/plates-poster.png" alt="Plate — fuel, move, track, grow" width="620">
+</p>
+
 Two things go on a plate: what you lift, and what you eat. This tracks both, on
 hardware you own, with nobody's analytics team in the middle.
 
@@ -49,12 +53,17 @@ sets.)
 ```
 backend/    Go + SQLite. A JSON API and two scheduled syncs. No web UI.
 ui/         SwiftUI app, watchOS companion, widget + Live Activity.
+docs/       Privacy policy (GitHub Pages) and brand assets.
 ```
 
 That's the whole split. The backend speaks JSON and nothing else; the app is
 the only front end. There used to be a server-rendered web UI in here too — it
 was fine, it was green-on-black and very 1983 — but the app outgrew it and
 maintaining two front ends for an audience of one is a hobby, not a feature.
+
+The shipped app points at one server and has no address field, so running the
+backend yourself means editing `Session.defaultBaseURL` and building your own
+copy. Everything you'd need is here and self-contained.
 
 ## Getting it running
 
@@ -77,16 +86,17 @@ xcodegen generate
 open Pi.xcodeproj
 ```
 
-Point it at your server on the login screen under **Advanced**, sign in, done.
-[`ui/README.md`](ui/README.md) covers signing, which is the annoying part.
+Sign in and you're done. [`ui/README.md`](ui/README.md) covers code signing,
+which is the annoying part, and how to repoint the app at your own backend.
 
 ## Fair warnings
 
-- **Keep it on your LAN or behind a VPN.** The one exception is the Apple
-  Health ingest endpoint, which needs to be reachable from anywhere;
-  [`backend/Caddyfile`](backend/Caddyfile) shows how to expose exactly that and
-  nothing else. This is not hardened for the open internet and does not pretend
-  to be.
+- **Think before you expose it.** The reference deployment puts `/api/*` behind
+  HTTPS on a public hostname, because an app on a phone has to reach it from
+  anywhere. That's defended by per-user API keys, PBKDF2 password hashing and a
+  rate limiter on login — enough for a handful of accounts, not enough to call
+  it hardened. [`backend/Caddyfile`](backend/Caddyfile) shows the proxy, and
+  leaving `SIGNUP_INVITE_CODE` unset keeps sign-up closed entirely.
 - **The syncs talk to undocumented endpoints.** LA Fitness and Healthifyme did
   not ask to be integrated with. They can and will break.
 - **It's a personal project**, published because the pieces might save someone

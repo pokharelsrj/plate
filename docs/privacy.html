@@ -22,30 +22,31 @@
 </head>
 <body>
 
+<img src="assets/plates-logo.png" alt="" width="96" height="96">
 <h1>Plate — Privacy Policy</h1>
 <p class="sub">Last updated 16 September 2026</p>
 
-<p>Plate is a personal health and training log. It is a <strong>client for a server
-you choose</strong>: the app stores almost nothing itself and sends your data to
-whichever backend you point it at.</p>
+<p>Plate is a personal health and training log. The app stores almost nothing
+itself: what you record is sent to a server and kept there.</p>
 
-<h2>Who operates the server</h2>
+<h2>Where your data goes</h2>
 
 <p>This matters more than anything else on this page, because it decides who can
 see your data.</p>
 
-<ul>
-  <li><strong>If you use the default server</strong> (<code>api.srijanpokharel.com</code>),
-    it is operated privately by Srijan Pokharel and runs on hardware in a private
-    residence. As its administrator, he has technical access to the database,
-    including your entries.</li>
-  <li><strong>If you run your own server</strong> — the backend is open source and
-    self-hosting is the intended setup — your data goes only to your machine, and
-    nobody else can read it. Change the address under <strong>Advanced</strong> on
-    the sign-in screen.</li>
-</ul>
+<p>The app talks to <strong>one server and only one</strong>:
+<code>api.srijanpokharel.com</code>. There is no setting to change it. That server
+is operated privately by Srijan Pokharel and runs on hardware in a private
+residence. <strong>As its administrator, he has technical access to the database,
+including your entries.</strong> Use the app only if you are comfortable with
+that.</p>
 
-<p>Accounts are created by an administrator; there is no public sign-up.</p>
+<p>The server software is open source, so you can read exactly what it does, and
+run your own copy if you'd rather — but that requires building the app yourself
+from source, because the shipped version has no address field.</p>
+
+<p>Accounts are created either by the administrator or by signing up with an
+invite code he issues. There is no open public sign-up.</p>
 
 <h2>What is collected</h2>
 
@@ -82,9 +83,7 @@ it; the Apple Health figures simply stop updating.</p>
     another's.</li>
   <li>Passwords are stored only as PBKDF2-SHA256 hashes, never in plain text.</li>
   <li>Your API key is held in the iOS Keychain on your device.</li>
-  <li>Traffic to the default server uses HTTPS. If you point the app at a server on
-    your own network, that connection may be plain HTTP — it never leaves your
-    network.</li>
+  <li>All traffic uses HTTPS.</li>
   <li>A small cache of recent figures is shared with the widget and Apple Watch app
     through a private app group on your device.</li>
 </ul>
@@ -106,8 +105,9 @@ it; the Apple Health figures simply stop updating.</p>
 workouts, body measurements, Apple Health days, nutrition and check-ins — in the
 same operation.</p>
 
-<p>To have your account and its data deleted from the default server, email the
-address below. If you run your own server, you control this directly.</p>
+<p>You can delete your own account at any time from <strong>Settings &rarr; Delete
+my account</strong> in the app, which removes everything in one operation. If you
+would rather it were done for you, email the address below.</p>
 
 <h2>Children</h2>
 

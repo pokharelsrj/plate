@@ -5,8 +5,6 @@ struct LoginView: View {
 
     @State private var email = ""
     @State private var password = ""
-    @State private var baseURLString = ""
-    @State private var showAdvanced = false
     @State private var showSignUp = false
     @State private var signupOffered = false
     @State private var isLoading = false
@@ -45,19 +43,6 @@ struct LoginView: View {
                         .padding(14)
                         .background(Color.piBg3)
                         .clipShape(RoundedRectangle(cornerRadius: 8))
-
-                    DisclosureGroup("Advanced", isExpanded: $showAdvanced) {
-                        TextField("Base URL", text: $baseURLString)
-                            .keyboardType(.URL)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .padding(14)
-                            .background(Color.piBg3)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 8)
-                    }
-                    .font(.piSubheadline)
-                    .foregroundStyle(Color.piTextMuted)
                 }
 
                 if let errorMessage {
@@ -96,14 +81,9 @@ struct LoginView: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .background(Color.piBg)
-        .onAppear {
-            email = session.lastEmail
-            baseURLString = session.baseURL.absoluteString
-        }
-        .task(id: baseURLString) { await probeSignup() }
-        .sheet(isPresented: $showSignUp) {
-            SignUpView(baseURLString: baseURLString)
-        }
+        .onAppear { email = session.lastEmail }
+        .task { await probeSignup() }
+        .sheet(isPresented: $showSignUp) { SignUpView() }
     }
 
     private func banner(_ text: String, color: Color) -> some View {
@@ -117,22 +97,16 @@ struct LoginView: View {
     }
 
     private func signIn() {
-        guard let url = URL(string: baseURLString.trimmingCharacters(in: .whitespaces)),
-              url.scheme != nil else {
-            errorMessage = "Invalid base URL."
-            return
-        }
         isLoading = true
         errorMessage = nil
         Task {
             do {
                 try await session.login(email: email.trimmingCharacters(in: .whitespaces),
-                                        password: password,
-                                        baseURL: url)
+                                        password: password)
             } catch APIError.unauthorized {
                 errorMessage = "Invalid credentials"
             } catch {
-                errorMessage = "Can't reach the server at \(url.absoluteString) — \(error.localizedDescription)"
+                errorMessage = "Can't reach the server — \(error.localizedDescription)"
             }
             isLoading = false
         }
@@ -141,31 +115,19 @@ struct LoginView: View {
     /// Asks the server whether it takes sign-ups, so the app never offers a
     /// button the server will refuse. Any failure just hides it.
     private func probeSignup() async {
-        guard let url = URL(string: baseURLString.trimmingCharacters(in: .whitespaces)),
-              url.scheme != nil else {
-            signupOffered = false
-            return
-        }
-        let ping = try? await APIClient.ping(baseURL: url)
+        let ping = try? await APIClient.ping(baseURL: session.baseURL)
         signupOffered = ping?.signupEnabled ?? false
     }
 }
 
-/// The app icon's mark: a plate rim with a hub, which reads as either the
-/// dinner kind or the kind that goes on a bar.
+/// The logo: one half dinner plate, one half bumper plate — the two things the
+/// app tracks, and where the name comes from.
 private struct PlateMark: View {
     var body: some View {
-        ZStack {
-            Circle()
-                .stroke(Color.piPrimary, lineWidth: 11)
-                .frame(width: 74, height: 74)
-            Circle()
-                .stroke(Color.piPrimary.opacity(0.55), lineWidth: 2)
-                .frame(width: 50, height: 50)
-            Circle()
-                .stroke(Color.piPrimary, lineWidth: 2)
-                .frame(width: 12, height: 12)
-        }
-        .accessibilityHidden(true)
+        Image("PlateLogo")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 96, height: 96)
+            .accessibilityHidden(true)
     }
 }

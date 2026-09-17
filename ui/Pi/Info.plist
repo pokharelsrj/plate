@@ -27,19 +27,12 @@
 	<string>1</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
-	</dict>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Face ID unlocks the app when the lock is enabled in Settings.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Reads steps, sleep, active energy, and resting heart rate so Plate can log them alongside your workouts and meals.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Plate does not write health data.</string>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Plate connects to your own server, which is usually on your home network.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>UIBackgroundModes</key>

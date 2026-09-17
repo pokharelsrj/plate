@@ -7,18 +7,22 @@ import Observation
 final class Session {
     private(set) var user: User?
     private(set) var apiKey: String?
-    var baseURL: URL
+
+    /// Always the one server. Kept as a property rather than used inline so the
+    /// DEBUG test hook below can still point a simulator somewhere else.
+    private(set) var baseURL = Session.defaultBaseURL
 
     /// Set when the saved key was rejected — shown as a banner on the login screen.
     var sessionExpired = false
 
-    /// Where the app looks for its backend out of the box. Override it under
-    /// "Advanced" on the login screen to point at your own server — running
-    /// one is the expected setup; see the backend/ directory.
+    /// The only server this app talks to.
     static let defaultBaseURL = URL(string: "https://api.srijanpokharel.com")!
 
     private static let userKey = "session.user"
-    private static let baseURLKey = "session.baseURL"
+    /// No longer written. Read once at launch only to delete it — builds before
+    /// the address became fixed persisted a LAN URL here, and with the override
+    /// gone there'd be no way to escape a stale one.
+    private static let legacyBaseURLKey = "session.baseURL"
     private static let lastEmailKey = "session.lastEmail"
 
     var isAuthenticated: Bool { apiKey != nil }
@@ -31,9 +35,7 @@ final class Session {
     /// sync) that runs without a live Session. Returns nil if not signed in.
     static func backgroundClient() -> APIClient? {
         guard let key = Keychain.apiKey else { return nil }
-        let urlStr = UserDefaults.standard.string(forKey: baseURLKey)
-        let url = urlStr.flatMap { URL(string: $0) } ?? defaultBaseURL
-        return APIClient(baseURL: url, apiKey: key)
+        return APIClient(baseURL: defaultBaseURL, apiKey: key)
     }
 
     var lastEmail: String {
@@ -43,12 +45,7 @@ final class Session {
 
     init() {
         let defaults = UserDefaults.standard
-        if let s = defaults.string(forKey: Self.baseURLKey), let url = URL(string: s) {
-            baseURL = url
-        } else {
-            baseURL = Self.defaultBaseURL
-            defaults.set(baseURL.absoluteString, forKey: Self.baseURLKey)
-        }
+        defaults.removeObject(forKey: Self.legacyBaseURLKey)
         apiKey = Keychain.apiKey
         if let data = defaults.data(forKey: Self.userKey) {
             user = try? APIClient.decoder.decode(User.self, from: data)
@@ -69,30 +66,26 @@ final class Session {
     }
 
     @MainActor
-    func login(email: String, password: String, baseURL: URL) async throws {
+    func login(email: String, password: String) async throws {
         let resp = try await APIClient.login(baseURL: baseURL, email: email, password: password)
-        self.baseURL = baseURL
         apiKey = resp.apiKey
         Keychain.apiKey = resp.apiKey
         setUser(resp.user)
         lastEmail = email
         sessionExpired = false
-        UserDefaults.standard.set(baseURL.absoluteString, forKey: Self.baseURLKey)
     }
 
     /// Creates an account and signs straight into it.
     @MainActor
     func signUp(email: String, password: String, displayName: String,
-                inviteCode: String, baseURL: URL) async throws {
+                inviteCode: String) async throws {
         let resp = try await APIClient.signup(baseURL: baseURL, email: email, password: password,
                                               displayName: displayName, inviteCode: inviteCode)
-        self.baseURL = baseURL
         apiKey = resp.apiKey
         Keychain.apiKey = resp.apiKey
         setUser(resp.user)
         lastEmail = email
         sessionExpired = false
-        UserDefaults.standard.set(baseURL.absoluteString, forKey: Self.baseURLKey)
     }
 
     /// Deletes the account server-side, then clears local state. Throws

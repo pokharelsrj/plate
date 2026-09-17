@@ -33,10 +33,7 @@ targets:
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         NSHealthShareUsageDescription: Reads steps, sleep, active energy, and resting heart rate so Plate can log them alongside your workouts and meals.
         NSHealthUpdateUsageDescription: Plate does not write health data.
-        NSAppTransportSecurity:
-          NSAllowsLocalNetworking: true
         NSFaceIDUsageDescription: Face ID unlocks the app when the lock is enabled in Settings.
-        NSLocalNetworkUsageDescription: Plate connects to your own server, which is usually on your home network.
         NSSupportsLiveActivities: true
         # Only HTTPS via URLSession and the system Keychain — both exempt, so
         # App Store Connect stops asking on every upload.

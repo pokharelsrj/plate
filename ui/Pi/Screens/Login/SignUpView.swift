@@ -5,8 +5,6 @@ import UIKit
 /// sign-up is enabled. The invite code is the server operator's gate — without
 /// it the endpoint refuses, so there's no point pretending it's optional.
 struct SignUpView: View {
-    let baseURLString: String
-
     @Environment(Session.self) private var session
     @Environment(\.dismiss) private var dismiss
 
@@ -70,11 +68,6 @@ struct SignUpView: View {
                     .buttonStyle(.piPressable)
                     .disabled(isLoading || !canSubmit)
                     .opacity(canSubmit ? 1 : 0.5)
-
-                    Text("Signing up to \(baseURLString)")
-                        .font(.piCaption)
-                        .foregroundStyle(Color.piTextMuted)
-                        .multilineTextAlignment(.center)
                 }
                 .padding(24)
             }
@@ -123,11 +116,6 @@ struct SignUpView: View {
     }
 
     private func submit() {
-        guard let url = URL(string: baseURLString.trimmingCharacters(in: .whitespaces)),
-              url.scheme != nil else {
-            errorMessage = "Invalid server URL."
-            return
-        }
         isLoading = true
         errorMessage = nil
         Task {
@@ -135,8 +123,7 @@ struct SignUpView: View {
                 try await session.signUp(email: email.trimmingCharacters(in: .whitespaces),
                                          password: password,
                                          displayName: displayName.trimmingCharacters(in: .whitespaces),
-                                         inviteCode: inviteCode.trimmingCharacters(in: .whitespaces),
-                                         baseURL: url)
+                                         inviteCode: inviteCode.trimmingCharacters(in: .whitespaces))
                 dismiss()
             } catch APIError.server(let message) {
                 errorMessage = message
