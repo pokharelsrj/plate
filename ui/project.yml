@@ -96,3 +96,16 @@ targets:
         CODE_SIGN_ENTITLEMENTS: PiWidget/PiWidget.entitlements
         SKIP_INSTALL: YES
         TARGETED_DEVICE_FAMILY: "1"
+
+# A shared scheme, so `xcodebuild -scheme Plate` works from the command line
+# and CI, and everyone opening the project gets the same one. Without it Xcode
+# invents per-user schemes that never get committed.
+schemes:
+  Plate:
+    build:
+      targets:
+        Pi: all
+    run:
+      config: Debug
+    archive:
+      config: Release

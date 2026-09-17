@@ -29,6 +29,19 @@ The App Group (`group.com.srijanpokharel.pi`) is what lets the widget see your
 data. If the widget shows nothing, check Settings → Diagnostics → Widget cache;
 "unavailable" means the entitlement didn't provision.
 
+## Building from the command line
+
+The project ships a shared `Plate` scheme, so no Xcode session is required:
+
+```sh
+xcodegen generate
+xcodebuild -scheme Plate -destination 'generic/platform=iOS Simulator' \
+    CODE_SIGNING_ALLOWED=NO build
+```
+
+Use `-destination` rather than `-sdk`: the watch target also builds a product
+named `Pi.app`, and forcing one SDK makes both targets write to the same path.
+
 ## Regenerating the project
 
 The `.xcodeproj` is generated from `project.yml` with
