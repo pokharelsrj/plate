@@ -147,8 +147,15 @@ struct APIClient {
                                  body: Body(displayName: displayName, dateOfBirth: dateOfBirth, sex: sex))
     }
 
-    func rotateKey() async throws -> RotateKeyResponse {
-        try await request("/api/me/rotate-key", method: "POST")
+    /// Changes the password and returns the replacement API key. The old key
+    /// dies with the old password, so every other device is signed out.
+    func changePassword(current: String, new: String) async throws -> APIKeyResponse {
+        struct Body: Encodable {
+            let currentPassword: String
+            let newPassword: String
+        }
+        return try await request("/api/me/password", method: "PUT",
+                                 body: Body(currentPassword: current, newPassword: new))
     }
 
     /// Closes the signed-in account. The server cascades the delete, so every

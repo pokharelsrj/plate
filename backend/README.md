@@ -35,12 +35,19 @@ Two mechanisms, both `X-Api-Key`:
 
 - **Per-user keys.** `POST /api/auth/login` trades email + password for the
   user's key; the app stores it in the Keychain and sends it on every request.
-  Keys don't expire — rotate with `POST /api/me/rotate-key`.
+  Keys don't expire on their own — changing the password issues a new one,
+  which is also how you sign other devices out.
 - **Health ingest** checks the same key on its own, because the iOS Shortcut
   posts from outside the LAN and never logs in.
 
 Passwords are PBKDF2-SHA256, and the login endpoint allows ten failures per
-client IP per fifteen minutes before returning 429. `WithAPIKey` resolves the
+client IP per fifteen minutes before returning 429. Setting a password —
+whether by the user via `PUT /api/me/password` or by an admin resetting it —
+always issues a fresh API key, because the API authenticates on the key and
+never rechecks the password; without that, a device you're trying to lock out
+would keep working. The self-service endpoint requires the current password
+and answers a wrong one with 403 rather than 401, so a typo isn't mistaken for
+an expired session. `WithAPIKey` resolves the
 caller; `WithAdmin` additionally requires the admin role.
 
 ## Accounts
@@ -112,7 +119,7 @@ data it always was. Migrations are idempotent, so a restart is a no-op.
 | `GET` | `/api/health/ping` | liveness + whether sign-up is enabled, unauthenticated |
 | `POST` | `/api/health/ingest` | Apple Health payload from the Shortcut |
 | `GET` `PUT` | `/api/me` | profile (display name, date of birth, sex) |
-| `POST` | `/api/me/rotate-key` | issue a new API key |
+| `PUT` | `/api/me/password` | change your own password; returns a fresh API key |
 | `DELETE` | `/api/me` | close your own account, cascading to all its data |
 | `GET` `POST` | `/api/admin/users` | list / create — admin only |
 | `PUT` `DELETE` | `/api/admin/users/{id}` | update / delete — admin only |

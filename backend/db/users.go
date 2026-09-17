@@ -173,19 +173,23 @@ func UpdateUserAdmin(id int64, displayName, role string, isActive *bool) error {
 	return err
 }
 
-func SetUserPassword(id int64, password string) error {
+// SetUserPassword replaces the password and issues a fresh API key in the same
+// statement, returning the new key. Changing a password has to invalidate
+// existing sessions — otherwise a device someone is trying to lock out keeps
+// working, since the API authenticates on the key and never rechecks the
+// password. Callers acting for the user should hand the new key back to them;
+// everyone else's copy stops working, which is the point.
+func SetUserPassword(id int64, password string) (string, error) {
 	hash, err := HashPassword(password)
 	if err != nil {
-		return err
+		return "", err
 	}
-	_, err = DB.Exec(`UPDATE users SET password_hash = ? WHERE id = ?`, hash, id)
-	return err
-}
-
-func RotateUserAPIKey(id int64) (string, error) {
 	key := NewAPIKey()
-	_, err := DB.Exec(`UPDATE users SET api_key = ? WHERE id = ?`, key, id)
-	return key, err
+	if _, err := DB.Exec(
+		`UPDATE users SET password_hash = ?, api_key = ? WHERE id = ?`, hash, key, id); err != nil {
+		return "", err
+	}
+	return key, nil
 }
 
 func DeleteUser(id int64) error {

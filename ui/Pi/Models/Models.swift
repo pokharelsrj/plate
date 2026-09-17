@@ -31,7 +31,9 @@ struct PingResponse: Codable {
     let signupEnabled: Bool?
 }
 
-struct RotateKeyResponse: Codable {
+/// Returned whenever the server issues a fresh API key — currently after a
+/// password change, which invalidates the old one.
+struct APIKeyResponse: Codable {
     let apiKey: String
 }
 

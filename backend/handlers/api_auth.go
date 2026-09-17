@@ -210,10 +210,33 @@ func APIMeUpdate(w http.ResponseWriter, r *http.Request, u *db.User) {
 }
 
 // POST /api/me/rotate-key
-func APIRotateKey(w http.ResponseWriter, r *http.Request, u *db.User) {
-	key, err := db.RotateUserAPIKey(u.ID)
+// PUT /api/me/password — change your own password. The current one is
+// required, so someone who picks up an unlocked phone can't lock the owner
+// out. Succeeding also rotates the API key, signing out every other device;
+// the new key comes back so the caller stays signed in.
+func APIMePassword(w http.ResponseWriter, r *http.Request, u *db.User) {
+	var req struct {
+		CurrentPassword string `json:"current_password"`
+		NewPassword     string `json:"new_password"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		apiErr(w, http.StatusBadRequest, "bad json")
+		return
+	}
+	if !db.VerifyPassword(req.CurrentPassword, u.PasswordHash) {
+		// 403, not 401: the API key is perfectly valid, it's the re-auth that
+		// failed. A 401 would tell the client its session had expired and sign
+		// the user out for mistyping their own password.
+		apiErr(w, http.StatusForbidden, "current password is incorrect")
+		return
+	}
+	if len(req.NewPassword) < 8 {
+		apiErr(w, http.StatusBadRequest, "new password must be at least 8 characters")
+		return
+	}
+	key, err := db.SetUserPassword(u.ID, req.NewPassword)
 	if err != nil {
-		apiErr(w, http.StatusInternalServerError, "rotate failed")
+		apiErr(w, http.StatusInternalServerError, "could not change the password")
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]string{"api_key": key})
@@ -309,7 +332,10 @@ func APIAdminResetPassword(w http.ResponseWriter, r *http.Request, _ *db.User) {
 		apiErr(w, http.StatusBadRequest, "password required")
 		return
 	}
-	if err := db.SetUserPassword(id, req.Password); err != nil {
+	// Discards the returned key deliberately: an admin resetting someone
+	// else's password should sign that person out everywhere, and they'll get
+	// a fresh key by logging in again.
+	if _, err := db.SetUserPassword(id, req.Password); err != nil {
 		apiErr(w, http.StatusInternalServerError, "reset failed")
 		return
 	}

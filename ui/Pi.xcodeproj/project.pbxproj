@@ -10,6 +10,7 @@
 		03803676527CEC358A2D576C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694D80DC32FA0FE20E564AFD /* SettingsView.swift */; };
 		0BE4940819DA797BFB4B03D7 /* WorkoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81EB781591A3D97D2650A47F /* WorkoutView.swift */; };
 		1007788DA94DF734CA5F45B8 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5E2D88A1AE1EC09EFE96F21 /* Theme.swift */; };
+		12A8A214308D5233FE03321C /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 810D55178EC9D8EDA4574D0C /* ChangePasswordView.swift */; };
 		1407A75CBA0D55D64DC5A962 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814299711B2FD4C642C5F145 /* Session.swift */; };
 		170370EC963255D17B26C794 /* DayCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1A4F36A02E3BE907DBC81B /* DayCards.swift */; };
 		20885804032EEA4C9159B789 /* TrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1C6693E7B2239AB812B82F0 /* TrendsView.swift */; };
@@ -128,6 +129,7 @@
 		732F3F3170427B78E449094D /* MetricViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricViews.swift; sourceTree = "<group>"; };
 		78909B2BAB49BA2A6F5B2F2F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7A89B383DC3B3604CC24D642 /* WatchWorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWorkoutView.swift; sourceTree = "<group>"; };
+		810D55178EC9D8EDA4574D0C /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
 		814299711B2FD4C642C5F145 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		81EB781591A3D97D2650A47F /* WorkoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutView.swift; sourceTree = "<group>"; };
 		8254A6090B975F72CE1F001D /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
@@ -367,6 +369,7 @@
 			isa = PBXGroup;
 			children = (
 				D662F4FA928A9A6FF6539AF0 /* AdminUsersView.swift */,
+				810D55178EC9D8EDA4574D0C /* ChangePasswordView.swift */,
 				41FE8F63467D20FA04AED309 /* ProfileView.swift */,
 				694D80DC32FA0FE20E564AFD /* SettingsView.swift */,
 			);
@@ -552,6 +555,7 @@
 				A30FC17B6F7513F9DFAD56B2 /* AppLock.swift in Sources */,
 				C4121A2E27AF9BBA9BD1F69D /* BodyView.swift in Sources */,
 				9C4CF86F911317EEA7FD76B7 /* CalendarView.swift in Sources */,
+				12A8A214308D5233FE03321C /* ChangePasswordView.swift in Sources */,
 				170370EC963255D17B26C794 /* DayCards.swift in Sources */,
 				456A4210093C9D1A00D6D989 /* DayDetailView.swift in Sources */,
 				97E68723B646914ECA6256E5 /* ExercisesView.swift in Sources */,

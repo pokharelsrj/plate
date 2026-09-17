@@ -40,7 +40,7 @@ func main() {
 	// the admin role.
 	mux.HandleFunc("GET /api/me", handlers.WithAPIKey(handlers.APIMe))
 	mux.HandleFunc("PUT /api/me", handlers.WithAPIKey(handlers.APIMeUpdate))
-	mux.HandleFunc("POST /api/me/rotate-key", handlers.WithAPIKey(handlers.APIRotateKey))
+	mux.HandleFunc("PUT /api/me/password", handlers.WithAPIKey(handlers.APIMePassword))
 	mux.HandleFunc("DELETE /api/me", handlers.WithAPIKey(handlers.APIMeDelete))
 
 	mux.HandleFunc("GET /api/admin/users", handlers.WithAdmin(handlers.APIAdminListUsers))

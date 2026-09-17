@@ -9,7 +9,6 @@ struct SettingsView: View {
     @AppStorage("dailyStepGoal") private var stepGoal = 10000
     @AppStorage("sleepGoalHours") private var sleepGoal = 7.5
 
-    @State private var showRotateConfirm = false
     @State private var showSignOutConfirm = false
     @State private var toast: Toast?
     @State private var healthSyncing = false
@@ -42,13 +41,6 @@ struct SettingsView: View {
                 Button("Cancel", role: .cancel) {}
             } message: {
                 Text("Your account and all of its data will be permanently deleted. This can't be undone.")
-            }
-            .confirmationDialog("Rotate API key?", isPresented: $showRotateConfirm, titleVisibility: .visible) {
-                Button("Rotate key", role: .destructive) {
-                    Task { await rotateKey() }
-                }
-            } message: {
-                Text("The old key stops working immediately. This device updates itself; other devices will need to sign in again.")
             }
             .confirmationDialog("Sign out?", isPresented: $showSignOutConfirm, titleVisibility: .visible) {
                 Button("Sign out", role: .destructive) {
@@ -86,10 +78,9 @@ struct SettingsView: View {
             NavigationLink("Edit profile") {
                 ProfileView()
             }
-            Button("Rotate API key") {
-                showRotateConfirm = true
+            NavigationLink("Change password") {
+                ChangePasswordView()
             }
-            .foregroundStyle(Color.piText)
             Button("Sign out", role: .destructive) {
                 showSignOutConfirm = true
             }
@@ -235,16 +226,6 @@ struct SettingsView: View {
             // On success the session clears itself and the app drops to the
             // login screen, so there's nothing to show afterwards.
             try await session.deleteAccount()
-        } catch {
-            toast = Toast(message: error.localizedDescription, isError: true)
-        }
-    }
-
-    private func rotateKey() async {
-        do {
-            let resp = try await session.client.rotateKey()
-            session.setAPIKey(resp.apiKey)
-            toast = Toast(message: "API key rotated")
         } catch {
             toast = Toast(message: error.localizedDescription, isError: true)
         }
