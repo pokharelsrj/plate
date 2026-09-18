@@ -39,8 +39,14 @@ xcodebuild -scheme Plate -destination 'generic/platform=iOS Simulator' \
     CODE_SIGNING_ALLOWED=NO build
 ```
 
-Use `-destination` rather than `-sdk`: the watch target also builds a product
-named `Pi.app`, and forcing one SDK makes both targets write to the same path.
+Use `-destination` rather than `-sdk`, so each target builds for its own
+platform rather than all of them against one.
+
+The products are deliberately named apart — `Pi.app` for the phone,
+`PlateWatch.app` for the watch — because two bundles called `Pi.app` are easy
+to confuse when installing on a simulator by hand. Normally you don't: run the
+scheme on an iPhone simulator that has a paired watch and the watch app
+installs through the phone, exactly as it does on real hardware.
 
 ## Regenerating the project
 
